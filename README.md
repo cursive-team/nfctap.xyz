@@ -1,38 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# wallet-test
 
-## Getting Started
+This is a repository exploring adding emojisigs directly to Google and Apple Wallet.
 
-First, run the development server:
+## Apple Wallet
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+The main link that includes resources is: https://developer.apple.com/documentation/walletpasses. Roughly, the entire structure is defined in `pass.json`, and then we use a certificate to sign a `manifest.json` file that includes all the hashes of all the files in the pass. Then, we zip up the entire directory, and change the extension to `.pkpass`. We get this certificate from the Apple Developer Portal.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+There's a repository that does this functionality in Node.js: https://github.com/tinovyatkin/pass-js/tree/master. There's another repository with an example structure: https://github.com/phatblat/phatblat.pass/tree/main. There's another useful tutorial that phatblat linked here: https://www.walletthat.com/help/creating-a-pass-type-id-pass-signing-certificate/
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Google Wallet
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The main tutorial we are following to create a pass in Google Wallet is included here: https://codelabs.developers.google.com/add-to-wallet-web#0. The correspoding repository is kept at: https://github.com/google-pay/wallet-web-codelab/blob/main/web_complete/app.js. There is another example repository here: https://github.com/google-pay/wallet-samples/tree/main
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-# Apple Wallet
-
-To set up Apple Wallet, we'll need to convert Stamps / signatures into a .pkpass file. To do this, we'll need an Apple Developer account and use the [vinyl.pass](./vinyl.pass/) directory.
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+There is also a notion of a "private pass" with additional security guarentees that we should visit if we deploy this at a larger scale: https://developers.google.com/wallet/generic-private-pass
