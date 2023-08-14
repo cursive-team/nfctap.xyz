@@ -1,0 +1,45 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "pass.com.example.jubmoji",
+  "teamIdentifier": "BV3BXTVJUF",
+  "serialNumber": "0000001",
+  "barcodes": [
+    {
+      "message": "12312323123213",
+      "format": "PKBarcodeFormatQR",
+      "messageEncoding": "iso-8859-1"
+    }
+  ],
+  "locations": [
+    {
+      "longitude": -122.3748889,
+      "latitude": 37.6189722
+    },
+    {
+      "longitude": -122.03118,
+      "latitude": 37.33182
+    }
+  ],
+  "organizationName": "Project Vinyl",
+  "description": "Jubmoji",
+  "logoText": "Jubmoji",
+  "foregroundColor": "rgb(47,79,79)",
+  "backgroundColor": "rgb(255, 255, 255)",
+  "generic": {
+    "primaryFields": [],
+    "secondaryFields": [
+      {
+        "key": "event-name",
+        "label": "EVENT",
+        "value": "Science of Blockchain Conference"
+      },
+      {
+        "key": "date",
+        "dateStyle": "PKDateStyleMedium",
+        "label": "CLAIMED ON",
+        "value": "2023-09-01T00:00-23:59"
+      }
+    ],
+    "auxiliaryFields": []
+  }
+}
