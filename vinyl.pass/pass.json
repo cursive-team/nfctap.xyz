@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "passTypeIdentifier": "pass.com.apple.devpubs.example",
+  "passTypeIdentifier": "nftctap.xyz.richardexample.wallet",
   "serialNumber": "E5982H-I2",
   "teamIdentifier": "A93A5CM278",
   "webServiceURL": "https://example.com/passes/",

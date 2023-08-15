@@ -6,9 +6,7 @@ export default function IosPage() {
       Hi, this is a page.
       <div>
         {!isIOS ? (
-          <a href="https://s3-us-west-2.amazonaws.com/phatblat/phatblat.pkpass">
-            Add to apple wallet.
-          </a>
+          <a href="vinyl.pkpass">Add to apple wallet.</a>
         ) : (
           <div>You are not on an iOS device.</div>
         )}
