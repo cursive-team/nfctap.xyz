@@ -25,7 +25,7 @@
   "logoText": "Jubmoji",
   "foregroundColor": "rgb(47,79,79)",
   "backgroundColor": "rgb(255, 255, 255)",
-  "generic": {
+  "coupon": {
     "primaryFields": [],
     "secondaryFields": [
       {
@@ -40,6 +40,28 @@
         "value": "2023-09-01T00:00-23:59"
       }
     ],
-    "auxiliaryFields": []
+    "auxiliaryFields": [],
+    "backFields": [
+      {
+        "key": "frequent-flier-number",
+        "label": "Frequent flier number",
+        "value": "1234-5678"
+      },
+      {
+        "key": "website",
+        "label": "Track my checked bags",
+        "value": "http://www.example.com/track-bags/XYZ123"
+      },
+      {
+        "key": "customer-service",
+        "label": "Customer service",
+        "value": "(800) 555-0199"
+      },
+      {
+        "key": "terms",
+        "label": "Terms and Conditions",
+        "value": "O Fortuna velut luna statu variabilis, semper crescis aut decrescis; vita detestabilis nunc obdurat et tunc curat ludo mentis aciem, egestatem, potestatem dissolvit ut glaciem.\n\n Sors immanis et inanis, rota tu volubilis, status malus, vana salus semper dissolubilis, obumbrata et velata michi quoque niteris; nunc per ludum dorsum nudum fero tui sceleris.\n\n Sors salutis et virtutis michi nunc contraria, est affectus et defectus semper in angaria.  Hac in hora sine mora corde pulsum tangite; quod per sortem sternit fortem, mecum omnes plangite!"
+      }
+    ]
   }
 }

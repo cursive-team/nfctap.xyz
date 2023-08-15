@@ -35,11 +35,11 @@ export async function GET(request: Request) {
     }
   );
 
-  pkPass.primaryFields.push({
-    key: "owner",
-    label: "OWNER",
-    value: owner,
-  });
+  // pkPass.primaryFields.push({
+  //   key: "owner",
+  //   label: "OWNER",
+  //   value: owner,
+  // });
 
   if (note) {
     pkPass.auxiliaryFields.push({
