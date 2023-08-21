@@ -11,7 +11,7 @@ assert(
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const { owner, signature, note } = Object.fromEntries(searchParams.entries());
+  const { owner, signature } = Object.fromEntries(searchParams.entries());
   // Check for required params
   if (!owner || !signature) {
     console.error("[/api/generatePass] missing 'owner' or 'signature' fields", {
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   }
   const pkPass = await PKPass.from(
     {
-      model: "./models/vinyl.pass",
+      model: "./models/sigmoji.pass",
       certificates: {
         wwdr: readFileSync("./certs/wwdr.pem"),
         signerCert: readFileSync("./certs/signerCert.pem"),
@@ -35,24 +35,10 @@ export async function GET(request: Request) {
     }
   );
 
-  // pkPass.primaryFields.push({
-  //   key: "owner",
-  //   label: "OWNER",
-  //   value: owner,
-  // });
-
-  if (note) {
-    pkPass.auxiliaryFields.push({
-      key: "note",
-      label: "NOTE",
-      value: note,
-    });
-  }
-
   return new NextResponse(pkPass.getAsBuffer(), {
     status: 200,
     headers: {
-      "Content-Disposition": 'attachment; filename="jubmoji.pkpass"',
+      "Content-Disposition": 'attachment; filename="sigmoji.pkpass"',
       "Content-Type": "application/vnd.apple.pkpass",
     },
   });

@@ -12,7 +12,7 @@ export default function TapPage() {
   return <CollectedScreen />;
 }
 
-function getScreen(params: URLSearchParams) {
+function getSignature(params: URLSearchParams) {
   const pk2 = params.get("pk2");
   const rnd = params.get("rnd");
   const rndsig = params.get("rndsig");
