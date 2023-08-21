@@ -7,7 +7,7 @@ export default function TapPage() {
   const params = new URLSearchParams(hash);
   console.log(params);
 
-  // check status of localStorage to determine which screen
+  // check status of localStorage to determine which screen to show
 
   return <CollectedScreen />;
 }
