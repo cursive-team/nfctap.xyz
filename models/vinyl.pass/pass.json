@@ -3,13 +3,7 @@
   "passTypeIdentifier": "pass.com.example.jubmoji",
   "teamIdentifier": "BV3BXTVJUF",
   "serialNumber": "0000001",
-  "barcodes": [
-    {
-      "message": "12312323123213",
-      "format": "PKBarcodeFormatQR",
-      "messageEncoding": "iso-8859-1"
-    }
-  ],
+  "barcodes": [],
   "locations": [
     {
       "longitude": -122.3748889,
@@ -25,26 +19,14 @@
   "logoText": "Jubmoji",
   "foregroundColor": "rgb(47,79,79)",
   "backgroundColor": "rgb(255, 255, 255)",
-  "coupon": {
+  "eventTicket": {
     "primaryFields": [],
-    "secondaryFields": [
-      {
-        "key": "event-name",
-        "label": "EVENT",
-        "value": "Science of Blockchain Conference"
-      },
-      {
-        "key": "date",
-        "dateStyle": "PKDateStyleMedium",
-        "label": "CLAIMED ON",
-        "value": "2023-09-01T00:00-23:59"
-      }
-    ],
+    "secondaryFields": [],
     "auxiliaryFields": [],
     "backFields": [
       {
-        "key": "frequent-flier-number",
-        "label": "Frequent flier number",
+        "key": "serial-number",
+        "label": "Serial number",
         "value": "1234-5678"
       },
       {
@@ -60,7 +42,7 @@
       {
         "key": "terms",
         "label": "Terms and Conditions",
-        "value": "O Fortuna velut luna statu variabilis, semper crescis aut decrescis; vita detestabilis nunc obdurat et tunc curat ludo mentis aciem, egestatem, potestatem dissolvit ut glaciem.\n\n Sors immanis et inanis, rota tu volubilis, status malus, vana salus semper dissolubilis, obumbrata et velata michi quoque niteris; nunc per ludum dorsum nudum fero tui sceleris.\n\n Sors salutis et virtutis michi nunc contraria, est affectus et defectus semper in angaria.  Hac in hora sine mora corde pulsum tangite; quod per sortem sternit fortem, mecum omnes plangite!"
+        "value": "Have fun!"
       }
     ]
   }
