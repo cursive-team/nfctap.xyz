@@ -3,46 +3,76 @@
   "passTypeIdentifier": "pass.com.example.jubmoji",
   "teamIdentifier": "BV3BXTVJUF",
   "serialNumber": "0000001",
-  "barcodes": [],
   "locations": [
     {
-      "longitude": -122.3748889,
-      "latitude": 37.6189722
-    },
-    {
-      "longitude": -122.03118,
-      "latitude": 37.33182
+      "longitude": -122.1646712539703,
+      "latitude": 37.43099762825177,
+      "relevantText": "SBC Conference"
     }
   ],
+  "maxDistance": 1000,
   "organizationName": "nfctap.xyz",
-  "description": "Sigmoji",
-  "logoText": "Sigmoji",
-  "foregroundColor": "rgb(47,79,79)",
-  "backgroundColor": "rgb(255, 255, 255)",
+  "description": "Sigmojis I",
+  "logoText": "nfctap.xyz",
+  "barcodes": [
+    {
+      "format": "PKBarcodeFormatQR",
+      "message": "http://nfctap.xyz",
+      "messageEncoding": "iso-8859-1",
+      "altText": "nfctap.xyz"
+    }
+  ],
+  "foregroundColor": "rgb(246,246,246)",
+  "backgroundColor": "rgb(26,26,26)",
+  "labelColor": "rgb(119,119,119)",
   "eventTicket": {
+    "headerFields": [
+      {
+        "key": "score",
+        "label": "Score",
+        "value": "?"
+      }
+    ],
     "primaryFields": [],
-    "secondaryFields": [],
-    "auxiliaryFields": [],
+    "secondaryFields": [
+      {
+        "key": "collection",
+        "label": "Collection",
+        "value": "Sigmojis I"
+      },
+      {
+        "key": "collected",
+        "label": "Collected",
+        "value": "1/20"
+      }
+    ],
+    "auxiliaryFields": [
+      {
+        "key": "location",
+        "label": "Location",
+        "value": "Stanford"
+      },
+      {
+        "key": "event",
+        "label": "Event",
+        "value": "SBC"
+      },
+      {
+        "key": "year",
+        "label": "Year",
+        "value": "2023"
+      }
+    ],
     "backFields": [
       {
-        "key": "serial-number",
-        "label": "Serial number",
-        "value": "1234-5678"
+        "key": "game-rules",
+        "label": "Collect early sigmojis to win!",
+        "value": "A private digital collectible where early editions are the most valuable."
       },
       {
-        "key": "website",
-        "label": "Track my checked bags",
-        "value": "http://www.example.com/track-bags/XYZ123"
-      },
-      {
-        "key": "customer-service",
-        "label": "Customer service",
-        "value": "(800) 555-0199"
-      },
-      {
-        "key": "terms",
-        "label": "Terms and Conditions",
-        "value": "Have fun!"
+        "key": "retrieve-link",
+        "label": "Retrieve your collection",
+        "value": "https://nfctap.xyz/retrieve#?sig1=0xabcd&sig2=0xbcde"
       }
     ]
   }
