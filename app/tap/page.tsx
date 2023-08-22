@@ -1,6 +1,7 @@
 "use client";
 
-import CollectedScreen from "@/components/screens/CollectedScreen";
+import CollectedModal from "@/components/modals/CollectedModal";
+import EmptyStorageScreen from "@/components/screens/EmptyStorageScreen";
 
 export default function TapPage() {
   // const hash = window.location.hash.substring(1); // Remove the leading '#'
@@ -8,7 +9,7 @@ export default function TapPage() {
   // console.log(params);
   // check status of localStorage to determine which screen to show
 
-  return <CollectedScreen />;
+  return <CollectedModal />;
 }
 
 function getSignature(params: URLSearchParams) {

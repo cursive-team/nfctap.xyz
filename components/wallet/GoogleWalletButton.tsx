@@ -15,6 +15,9 @@ export const GoogleWalletButton = () => {
      * which cannot be forged. Without those signatures, no valid ZKPs can be made.
      * This is a necessary hack to avoid sending the user's private signatures
      * to the server to get signed, which is usually how passes are handled.
+     *
+     * Another way of thinking about this is that the cards in some sense are the
+     * server for this application.
      */
     const issuerId = "3388000000022248072";
     const classId = `${issuerId}.sigmoji_sbc_final_1`;
@@ -131,7 +134,7 @@ export const GoogleWalletButton = () => {
         <a href={saveUrl}>
           <button onClick={handleClick}>
             <Image
-              src="/AddToGoogleWallet.svg"
+              src="/buttons/AddToGoogleWallet.svg"
               alt="Add To Google Wallet"
               width={241}
               height={64}

@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --woodsmoke-50: #f6f6f6;
+  --woodsmoke-800: #454545;
+  --woodsmoke-950: #1a1a1a;
+  --snow-flurry-200: #c3ff97;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: #1a1a1a;

@@ -9,7 +9,7 @@ export const AppleWalletButton = () => {
       <a href={`/api/generateApplePass?signature=0xABCD&owner=0x1234`}>
         <button onClick={handleClick}>
           <Image
-            src="/AddToAppleWallet.svg"
+            src="/buttons/AddToAppleWallet.svg"
             alt="Add to Apple Wallet"
             width={241}
             height={64}
