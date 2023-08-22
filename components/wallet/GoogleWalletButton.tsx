@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
-import * as jwt from "jsonwebtoken";
 import * as jose from "jose";
 import { useEffect, useState } from "react";
 
