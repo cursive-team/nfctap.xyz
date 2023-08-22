@@ -14,12 +14,16 @@ export async function GET(request: Request) {
   const { owner, signature } = Object.fromEntries(searchParams.entries());
   // Check for required params
   if (!owner || !signature) {
-    console.error("[/api/generatePass] missing 'owner' or 'signature' fields", {
-      owner,
-      signature,
-    });
+    console.error(
+      "[/api/generateApplePass] missing 'owner' or 'signature' fields",
+      {
+        owner,
+        signature,
+      }
+    );
     return NextResponse.error();
   }
+
   const pkPass = await PKPass.from(
     {
       model: "./models/sigmoji.pass",

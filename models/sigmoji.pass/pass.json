@@ -67,7 +67,12 @@
       {
         "key": "game-rules",
         "label": "Collect early sigmojis to win!",
-        "value": "A private digital collectible where early editions are the most valuable."
+        "value": "A private digital collectible where the early editions are more valuable."
+      },
+      {
+        "key": "zk",
+        "label": "Safely reveal edition using ZK!",
+        "value": "Prove you have a valid signature on an edition without giving it away."
       },
       {
         "key": "retrieve-link",
