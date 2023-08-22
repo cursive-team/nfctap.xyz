@@ -1,13 +1,14 @@
 import assert from "assert";
-import { readFileSync, writeFileSync } from "fs";
 import { NextResponse } from "next/server";
 import { PKPass } from "passkit-generator";
 
-const { PASSKIT_GENERATOR_PASSPHRASE } = process.env;
-assert(
+const {
   PASSKIT_GENERATOR_PASSPHRASE,
-  "Missing env var PASSKIT_GENERATOR_PASSPHRASE"
-);
+  PASSKIT_WWDR_BASE64_PEM,
+  PASSKIT_SIGNERKEY_BASE64_PEM,
+  PASSKIT_SIGNERCERT_BASE64_PEM,
+} = process.env;
+assert(PASSKIT_GENERATOR_PASSPHRASE, "Missing at least one passkit env var");
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -24,13 +25,22 @@ export async function GET(request: Request) {
     return NextResponse.error();
   }
 
+  assert(PASSKIT_WWDR_BASE64_PEM, "Missing passkit wwdr cert");
+  assert(PASSKIT_SIGNERKEY_BASE64_PEM, "Missing passkit signer key");
+  assert(PASSKIT_SIGNERCERT_BASE64_PEM, "Missing passkit signer cert");
+
   const pkPass = await PKPass.from(
     {
       model: "./models/sigmoji.pass",
       certificates: {
-        wwdr: readFileSync("./certs/wwdr.pem"),
-        signerCert: readFileSync("./certs/signerCert.pem"),
-        signerKey: readFileSync("./certs/signerKey.pem"),
+        wwdr: Buffer.from(PASSKIT_WWDR_BASE64_PEM, "base64").toString("utf8"),
+        signerCert: Buffer.from(
+          PASSKIT_SIGNERCERT_BASE64_PEM,
+          "base64"
+        ).toString("utf8"),
+        signerKey: Buffer.from(PASSKIT_SIGNERKEY_BASE64_PEM, "base64").toString(
+          "utf8"
+        ),
         signerKeyPassphrase: PASSKIT_GENERATOR_PASSPHRASE,
       },
     },
