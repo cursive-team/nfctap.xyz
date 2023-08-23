@@ -1,13 +1,16 @@
 import Image from "next/image";
 import styled from "styled-components";
-import { Button } from "./Button";
+import { CollectButton } from "./Buttons";
+import { PrimaryFontBase1 } from "../core";
 
 export const MainHeader = () => {
   return (
     <MainContainer>
       <MainInnerDiv>
         <Image src="/logo.svg" width="40" height="40" alt="Logo" />
-        <Button>COLLECT</Button>
+        <CollectButton>
+          <PrimaryFontBase1>COLLECT</PrimaryFontBase1>
+        </CollectButton>
       </MainInnerDiv>
     </MainContainer>
   );

@@ -1,5 +1,5 @@
-import { SecondaryHeader } from "@/components/shared/SecondaryHeader";
+import { SecondaryHeader } from "@/components/shared/Headers";
 
 export default function RetrieveHelpScreen() {
-  return <SecondaryHeader close={false} />;
+  return <SecondaryHeader />;
 }

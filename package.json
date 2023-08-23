@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pcd/halo-nonce-pcd": "^0.2.1",
+    "@pcd/passport-ui": "^0.6.1",
     "@types/node": "20.4.5",
     "@types/react": "18.2.16",
     "@types/react-dom": "18.2.7",
@@ -29,6 +31,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/elliptic": "^6.4.14",
+    "@types/pako": "^2.0.0",
+    "@types/qr-image": "^3.2.6",
     "@types/uuid": "^9.0.2"
   }
 }

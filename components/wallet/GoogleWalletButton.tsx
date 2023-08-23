@@ -126,22 +126,22 @@ export const GoogleWalletButton = () => {
     generateSaveUrl();
   }, []);
 
-  const handleClick = () => {};
-
   return (
-    <div className="flex justify-center mt-5">
-      {saveUrl && (
-        <a href={saveUrl}>
-          <button onClick={handleClick}>
-            <Image
-              src="/buttons/AddToGoogleWallet.svg"
-              alt="Add To Google Wallet"
-              width={241}
-              height={64}
-            />
-          </button>
-        </a>
-      )}
+    <div className="flex justify-center">
+      <a href={saveUrl ? saveUrl : "#"}>
+        <Image
+          src="/buttons/AddToGoogleWallet.svg"
+          alt="Add To Google Wallet"
+          width={0}
+          height={0}
+          sizes="100vw"
+          style={
+            saveUrl
+              ? { width: "auto", height: "42px" }
+              : { width: "auto", height: "42px", filter: "grayscale(100%)" }
+          } // optional
+        />
+      </a>
     </div>
   );
 };

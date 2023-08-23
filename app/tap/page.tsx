@@ -1,15 +1,36 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
+import { isStorageEmpty } from "@/lib/localStorage";
 import CollectedModal from "@/components/modals/CollectedModal";
-import EmptyStorageScreen from "@/components/screens/EmptyStorageScreen";
+import FirstTimeUserScreen, {
+  FirstTimeUserResponse,
+} from "@/components/screens/FirstTimeUserScreen";
+import RetrieveHelpScreen from "@/components/screens/RetrieveHelpScreen";
 
 export default function TapPage() {
-  // const hash = window.location.hash.substring(1); // Remove the leading '#'
-  // const params = new URLSearchParams(hash);
-  // console.log(params);
-  // check status of localStorage to determine which screen to show
+  const [storageEmpty, setStorageEmpty] = useState<boolean | null>(null);
+  const [userResponse, setUserResponse] = useState<FirstTimeUserResponse>(
+    FirstTimeUserResponse.NONE
+  );
 
-  return <CollectedModal />;
+  useEffect(() => {
+    const checkStorage = async () => {
+      const isEmpty = await isStorageEmpty();
+      setStorageEmpty(isEmpty);
+    };
+    checkStorage();
+  }, []);
+
+  if (storageEmpty === null) {
+    return null; // or a loading spinner
+  } else if (storageEmpty && userResponse === FirstTimeUserResponse.NONE) {
+    return <FirstTimeUserScreen setUserResponse={setUserResponse} />;
+  } else if (!storageEmpty || userResponse === FirstTimeUserResponse.YES) {
+    return <CollectedModal />;
+  } else if (userResponse === FirstTimeUserResponse.RETRIEVE) {
+    return <RetrieveHelpScreen />;
+  }
 }
 
 function getSignature(params: URLSearchParams) {
