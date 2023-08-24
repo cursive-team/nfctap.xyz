@@ -1,23 +1,26 @@
+"use client";
+
 import styled from "styled-components";
 import Image from "next/image";
-import { AppleWalletButton } from "../wallet/AppleWalletButton";
-import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
+import { useRouter } from "next/navigation";
 
 export function ModalHeader() {
+  const router = useRouter();
+
   return (
     <ModalHeaderContainer>
-      <a href="/home">
+      <div onClick={() => router.push("/home")}>
         <Image src="/buttons/close.svg" width="24" height="24" alt="Close" />
-      </a>
+      </div>
     </ModalHeaderContainer>
   );
 }
 
 export const ModalBackground = styled.div`
   display: flex;
-  width: 100vw;
-  height: 100vh;
   padding: 40px 0px 80px 0px;
+  min-width: 100vw;
+  min-height: 100vh;
   flex-direction: column;
   align-items: center;
   background: rgba(40, 40, 40, 0.8);

@@ -7,7 +7,7 @@ export const MainHeader = () => {
   return (
     <MainContainer>
       <MainInnerDiv>
-        <Image src="/logo.svg" width="40" height="40" alt="Logo" />
+        <Image src="/logo.svg" width="40" height="40" alt="Logo" priority />
         <CollectButton>
           <PrimaryFontBase1>COLLECT</PrimaryFontBase1>
         </CollectButton>
@@ -40,7 +40,7 @@ export const SecondaryHeader = () => {
   return (
     <SecondaryContainer>
       <SecondaryInnerDiv>
-        <Image src="/logo.svg" width="40" height="40" alt="Logo" />
+        <Image src="/logo.svg" width="40" height="40" alt="Logo" priority />
       </SecondaryInnerDiv>
     </SecondaryContainer>
   );
