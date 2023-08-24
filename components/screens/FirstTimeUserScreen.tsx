@@ -35,7 +35,7 @@ const FirstTimeUserScreen = ({
         <BottomSection>
           <div className="px-2 justify-center items-start inline-flex">
             <ContentMiddle>
-              <PrimaryFontH3 style={{ color: "white" }}>
+              <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
                 First time user?
               </PrimaryFontH3>
               <div
@@ -50,7 +50,7 @@ const FirstTimeUserScreen = ({
                   <PrimaryFontBase1>YES</PrimaryFontBase1>
                 </PrimaryLargeButton>
                 <LinkLargeButton onClick={handleNoClick}>
-                  <PrimaryFontBase1 style={{ color: "white" }}>
+                  <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
                     NO, RETRIEVE MY COLLECTION
                   </PrimaryFontBase1>
                 </LinkLargeButton>

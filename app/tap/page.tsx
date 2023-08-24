@@ -22,8 +22,6 @@ export default function TapPage() {
     checkStorage();
   }, []);
 
-  return <CollectedModal />;
-
   if (storageEmpty === null) {
     return null; // or a loading spinner
   } else if (storageEmpty && userResponse === FirstTimeUserResponse.NONE) {

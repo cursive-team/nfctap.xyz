@@ -2,13 +2,15 @@ import Image from "next/image";
 import styled from "styled-components";
 import { CollectButton } from "./Buttons";
 import { PrimaryFontBase1 } from "../core";
+import { useRouter } from "next/navigation";
 
 export const MainHeader = () => {
+  const router = useRouter();
   return (
     <MainContainer>
       <MainInnerDiv>
         <Image src="/logo.svg" width="40" height="40" alt="Logo" priority />
-        <CollectButton>
+        <CollectButton onClick={() => router.push("/")}>
           <PrimaryFontBase1>COLLECT</PrimaryFontBase1>
         </CollectButton>
       </MainInnerDiv>
