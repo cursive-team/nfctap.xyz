@@ -49,7 +49,7 @@ export const GoogleWalletButton = () => {
       },
       heroImage: {
         sourceUri: {
-          uri: "https://i.ibb.co/9t05K6d/nfctap-strip.png",
+          uri: "https://raw.githubusercontent.com/project-vinyl/nfctap.xyz/579e0cdbda8fab976230deb0594b810f3db747ff/models/sigmoji.pass/strip%403x.png",
         },
       },
       subheader: {

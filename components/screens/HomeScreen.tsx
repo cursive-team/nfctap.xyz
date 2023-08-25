@@ -5,7 +5,7 @@ import Footer from "../shared/Footer";
 
 export default function HomeScreen() {
   const [collectionOpen, setCollectionOpen] = useState<boolean>(true);
-  const [revealedScoresOpen, setRevealedScoresOpen] = useState<boolean>(true);
+  const [revealedScoresOpen, setRevealedScoresOpen] = useState<boolean>(false);
 
   return (
     <div

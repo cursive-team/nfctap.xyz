@@ -21,7 +21,7 @@
     "eslint-config-next": "13.4.12",
     "jose": "^4.14.4",
     "next": "13.4.12",
-    "passkit-generator": "^3.1.10",
+    "passkit-generator": "github:vb7401/passkit-generator",
     "postcss": "8.4.27",
     "react": "18.2.0",
     "react-device-detect": "^2.2.3",
