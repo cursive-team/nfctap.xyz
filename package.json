@@ -11,6 +11,7 @@
   "dependencies": {
     "@pcd/halo-nonce-pcd": "^0.2.1",
     "@pcd/passport-ui": "^0.6.1",
+    "@pcd/pcd-types": "^0.6.3",
     "@types/node": "20.4.5",
     "@types/react": "18.2.16",
     "@types/react-dom": "18.2.7",

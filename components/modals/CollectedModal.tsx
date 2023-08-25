@@ -16,8 +16,36 @@ import {
 } from "../core";
 import Image from "next/image";
 import { SecondaryLargeButton } from "../shared/Buttons";
+import {
+  HaLoNoncePCDArgs,
+  HaLoNoncePCD,
+  HaLoNoncePCDPackage,
+} from "@pcd/halo-nonce-pcd";
+import { useEffect, useState } from "react";
 
-export default function CollectedModal() {
+export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
+  const [pcd, setPCD] = useState<HaLoNoncePCD | undefined>(undefined);
+  const [invalidPCD, setInvalidPCD] = useState(false);
+
+  useEffect(() => {
+    const generatePCD = async () => {
+      let producedPCD;
+      try {
+        producedPCD = await HaLoNoncePCDPackage.prove(args);
+      } catch (e) {
+        setInvalidPCD(true);
+      }
+      if (producedPCD && !(await HaLoNoncePCDPackage.verify(producedPCD))) {
+        setInvalidPCD(true);
+      }
+      setPCD(producedPCD);
+    };
+
+    generatePCD();
+  }, [args]);
+
+  useEffect(() => {}, [pcd]);
+
   return (
     <ModalBackground>
       <ModalContainer>

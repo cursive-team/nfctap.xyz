@@ -28,9 +28,9 @@
   "eventTicket": {
     "headerFields": [
       {
-        "key": "score",
-        "label": "Score",
-        "value": "?"
+        "key": "collected",
+        "label": "Collected",
+        "value": "1/20"
       }
     ],
     "primaryFields": [],
@@ -41,9 +41,9 @@
         "value": "Sigmojis I"
       },
       {
-        "key": "collected",
-        "label": "Collected",
-        "value": "1/20"
+        "key": "score",
+        "label": "Score",
+        "value": "?"
       }
     ],
     "auxiliaryFields": [

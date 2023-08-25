@@ -1325,6 +1325,11 @@
   resolved "https://registry.yarnpkg.com/@pcd/pcd-types/-/pcd-types-0.6.1.tgz#4410742ba5e736483a2ad36ffee4f8e69d105967"
   integrity sha512-z6dvt8CAOhe7ZIvC2hs4IWtmUnGCQicDIVoQT9YBRSEUUR4Opmc71Mgq52ZIHINnN9frfgjvvYDjefviILjD3w==
 
+"@pcd/pcd-types@^0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@pcd/pcd-types/-/pcd-types-0.6.3.tgz#d7dad707807c99c89104312ddea3daad448e7dbd"
+  integrity sha512-uGbE5T7aY9j/dlwWc5WhXN6iWwNYXjWVDzUc1enno+vFJSG1tjY7Eqwoq57OlLMykEjRmEvNkeWtTSO4hWoxBQ==
+
 "@pkgr/utils@^2.3.1":
   version "2.4.2"
   resolved "https://registry.npmjs.org/@pkgr/utils/-/utils-2.4.2.tgz"
