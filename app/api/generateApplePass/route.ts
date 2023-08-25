@@ -1,6 +1,8 @@
 import assert from "assert";
 import { NextResponse } from "next/server";
 import { PKPass } from "passkit-generator";
+import path from "path";
+import process from "process";
 
 const {
   PASSKIT_GENERATOR_PASSPHRASE,
@@ -31,7 +33,10 @@ export async function GET(request: Request) {
 
   const pkPass = await PKPass.from(
     {
-      model: "./models/sigmoji.pass",
+      model: path.resolve(
+        process.cwd(),
+        "./app/api/generateApplePass/models/sigmoji.pass"
+      ),
       certificates: {
         wwdr: Buffer.from(PASSKIT_WWDR_BASE64_PEM, "base64").toString("utf8"),
         signerCert: Buffer.from(
