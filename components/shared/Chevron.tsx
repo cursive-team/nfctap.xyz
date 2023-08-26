@@ -11,7 +11,7 @@ interface ChevronProps {
 
 export default function Chevron({ text, isOpen, setIsOpen }: ChevronProps) {
   return (
-    <ChevronContainer>
+    <ChevronContainer onClick={() => setIsOpen(!isOpen)}>
       <div style={{ width: "100%" }}>
         <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
           {text}
@@ -24,7 +24,7 @@ export default function Chevron({ text, isOpen, setIsOpen }: ChevronProps) {
           width="24"
           height="24"
           alt="Chevron"
-          onClick={() => setIsOpen(!isOpen)}
+          priority
         />
       ) : (
         <Image
@@ -32,7 +32,7 @@ export default function Chevron({ text, isOpen, setIsOpen }: ChevronProps) {
           width="24"
           height="24"
           alt="Chevron"
-          onClick={() => setIsOpen(!isOpen)}
+          priority
         />
       )}
     </ChevronContainer>
