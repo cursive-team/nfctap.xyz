@@ -9,19 +9,25 @@ import FirstTimeUserScreen, {
 import RetrieveHelpScreen from "@/components/screens/RetrieveHelpScreen";
 import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
-import { useRouter } from "next/navigation";
-import { Yaldevi } from "next/font/google";
+import { useParams, useRouter } from "next/navigation";
 
 export default function TapPage() {
   const router = useRouter();
+  const params = useParams();
   const [storageEmpty, setStorageEmpty] = useState<boolean | null>(null);
   const [userResponse, setUserResponse] = useState<FirstTimeUserResponse>(
     FirstTimeUserResponse.NONE
   );
+  const [args, setArgs] = useState<HaLoNoncePCDArgs | null>(null);
 
   // get query strings that come after hash in url
-  const params = new URLSearchParams(window.location.hash.slice(1));
-  const args = getHaLoArgs(params);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    setArgs(getHaLoArgs(params));
+  }, [params]);
+
+  // console.log({ args });
 
   useEffect(() => {
     const checkStorage = async () => {
@@ -43,6 +49,7 @@ export default function TapPage() {
   } else if (userResponse === FirstTimeUserResponse.RETRIEVE) {
     return <RetrieveHelpScreen />;
   }
+  return null;
 }
 
 function getHaLoArgs(params: URLSearchParams): HaLoNoncePCDArgs | null {
