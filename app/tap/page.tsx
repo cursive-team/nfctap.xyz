@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { isStorageEmpty } from "@/lib/localStorage";
 import CollectedModal from "@/components/modals/CollectedModal";
 import FirstTimeUserScreen, {
@@ -9,25 +9,29 @@ import FirstTimeUserScreen, {
 import RetrieveHelpScreen from "@/components/screens/RetrieveHelpScreen";
 import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 export default function TapPage() {
   const router = useRouter();
   const params = useParams();
+
   const [storageEmpty, setStorageEmpty] = useState<boolean | null>(null);
   const [userResponse, setUserResponse] = useState<FirstTimeUserResponse>(
     FirstTimeUserResponse.NONE
   );
   const [args, setArgs] = useState<HaLoNoncePCDArgs | null>(null);
 
-  // get query strings that come after hash in url
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    setArgs(getHaLoArgs(params));
-  }, [params]);
-
-  // console.log({ args });
+    if (args === null && typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(location.hash.slice(1));
+      const haloArgs = getHaLoArgs(urlParams);
+      if (haloArgs === null) {
+        router.push("/home");
+      } else {
+        setArgs(haloArgs);
+      }
+    }
+  }, [params, router, args]);
 
   useEffect(() => {
     const checkStorage = async () => {
@@ -38,13 +42,15 @@ export default function TapPage() {
   }, []);
 
   if (args === null) {
-    router.push("/home");
     return null;
   } else if (storageEmpty === null) {
-    return null; // or a loading spinner
+    return null;
   } else if (storageEmpty && userResponse === FirstTimeUserResponse.NONE) {
     return <FirstTimeUserScreen setUserResponse={setUserResponse} />;
-  } else if (!storageEmpty || userResponse === FirstTimeUserResponse.YES) {
+  } else if (
+    args !== null &&
+    (!storageEmpty || userResponse === FirstTimeUserResponse.YES)
+  ) {
     return <CollectedModal args={args} />;
   } else if (userResponse === FirstTimeUserResponse.RETRIEVE) {
     return <RetrieveHelpScreen />;
