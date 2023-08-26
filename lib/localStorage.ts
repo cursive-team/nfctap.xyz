@@ -1,3 +1,4 @@
+import { HaLoNoncePCD } from "@pcd/halo-nonce-pcd";
 import {
   Sigmoji,
   BackupState,

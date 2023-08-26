@@ -11,6 +11,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x470385041A360EE2150b33a061876E4ABb692426",
     edition_number: 1,
+    image: "robot.png",
   },
   "0x3c7fb8f194562ba0b93f7ee1ffe4edd5b40d2371579f59883cc8b5762d03e5a2": {
     primaryPublicKeyRaw:
@@ -24,6 +25,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x1fc30A073b3Ac07f531D5fab1d1B520e5872De4F",
     edition_number: 2,
+    image: "invader.png",
   },
   "0x743569e21ba14de63bc6ca3c2e0a7a63a8cb2558a6b8af5b77d30283f334ed34": {
     primaryPublicKeyRaw:
@@ -37,6 +39,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xb797c9835f80858987A66784ef7Ce513A2e5daE2",
     edition_number: 3,
+    image: "ninja.png",
   },
   "0xebd6e049df3b26ef9ae637fe190aedd324b53fb4a971aa88fcd9f1054cf5423f": {
     primaryPublicKeyRaw:
@@ -50,6 +53,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x0E3c6c0884953F0acE63ce16b6bbA4D10F6c133F",
     edition_number: 4,
+    image: "turtle.png",
   },
   "0x068f94ea995262b7d405a7896a99609ffe1ed5b3889bc160155d83e23705d293": {
     primaryPublicKeyRaw:
@@ -63,6 +67,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x10693c31b2bBEA34f4a08ab640983a0c9B530452",
     edition_number: 5,
+    image: "pizza.png",
   },
   "0x9a83aaeac3fa6611c75ee9bb5e19fa77c4a57f315f7a54b9fd2bad4537436f62": {
     primaryPublicKeyRaw:
@@ -76,6 +81,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x401112374873C1e2eE9b9D87d155e77d6453E902",
     edition_number: 6,
+    image: "pinata.png",
   },
   "0xc151a66289777ba16f549c483940ae22c1c398467ef85e193fcac40b2668b653": {
     primaryPublicKeyRaw:
@@ -89,6 +95,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x2270028f844260E67c63d2A30a6e2A4a7Ea1Edb2",
     edition_number: 7,
+    image: "unicorn.png",
   },
   "0x989b39733197e7b2e5ae5b84de9e4d7c2e475a9fe13c621255de777449648f3a": {
     primaryPublicKeyRaw:
@@ -102,6 +109,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xdAE798400aCF0725e05CB15CdD80aC366fcF77d2",
     edition_number: 8,
+    image: "mushroom.png",
   },
   "0xb45b7543d8f643605910e3657ac1fd9e1284dbf67ea37fd4e80a29c739a5e3a9": {
     primaryPublicKeyRaw:
@@ -115,6 +123,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x1dA0C9E23fF24a07Fa4e365C74E2819d95944182",
     edition_number: 9,
+    image: "soccer.png",
   },
   "0x4b4dd1221c45419d06bb51adb58f8b33ab59264bce16fe28cb17a6279d0aa909": {
     primaryPublicKeyRaw:
@@ -128,6 +137,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xa1e935b7e9E229d727b73aD9797D54d79118035D",
     edition_number: 10,
+    image: "pumpkin.png",
   },
   "0x956e6323b6c5c005638f3bb0ca0dfb158d371d722f8fc75ab36ae0c139b43bea": {
     primaryPublicKeyRaw:
@@ -141,6 +151,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x09c0dEBF9e1CAE0a3496f4cd00626C77F0936213",
     edition_number: 11,
+    image: "avocado.png",
   },
   "0x17f8bc0c55c3a8ca24316df5750133cc17ef8bcf4ba1d487a294d2a2e78ca92f": {
     primaryPublicKeyRaw:
@@ -154,6 +165,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xa4bAbEcBD4fCFd0e3E460B6c4C9cdA31a239Ee89",
     edition_number: 12,
+    image: "nerd.png",
   },
   "0x0aea5bbe0062e222da2c0466e4131a90211d036abdcbbb6e0e41064d2d3fa2a3": {
     primaryPublicKeyRaw:
@@ -167,6 +179,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xefCc898bB6E1c0c7D27E2e46598d92253979C5f1",
     edition_number: 13,
+    image: "ghost.png",
   },
   "0x822c86fe5a352ac05ec2d1dd40da557f910d9eb49bb36ee7e4121043a624a243": {
     primaryPublicKeyRaw:
@@ -180,6 +193,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x23adDF617ad7CafB08788F25e9f69Bc4e4cad5b3",
     edition_number: 14,
+    image: "cowboy.png",
   },
   "0xffb8b70a3b529703db1dadf44364e7baaabe0ad614400f916fa0a41470696441": {
     primaryPublicKeyRaw:
@@ -193,6 +207,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xb864478e6368b487bd140e6E0a98a32C752c005b",
     edition_number: 15,
+    image: "alien.png",
   },
   "0x886d870c580a1afd981f6febb241bf90c516bf794ac609cbc285d54eed073da5": {
     primaryPublicKeyRaw:
@@ -206,6 +221,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xAC8849a3F22ACEae6A16d5263DB9B8F16b3afcd4",
     edition_number: 16,
+    image: "icecream.png",
   },
   "0x49d12d11723fde46b24df767a96aff4b419ea39999437a1ddf7bda2919ad399f": {
     primaryPublicKeyRaw:
@@ -219,6 +235,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x4630Ea1c39C13e4565537095212Da78b06727044",
     edition_number: 17,
+    image: "fairy.png",
   },
   "0x1d50e02e15f5ad40afeb6956433ad4a1f4d6b9b5493d0c26fe112716beeb1005": {
     primaryPublicKeyRaw:
@@ -232,6 +249,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0x8a9C12e9114048EDeBC236Be51249b3630605E80",
     edition_number: 18,
+    image: "butterfly.png",
   },
   "0x7f4ebc55033b1b6d8e58c581fd7bbfb8f2f8a45b6196ad526b20814f8ccc2c9e": {
     primaryPublicKeyRaw:
@@ -245,6 +263,7 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xa762d8d3553D3Db3988CAFFe17d952045cf49e7A",
     edition_number: 19,
+    image: "bubbles.png",
   },
   "0x387c43d07a38e7139db397f8003b4359d9eff82ca4ad6aab88dbabf2f8652f1e": {
     primaryPublicKeyRaw:
@@ -258,5 +277,6 @@ export const cardPubKeys = {
     tertiaryPublicKeyHash: null,
     address: "0xe145d8ddC646F62FDA9E3070991A206c6EeDddE2",
     edition_number: 20,
+    image: "dolphin.png",
   },
 };

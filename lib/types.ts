@@ -1,7 +1,7 @@
 import { HaLoNoncePCD, serialize, deserialize } from "@pcd/halo-nonce-pcd";
 
 export interface Sigmoji {
-  emoji: string;
+  emojiImg: string;
   PCD: HaLoNoncePCD;
   ZKP: string;
 }
@@ -10,7 +10,7 @@ export async function serializeSigmoji(sigmoji: Sigmoji): Promise<string> {
   const serializedPCD = await serialize(sigmoji.PCD);
 
   return JSON.stringify({
-    emoji: sigmoji.emoji,
+    emojiImg: sigmoji.emojiImg,
     stringPCD: serializedPCD.pcd,
     ZKP: sigmoji.ZKP,
   });
@@ -21,7 +21,7 @@ export async function deserializeSigmoji(
 ): Promise<Sigmoji> {
   const data = JSON.parse(serializedSigmoji);
   return {
-    emoji: data.emoji,
+    emojiImg: data.emojiImg,
     PCD: await deserialize(data.stringPCD),
     ZKP: data.ZKP,
   };
