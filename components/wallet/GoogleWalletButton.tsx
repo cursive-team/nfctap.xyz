@@ -115,7 +115,6 @@ export const GoogleWalletButton = () => {
     const generateSaveUrl = async () => {
       const private_key = await jose.importPKCS8(private_key_str, "RS256");
 
-      console.log("sk", private_key);
       console.log("claims", claims);
 
       const token = await new jose.SignJWT(claims)
@@ -137,14 +136,10 @@ export const GoogleWalletButton = () => {
         <Image
           src="/buttons/AddToGoogleWallet.svg"
           alt="Add To Google Wallet"
-          width={0}
-          height={0}
+          width={201}
+          height={42}
           sizes="100vw"
-          style={
-            saveUrl
-              ? { width: "auto", height: "42px" }
-              : { width: "auto", height: "42px", filter: "grayscale(100%)" }
-          } // optional
+          style={saveUrl ? {} : { filter: "grayscale(100%)" }}
         />
       </a>
     </div>

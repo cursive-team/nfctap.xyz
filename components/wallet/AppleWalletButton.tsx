@@ -11,10 +11,9 @@ export const AppleWalletButton = () => {
         <Image
           src="/buttons/AddToAppleWallet.svg"
           alt="Add to Apple Wallet"
-          width={0}
-          height={0}
+          width={201}
+          height={42}
           sizes="100vw"
-          style={{ width: "auto", height: "42px" }} // optional
         />
       </a>
     </div>
