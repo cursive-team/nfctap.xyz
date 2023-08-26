@@ -115,10 +115,15 @@ export const GoogleWalletButton = () => {
     const generateSaveUrl = async () => {
       const private_key = await jose.importPKCS8(private_key_str, "RS256");
 
+      console.log("sk", private_key);
+      console.log("claims", claims);
+
       const token = await new jose.SignJWT(claims)
         .setProtectedHeader({ alg: "RS256", typ: "JWT" })
         .setIssuedAt() // Add issued at time (iat)
         .sign(private_key);
+
+      console.log("token", token);
 
       setSaveUrl(`https://pay.google.com/gp/v/save/${token}`);
     };
