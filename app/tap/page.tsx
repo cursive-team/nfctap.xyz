@@ -10,6 +10,8 @@ import RetrieveHelpScreen from "@/components/screens/RetrieveHelpScreen";
 import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import { useRouter, useParams } from "next/navigation";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { SecondaryHeader } from "@/components/shared/Headers";
 
 export default function TapPage() {
   const router = useRouter();
@@ -41,10 +43,15 @@ export default function TapPage() {
     checkStorage();
   }, []);
 
-  if (args === null) {
-    return null;
-  } else if (storageEmpty === null) {
-    return null;
+  if (args === null || storageEmpty === null) {
+    return (
+      <>
+        <SecondaryHeader />
+        <div className="flex justify-center items-center">
+          <LoadingSpinner />
+        </div>
+      </>
+    );
   } else if (storageEmpty && userResponse === FirstTimeUserResponse.NONE) {
     return <FirstTimeUserScreen setUserResponse={setUserResponse} />;
   } else if (

@@ -1,9 +1,14 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Courier_Prime } from "next/font/google";
 import StyledComponentsRegistry from "@/lib/registry";
 
-const inter = Inter({ subsets: ["latin"] });
+const courier_prime = Courier_Prime({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-courier-prime",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "nfctap",
@@ -17,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${courier_prime.variable}`}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
     </html>

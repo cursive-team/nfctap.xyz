@@ -26,13 +26,14 @@ import { cardPubKeys } from "@/lib/cardPubKeys";
 import { Sigmoji } from "@/lib/types";
 import { loadSigmojis, saveSigmoji } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
+import { SecondaryHeader } from "../shared/Headers";
+import { LoadingSpinner } from "../shared/LoadingSpinner";
 
 export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const router = useRouter();
 
   const [pcd, setPCD] = useState<HaLoNoncePCD | undefined>(undefined);
   const [imageLink, setImageLink] = useState<string | undefined>(undefined);
-  const [invalidPCD, setInvalidPCD] = useState(false);
   const [alreadyCollected, setAlreadyCollected] = useState(false);
 
   useEffect(() => {
@@ -41,13 +42,15 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
       try {
         producedPCD = await HaLoNoncePCDPackage.prove(args);
       } catch (e) {
-        setInvalidPCD(true);
-      }
-      if (producedPCD === undefined) {
+        router.push("/home");
         return;
       }
-      if (!(await HaLoNoncePCDPackage.verify(producedPCD))) {
-        setInvalidPCD(true);
+      if (
+        producedPCD === undefined ||
+        !(await HaLoNoncePCDPackage.verify(producedPCD))
+      ) {
+        router.push("/home");
+        return;
       }
 
       // make sure we haven't already collected this sigmoji
@@ -81,7 +84,7 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
     };
 
     generatePCD();
-  }, [args]);
+  }, [args, router]);
 
   return (
     <ModalBackground>
@@ -151,7 +154,12 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                   </SecondaryLargeButton>{" "}
                 </>
               ) : (
-                <></>
+                <>
+                  <SecondaryHeader />
+                  <div className="flex justify-center items-center">
+                    <LoadingSpinner />
+                  </div>
+                </>
               )}
             </div>
           </div>
