@@ -68,7 +68,7 @@ export async function GET(request: Request) {
   };
 
   await httpClient.request({
-    url: `https://walletobjects.googleapis.com/walletobjects/v1/genericobject/${serial}`,
+    url: `https://walletobjects.googleapis.com/walletobjects/v1/genericObject/${serial}`,
     method: "PATCH",
     data: updatedObject,
   });
