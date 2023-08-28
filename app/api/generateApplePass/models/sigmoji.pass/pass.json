@@ -67,11 +67,6 @@
         "key": "zk",
         "label": "Safely reveal edition using ZK!",
         "value": "Prove you have a valid signature on an edition without giving it away."
-      },
-      {
-        "key": "retrieve-link",
-        "label": "Retrieve your collection",
-        "value": "https://nfctap.xyz/retrieve#?sig1=0xabcd&sig2=0xbcde"
       }
     ]
   }

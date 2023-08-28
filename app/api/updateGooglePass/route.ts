@@ -3,11 +3,15 @@ import { GoogleAuth } from "google-auth-library";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const { number, serial } = Object.fromEntries(searchParams.entries());
+  const { number, serial, collection } = Object.fromEntries(
+    searchParams.entries()
+  );
 
   // Check for required params
-  if (!number || !serial) {
-    console.error("[/api/updateGooglePass] missing 'number' or 'serial' field");
+  if (!number || !serial || !collection) {
+    console.error(
+      "[/api/updateGooglePass] missing 'number' or 'serial' or 'collection' field"
+    );
     return NextResponse.error();
   }
 
@@ -65,6 +69,15 @@ export async function GET(request: Request) {
         body: "2023",
       },
     ],
+    linksModuleData: {
+      uris: [
+        {
+          uri: `http://nfctap.xyz/recover?collection=${collection}`,
+          description: "Retrieve your collection",
+          id: "official_site",
+        },
+      ],
+    },
   };
 
   await httpClient.request({

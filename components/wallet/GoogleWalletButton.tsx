@@ -121,7 +121,7 @@ export const GoogleWalletButton = () => {
           linksModuleData: {
             uris: [
               {
-                uri: "http://nfctap.xyz",
+                uri: `http://nfctap.xyz/recover?collection=${window.localStorage["sigmojis"]}`,
                 description: "Retrieve your collection",
                 id: "official_site",
               },
@@ -171,7 +171,7 @@ export const GoogleWalletButton = () => {
             window.location.href = saveUrl;
           } else if (!firstTime && serial !== undefined && number) {
             fetch(
-              `/api/updateGooglePass?number=${number}&serial=${serial}`
+              `/api/updateGooglePass?number=${number}&serial=${serial}&collection=${window.localStorage["sigmojis"]}}`
             ).then((response) => {
               if (response.status === 200) {
                 setUpdated(true);

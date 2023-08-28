@@ -35,7 +35,7 @@ export const AppleWalletButton = () => {
               type: "apple",
               serialNum: serial,
             });
-            window.location.href = `/api/generateApplePass?number=${number}&serial=${serial}`;
+            window.location.href = `/api/generateApplePass?number=${number}&serial=${serial}&collection=${window.localStorage["sigmojis"]}}`;
           }
         }}
         disabled={!(number && serial)}
