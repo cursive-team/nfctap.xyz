@@ -43,7 +43,7 @@ export default function TapPage() {
     checkStorage();
   }, []);
 
-  if (args === null || storageEmpty === null) {
+  if (args === null) {
     return (
       <>
         <SecondaryHeader />
@@ -52,12 +52,30 @@ export default function TapPage() {
         </div>
       </>
     );
-  } else if (args !== null) {
-    return <CollectedModal args={args} />;
-  } else if (userResponse === FirstTimeUserResponse.RETRIEVE) {
-    return <RetrieveHelpScreen />;
   }
-  return null;
+
+  return <CollectedModal args={args} />;
+
+  // if (args === null || storageEmpty === null) {
+  //   return (
+  //     <>
+  //       <SecondaryHeader />
+  //       <div className="flex justify-center items-center">
+  //         <LoadingSpinner />
+  //       </div>
+  //     </>
+  //   );
+  // } else if (storageEmpty && userResponse === FirstTimeUserResponse.NONE) {
+  //   return <FirstTimeUserScreen setUserResponse={setUserResponse} />;
+  // } else if (
+  //   args !== null &&
+  //   (!storageEmpty || userResponse === FirstTimeUserResponse.YES)
+  // ) {
+  //   return <CollectedModal args={args} />;
+  // } else if (userResponse === FirstTimeUserResponse.RETRIEVE) {
+  //   return <RetrieveHelpScreen />;
+  // }
+  // return null;
 }
 
 function getHaLoArgs(params: URLSearchParams): HaLoNoncePCDArgs | null {
