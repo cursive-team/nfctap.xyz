@@ -56,7 +56,10 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
       // make sure we haven't already collected this sigmoji
       const sigmojis = await loadSigmojis();
       for (const sigmoji of sigmojis) {
-        if (sigmoji.PCD.claim.pubkeyHex === producedPCD.claim.pubkeyHex) {
+        if (
+          sigmoji.PCD.claim.pubkeyHex.toLowerCase() ===
+          producedPCD.claim.pubkeyHex.toLowerCase()
+        ) {
           setImageLink(sigmoji.emojiImg);
           setAlreadyCollected(true);
           return;
@@ -66,7 +69,7 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
       // pull correct image and save sigmoji to localStorage
       for (const entry of Object.entries(cardPubKeys)) {
         if (
-          entry[1].secondaryPublicKeyRaw ===
+          entry[1].secondaryPublicKeyRaw.toLowerCase() ===
           producedPCD.claim.pubkeyHex.toLowerCase()
         ) {
           const newSigmoji: Sigmoji = {
@@ -154,12 +157,9 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                   </SecondaryLargeButton>{" "}
                 </>
               ) : (
-                <>
-                  <SecondaryHeader />
-                  <div className="flex justify-center items-center">
-                    <LoadingSpinner />
-                  </div>
-                </>
+                <div className="flex justify-center items-center">
+                  <LoadingSpinner />
+                </div>
               )}
             </div>
           </div>
