@@ -52,12 +52,7 @@ export default function TapPage() {
         </div>
       </>
     );
-  } else if (storageEmpty && userResponse === FirstTimeUserResponse.NONE) {
-    return <FirstTimeUserScreen setUserResponse={setUserResponse} />;
-  } else if (
-    args !== null &&
-    (!storageEmpty || userResponse === FirstTimeUserResponse.YES)
-  ) {
+  } else if (args !== null) {
     return <CollectedModal args={args} />;
   } else if (userResponse === FirstTimeUserResponse.RETRIEVE) {
     return <RetrieveHelpScreen />;
