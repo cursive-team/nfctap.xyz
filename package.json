@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@arx-research/libhalo": "^1.2.17",
     "@pcd/halo-nonce-pcd": "^0.2.1",
     "@pcd/passport-ui": "^0.6.1",
     "@pcd/pcd-types": "^0.6.3",
@@ -20,6 +21,7 @@
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
     "jose": "^4.14.4",
+    "js-sha256": "^0.9.0",
     "next": "13.4.12",
     "passkit-generator": "^3.1.10",
     "postcss": "8.4.27",
@@ -36,6 +38,7 @@
     "@types/pako": "^2.0.0",
     "@types/qr-image": "^3.2.6",
     "@types/uuid": "^9.0.2",
+    "elliptic": "^6.5.4",
     "encoding": "^0.1.13"
   }
 }
