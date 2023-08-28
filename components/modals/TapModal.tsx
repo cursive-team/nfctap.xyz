@@ -15,6 +15,7 @@ import { sha256 } from "js-sha256";
 import { HaLoNoncePCDArgs, HaLoNoncePCDPackage } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import CollectedModal from "./CollectedModal";
+import { cardPubKeys } from "@/lib/cardPubKeys";
 
 export default function TapModal() {
   const [statusText, setStatusText] = useState("Waiting for NFC setup...");
@@ -66,12 +67,36 @@ export default function TapModal() {
           .update(rndBuf)
           .hex();
 
-        const sigmojiPubkey = recoverPublicKey(rndHashed, res.signature);
+        const sigmojiPubkeys = recoverPublicKey(rndHashed, res.signature);
+        let realPubkey = undefined;
+
+        // there are two returned pubkeys because of ECDSA bullshit. need to
+        // pick the one that is actually a pubkey of the cards
+        for (const entry of Object.entries(cardPubKeys)) {
+          if (
+            entry[1].secondaryPublicKeyRaw.toLowerCase() ===
+            sigmojiPubkeys[0].toLowerCase()
+          ) {
+            realPubkey = sigmojiPubkeys[0];
+          } else if (
+            entry[1].secondaryPublicKeyRaw.toLowerCase() ===
+            sigmojiPubkeys[1].toLowerCase()
+          ) {
+            realPubkey = sigmojiPubkeys[1];
+          }
+        }
+
+        if (realPubkey === undefined) {
+          setStatusText(
+            "Couldn't find the card's public key in the list of known cards. Please contact organizers."
+          );
+          return;
+        }
 
         setArgs({
           pk2: {
             argumentType: ArgumentTypeName.String,
-            value: sigmojiPubkey[1],
+            value: realPubkey,
           },
           rnd: {
             argumentType: ArgumentTypeName.String,

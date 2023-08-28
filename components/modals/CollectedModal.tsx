@@ -26,7 +26,6 @@ import { cardPubKeys } from "@/lib/cardPubKeys";
 import { Sigmoji } from "@/lib/types";
 import { loadSigmojis, saveSigmoji } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
-import { SecondaryHeader } from "../shared/Headers";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 
 export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
