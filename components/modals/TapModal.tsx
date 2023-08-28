@@ -109,9 +109,8 @@ export default function TapModal() {
         });
       } catch (e) {
         // the command has failed, display error to the user
-        setStatusText(
-          "Scanning failed, reload to retry. Details: " + String(e)
-        );
+        // "Scanning failed, reload to retry. Details: " + String(e)
+        setStatusText("Scanning failed, reload page to retry.");
       }
     }
 
@@ -128,13 +127,13 @@ export default function TapModal() {
           <OuterContainer>
             <InnerContainer>
               <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-                Tap the NFC card on your phone.
+                Place the NFC card on your phone.
               </PrimaryFontH3>
               <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
                 {statusText}
               </PrimaryFontBase>
               <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-                If nothing happens, check out the{" "}
+                {"If you still can't tap, check out the "}
                 <a
                   href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
                   target="_blank"

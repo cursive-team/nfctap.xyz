@@ -62,9 +62,9 @@ export default function HomeScreen() {
           </LeaderboardContainer>
         )}
       </Chevron>
-      <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
+      {/* <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
         <></>
-      </Chevron>
+      </Chevron> */}
       <div style={{ marginTop: "auto" }}>
         <Footer />
       </div>
