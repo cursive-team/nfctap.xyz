@@ -13,17 +13,24 @@ export async function isStorageEmpty(): Promise<boolean> {
   return sigmojis.length === 0;
 }
 
-export async function loadSigmojis(): Promise<Sigmoji[]> {
-  const sigmojis = window.localStorage["sigmojis"];
-  if (sigmojis != null && sigmojis !== "") {
-    const serializedSigmojis = JSON.parse(sigmojis);
+export async function parseSerializedSigmoji(
+  serializedStr: string
+): Promise<Sigmoji[]> {
+  if (serializedStr != null && serializedStr !== "") {
+    const serializedSigmojis = JSON.parse(serializedStr);
     return await Promise.all(
       serializedSigmojis.map((serializedSigmoji: string) =>
         deserializeSigmoji(serializedSigmoji)
       )
     );
   }
+
   return [];
+}
+
+export async function loadSigmojis(): Promise<Sigmoji[]> {
+  const sigmojis = window.localStorage["sigmojis"];
+  return await parseSerializedSigmoji(sigmojis);
 }
 
 export async function saveSigmoji(sigmoji: Sigmoji): Promise<void> {

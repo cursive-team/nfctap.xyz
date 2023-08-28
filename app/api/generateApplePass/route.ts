@@ -14,16 +14,18 @@ assert(PASSKIT_GENERATOR_PASSPHRASE, "Missing at least one passkit env var");
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const { owner, signature } = Object.fromEntries(searchParams.entries());
+  const { number, serial } = Object.fromEntries(searchParams.entries());
+
   // Check for required params
-  if (!owner || !signature) {
+  if (!number || !serial) {
     console.error(
-      "[/api/generateApplePass] missing 'owner' or 'signature' fields",
-      {
-        owner,
-        signature,
-      }
+      "[/api/generateApplePass] missing 'number' or 'serial' field"
     );
+    return NextResponse.error();
+  }
+
+  if (parseInt(number) > 20) {
+    console.error("[/api/generateApplePass] number > 20");
     return NextResponse.error();
   }
 
@@ -50,9 +52,15 @@ export async function GET(request: Request) {
       },
     },
     {
-      serialNumber: signature,
+      serialNumber: serial,
     }
   );
+
+  pkPass.headerFields.push({
+    key: "collected",
+    label: "Collected",
+    value: number + "/20",
+  });
 
   return new NextResponse(pkPass.getAsBuffer(), {
     status: 200,

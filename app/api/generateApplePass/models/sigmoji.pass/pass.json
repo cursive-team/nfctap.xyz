@@ -26,13 +26,7 @@
   "backgroundColor": "rgb(26,26,26)",
   "labelColor": "rgb(119,119,119)",
   "eventTicket": {
-    "headerFields": [
-      {
-        "key": "collected",
-        "label": "Collected",
-        "value": "1/20"
-      }
-    ],
+    "headerFields": [],
     "primaryFields": [],
     "secondaryFields": [
       {
