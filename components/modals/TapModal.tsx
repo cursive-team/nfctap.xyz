@@ -5,9 +5,10 @@ import {
   ModalContainer,
   ModalDiv,
   ModalHeader,
+  OuterContainer,
+  InnerContainer,
 } from "../shared/Modal";
 import { PrimaryFontBase, PrimaryFontH3 } from "../core";
-import styled from "styled-components";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
 import { useEffect, useState } from "react";
@@ -154,18 +155,3 @@ export default function TapModal() {
     </ModalBackground>
   );
 }
-
-const OuterContainer = styled.div`
-  display: flex;
-  padding: 0px 8px;
-`;
-
-const InnerContainer = styled.div`
-  display: flex;
-  max-width: 264px;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-  gap: 24px;
-  flex: 1 0 0;
-`;

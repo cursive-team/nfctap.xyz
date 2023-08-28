@@ -3,6 +3,15 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    return config;
+  },
   compiler: {
     styledComponents: true,
   },
