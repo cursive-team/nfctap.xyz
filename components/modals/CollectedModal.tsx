@@ -123,7 +123,13 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                       Alternatively you can copy/paste the data directly to the
                       encrypted messaging or password manager of your choice.
                     </PrimaryFontSmall>
-                    <SecondaryLargeButton>
+                    <SecondaryLargeButton
+                      onClick={async () => {
+                        const sigmojis = await loadSigmojis();
+                        const serializedSigmojis = JSON.stringify(sigmojis);
+                        navigator.clipboard.writeText(serializedSigmojis);
+                      }}
+                    >
                       <PrimaryFontBase1
                         style={{ color: "var(--woodsmoke-100)" }}
                       >
