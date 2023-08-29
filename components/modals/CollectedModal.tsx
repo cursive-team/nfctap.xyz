@@ -24,7 +24,7 @@ import {
 import { useEffect, useState } from "react";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { Sigmoji } from "@/lib/types";
-import { loadSigmojis, saveSigmoji } from "@/lib/localStorage";
+import { loadBackupState, loadSigmojis, saveSigmoji } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 
@@ -34,9 +34,20 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const [pcd, setPCD] = useState<HaLoNoncePCD | undefined>(undefined);
   const [imageLink, setImageLink] = useState<string | undefined>(undefined);
   const [alreadyCollected, setAlreadyCollected] = useState(false);
+  const [hasWalletBackup, setHasWalletBackup] = useState(false);
 
   useEffect(() => {
     const generatePCD = async () => {
+      // pull backup state
+      const backup = await loadBackupState();
+      if (
+        backup !== undefined &&
+        (backup.type === "apple" || backup.type === "google")
+      ) {
+        setHasWalletBackup(true);
+      }
+
+      // make the main signature PCD
       let producedPCD;
       try {
         producedPCD = await HaLoNoncePCDPackage.prove(args);
@@ -107,36 +118,59 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                     alt="emoji"
                   />
                   <div className="flex-col justify-start items-center gap-6 inline-flex">
-                    <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
-                      Backup your collection!
-                    </PrimaryFontH4>
+                    {hasWalletBackup ? (
+                      <>
+                        <PrimaryFontH4
+                          style={{ color: "var(--woodsmoke-100)" }}
+                        >
+                          {"Update your backup!"}
+                        </PrimaryFontH4>
+                        <PrimaryFontSmall
+                          style={{
+                            textAlign: "center",
+                            color: "#888",
+                          }}
+                        >
+                          Your previous wallet backup will be replaced.
+                        </PrimaryFontSmall>
+                      </>
+                    ) : (
+                      <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
+                        {"Backup your collection!"}
+                      </PrimaryFontH4>
+                    )}
                     <AppleWalletButton />
                     <GoogleWalletButton />
                   </div>
-                  <div className="flex-col justify-start items-center mt-4 gap-6 inline-flex">
-                    <PrimaryFontSmall
-                      style={{
-                        textAlign: "center",
-                        color: "#888",
-                      }}
-                    >
-                      Alternatively you can copy/paste the data directly to the
-                      encrypted messaging or password manager of your choice.
-                    </PrimaryFontSmall>
-                    <SecondaryLargeButton
-                      onClick={async () => {
-                        const sigmojis = await loadSigmojis();
-                        const serializedSigmojis = JSON.stringify(sigmojis);
-                        navigator.clipboard.writeText(serializedSigmojis);
-                      }}
-                    >
-                      <PrimaryFontBase1
-                        style={{ color: "var(--woodsmoke-100)" }}
+                  {hasWalletBackup ? (
+                    <></>
+                  ) : (
+                    <div className="flex-col justify-start items-center mt-4 gap-6 inline-flex">
+                      <PrimaryFontSmall
+                        style={{
+                          textAlign: "center",
+                          color: "#888",
+                        }}
                       >
-                        Copy data store
-                      </PrimaryFontBase1>
-                    </SecondaryLargeButton>
-                  </div>
+                        Alternatively you can copy/paste the data directly to
+                        the encrypted messaging or password manager of your
+                        choice.
+                      </PrimaryFontSmall>
+                      <SecondaryLargeButton
+                        onClick={async () => {
+                          const sigmojis = await loadSigmojis();
+                          const serializedSigmojis = JSON.stringify(sigmojis);
+                          navigator.clipboard.writeText(serializedSigmojis);
+                        }}
+                      >
+                        <PrimaryFontBase1
+                          style={{ color: "var(--woodsmoke-100)" }}
+                        >
+                          Copy data store
+                        </PrimaryFontBase1>
+                      </SecondaryLargeButton>
+                    </div>
+                  )}
                 </>
               ) : alreadyCollected ? (
                 <>

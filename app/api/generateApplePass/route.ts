@@ -14,12 +14,14 @@ assert(PASSKIT_GENERATOR_PASSPHRASE, "Missing at least one passkit env var");
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const { number, serial } = Object.fromEntries(searchParams.entries());
+  const { number, serial, collection } = Object.fromEntries(
+    searchParams.entries()
+  );
 
   // Check for required params
-  if (!number || !serial) {
+  if (!number || !serial || !collection) {
     console.error(
-      "[/api/generateApplePass] missing 'number' or 'serial' field"
+      "[/api/generateApplePass] missing 'number', 'serial', or 'collection' field"
     );
     return NextResponse.error();
   }
@@ -60,6 +62,12 @@ export async function GET(request: Request) {
     key: "collected",
     label: "Collected",
     value: number + "/20",
+  });
+
+  pkPass.backFields.push({
+    key: "retrieve-link",
+    label: "Retrieve your collection",
+    value: `http://nfctap.xyz/recover?collection=${collection}`,
   });
 
   return new NextResponse(pkPass.getAsBuffer(), {
