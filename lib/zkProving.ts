@@ -8,52 +8,70 @@ import {
 } from "@personaelabs/spartan-ecdsa";
 import { loadSigmojis } from "@/lib/localStorage";
 import { cardPubKeys } from "./cardPubKeys";
-import { importPublic } from "@ethereumjs/util";
+import { importPublic, ecrecover } from "@ethereumjs/util";
 import { sha256 } from "js-sha256";
 
 function parseDERSignature(signature: string) {
-  // Get the length of the signature
-  var len = signature.length;
-  console.log(signature);
-  console.log(len);
+  const buf = Buffer.from(signature, "hex");
 
-  // Check if the signature is the correct length
-  if (len !== 65) {
-    throw new Error("The signature is not the correct length");
+  if (buf[0] !== 0x30) {
+    throw new Error("Invalid signature format");
   }
 
-  // Get the first byte of the signature
-  var firstByte = signature.charCodeAt(0);
+  let offset = 2;
 
-  // Check if the first byte is the correct value
-  if (firstByte !== 0x30) {
-    throw new Error("The signature is not a DER-encoded ECDSA signature");
+  if (buf[offset] !== 0x02) {
+    throw new Error("Invalid signature format");
   }
+  offset += 1;
 
-  // Get the second byte of the signature
-  var secondByte = signature.charCodeAt(1);
+  const rLength = buf[offset];
+  offset += 1;
 
-  // Get the length of the r value
-  var rLength = secondByte & 0x7f;
+  const r = buf.subarray(offset, offset + rLength).toString("hex");
+  offset += rLength;
 
-  // Get the r value
-  var r = signature.slice(2, 2 + rLength);
+  if (buf[offset] !== 0x02) {
+    throw new Error("Invalid signature format");
+  }
+  offset += 1;
 
-  // Get the third byte of the signature
-  var thirdByte = signature.charCodeAt(2 + rLength);
+  const sLength = buf[offset];
+  offset += 1;
 
-  // Get the length of the s value
-  var sLength = thirdByte & 0x7f;
+  const s = buf.subarray(offset, offset + sLength).toString("hex");
 
-  // Get the s value
-  var s = signature.slice(2 + rLength + 1, 2 + rLength + 1 + sLength);
-
-  // Return the v, r, and s values
   return {
-    v: firstByte & 0x0f,
     r: r,
     s: s,
   };
+}
+
+function findV(r: string, s: string, messageHash: Buffer, publicKey: string) {
+  console.log(publicKey);
+
+  for (let recid = 0; recid <= 1; recid++) {
+    // Ethereum's 'v' is recid + 27
+    const v = recid + 27;
+
+    const recoveredPublicKey = ecrecover(
+      messageHash,
+      BigInt(v),
+      Buffer.from(r, "hex"),
+      Buffer.from(s, "hex")
+    );
+
+    const recoveredPublicKeyHex =
+      Buffer.from(recoveredPublicKey).toString("hex");
+
+    console.log(recoveredPublicKeyHex, publicKey);
+
+    if (recoveredPublicKeyHex === publicKey) {
+      return v;
+    }
+  }
+
+  throw new Error("Failed to find correct v value");
 }
 
 export const makeProofs = async () => {
@@ -82,8 +100,7 @@ export const makeProofs = async () => {
   for (const sigmoji of sigmojis) {
     if (sigmoji.ZKP === "") {
       // set up signature
-      const { v, r, s } = parseDERSignature(sigmoji.PCD.proof.cleanedSignature);
-      const sig = `0x${r}${s}${v.toString(16)}`;
+      const { r, s } = parseDERSignature(sigmoji.PCD.proof.cleanedSignature);
 
       // setup pubkey + merkle proof
       const secondaryPublicKeyRawUint8Array = new Uint8Array(
@@ -96,8 +113,6 @@ export const makeProofs = async () => {
       const pubKeyHash = poseidon.hashPubKey(pubKeyBuffer);
       const index = pubKeyTree.indexOf(pubKeyHash);
       const merkleProof = pubKeyTree.createProof(index);
-
-      console.log("merkle proof", merkleProof);
 
       // set up msgHash
       const rndBuf = Buffer.from(sigmoji.PCD.proof.signedDigest, "hex");
@@ -113,6 +128,9 @@ export const makeProofs = async () => {
           .update(rndBuf)
           .hex()
       );
+
+      const v = findV(r, s, msgHash, sigmoji.PCD.claim.pubkeyHex);
+      const sig = `0x${r}${s}${v.toString(16)}`;
 
       console.log("Proving...");
       console.time("Full proving time");
