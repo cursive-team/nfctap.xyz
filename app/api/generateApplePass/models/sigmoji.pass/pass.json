@@ -3,13 +3,6 @@
   "passTypeIdentifier": "pass.com.example.jubmoji",
   "teamIdentifier": "BV3BXTVJUF",
   "serialNumber": "0000001",
-  "locations": [
-    {
-      "longitude": -122.1646712539703,
-      "latitude": 37.43099762825177,
-      "relevantText": "SBC Conference"
-    }
-  ],
   "maxDistance": 1000,
   "organizationName": "nfctap.xyz",
   "description": "Sigmojis I",
