@@ -1,15 +1,32 @@
 import {
   MembershipProver,
-  MembershipVerifier,
   Tree,
   Poseidon,
   defaultPubkeyMembershipPConfig,
-  defaultPubkeyMembershipVConfig,
 } from "@personaelabs/spartan-ecdsa";
-import { loadSigmojis } from "@/lib/localStorage";
+import { loadSigmojis, updateSigmoji } from "@/lib/localStorage";
 import { cardPubKeys } from "./cardPubKeys";
 import { importPublic, ecrecover } from "@ethereumjs/util";
 import { sha256 } from "js-sha256";
+
+export interface LoadedWasm {
+  poseidon: Poseidon;
+  prover: MembershipProver;
+}
+
+export async function initWasm(): Promise<LoadedWasm> {
+  const poseidon = new Poseidon();
+  await poseidon.initWasm();
+
+  const prover = new MembershipProver({
+    ...defaultPubkeyMembershipPConfig,
+    enableProfiler: true,
+  });
+
+  await prover.initWasm();
+
+  return { poseidon, prover };
+}
 
 function parseDERSignature(signature: string) {
   const buf = Buffer.from(signature, "hex");
@@ -47,9 +64,12 @@ function parseDERSignature(signature: string) {
   };
 }
 
-function findV(r: string, s: string, messageHash: Buffer, publicKey: string) {
-  console.log(publicKey);
-
+function findV(
+  r: string,
+  s: string,
+  messageHash: Uint8Array,
+  publicKey: string
+) {
   for (let recid = 0; recid <= 1; recid++) {
     // Ethereum's 'v' is recid + 27
     const v = recid + 27;
@@ -64,9 +84,9 @@ function findV(r: string, s: string, messageHash: Buffer, publicKey: string) {
     const recoveredPublicKeyHex =
       Buffer.from(recoveredPublicKey).toString("hex");
 
-    console.log(recoveredPublicKeyHex, publicKey);
-
-    if (recoveredPublicKeyHex === publicKey) {
+    if (
+      recoveredPublicKeyHex.toLowerCase() === publicKey.slice(2).toLowerCase()
+    ) {
       return v;
     }
   }
@@ -74,11 +94,9 @@ function findV(r: string, s: string, messageHash: Buffer, publicKey: string) {
   throw new Error("Failed to find correct v value");
 }
 
-export const makeProofs = async () => {
-  const poseidon = new Poseidon();
-  await poseidon.initWasm();
+export const makeProofs = async (loadedWasm: LoadedWasm) => {
   const treeDepth = 20;
-  const pubKeyTree = new Tree(treeDepth, poseidon);
+  const pubKeyTree = new Tree(treeDepth, loadedWasm.poseidon);
 
   for (const entry of Object.entries(cardPubKeys)) {
     const secondaryPublicKeyRawUint8Array = new Uint8Array(
@@ -88,7 +106,7 @@ export const makeProofs = async () => {
     );
     const pubKey = importPublic(secondaryPublicKeyRawUint8Array);
     const pubKeyBuffer = Buffer.from(pubKey);
-    pubKeyTree.insert(poseidon.hashPubKey(pubKeyBuffer));
+    pubKeyTree.insert(loadedWasm.poseidon.hashPubKey(pubKeyBuffer));
   }
 
   console.log(pubKeyTree);
@@ -100,7 +118,15 @@ export const makeProofs = async () => {
   for (const sigmoji of sigmojis) {
     if (sigmoji.ZKP === "") {
       // set up signature
-      const { r, s } = parseDERSignature(sigmoji.PCD.proof.cleanedSignature);
+      let { r, s } = parseDERSignature(sigmoji.PCD.proof.cleanedSignature);
+
+      // remove 00 at start of r, s if present
+      if (r.length == 66) {
+        r = r.slice(2);
+      }
+      if (s.length == 66) {
+        s = s.slice(2);
+      }
 
       // setup pubkey + merkle proof
       const secondaryPublicKeyRawUint8Array = new Uint8Array(
@@ -110,41 +136,44 @@ export const makeProofs = async () => {
       );
       const pubKey = importPublic(secondaryPublicKeyRawUint8Array);
       const pubKeyBuffer = Buffer.from(pubKey);
-      const pubKeyHash = poseidon.hashPubKey(pubKeyBuffer);
+      const pubKeyHash = loadedWasm.poseidon.hashPubKey(pubKeyBuffer);
       const index = pubKeyTree.indexOf(pubKeyHash);
       const merkleProof = pubKeyTree.createProof(index);
 
-      // set up msgHash
+      // set up msgHashArray
       const rndBuf = Buffer.from(sigmoji.PCD.proof.signedDigest, "hex");
       const hash = sha256.create();
-      const msgHash = Buffer.from(
-        hash
-          .update(
-            Buffer.concat([
-              Buffer.from([0x19]),
-              Buffer.from("Attest counter pk2:\n", "utf8"),
-            ])
-          )
-          .update(rndBuf)
-          .hex()
+      const msgHash = hash
+        .update(
+          Buffer.concat([
+            Buffer.from([0x19]),
+            Buffer.from("Attest counter pk2:\n", "utf8"),
+          ])
+        )
+        .update(rndBuf)
+        .hex();
+      const msgHashMatch = msgHash.match(/.{1,2}/g);
+      if (msgHashMatch === null) {
+        continue;
+      }
+      const msgHashArray = new Uint8Array(
+        msgHashMatch.map((byte) => parseInt(byte, 16))
       );
 
-      const v = findV(r, s, msgHash, sigmoji.PCD.claim.pubkeyHex);
+      const v = findV(
+        r,
+        s,
+        Buffer.from(msgHashArray),
+        sigmoji.PCD.claim.pubkeyHex
+      );
       const sig = `0x${r}${s}${v.toString(16)}`;
 
       console.log("Proving...");
       console.time("Full proving time");
 
-      const prover = new MembershipProver({
-        ...defaultPubkeyMembershipPConfig,
-        enableProfiler: true,
-      });
-
-      await prover.initWasm();
-
-      const { proof, publicInput } = await prover.prove(
+      const { proof, publicInput } = await loadedWasm.prover.prove(
         sig,
-        msgHash,
+        Buffer.from(msgHashArray),
         merkleProof
       );
 
@@ -154,25 +183,6 @@ export const makeProofs = async () => {
         proof.length,
         "bytes"
       );
-
-      console.log("Verifying...");
-      const verifier = new MembershipVerifier({
-        ...defaultPubkeyMembershipVConfig,
-        enableProfiler: true,
-      });
-      await verifier.initWasm();
-
-      console.time("Verification time");
-      const result = await verifier.verify(proof, publicInput.serialize());
-      console.timeEnd("Verification time");
-
-      if (result) {
-        console.log("Successfully verified proof!");
-      } else {
-        console.log("Failed to verify proof :(");
-      }
-
-      break;
     }
   }
 };

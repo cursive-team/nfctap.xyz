@@ -11,21 +11,20 @@ import {
   OuterContainer,
   InnerContainer,
 } from "../shared/Modal";
-import { Poseidon } from "@personaelabs/spartan-ecdsa";
-import { makeProofs } from "@/lib/zkProving";
+import { LoadedWasm, initWasm, makeProofs } from "@/lib/zkProving";
 
 export default function ProvingModal() {
-  // const [poseidon, setPoseidon] = useState<Poseidon | undefined>(undefined);
+  const [wasm, setWasm] = useState<LoadedWasm | null>(null);
 
-  // useEffect(() => {
-  //   async function setupPoseidon() {
-  //     const poseidon = new Poseidon();
-  //     await poseidon.initWasm();
-  //     setPoseidon(poseidon);
-  //   }
+  useEffect(() => {
+    async function setup() {
+      if (!wasm) {
+        setWasm(await initWasm());
+      }
+    }
 
-  //   setupPoseidon();
-  // });
+    setup();
+  });
 
   return (
     <ModalBackground>
@@ -37,8 +36,12 @@ export default function ProvingModal() {
               <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
                 Your score
               </PrimaryFontH3>
-              <PrimaryLargeButton onClick={() => makeProofs()}>
-                <PrimaryFontBase1>{"PROVE IT!"}</PrimaryFontBase1>
+              <PrimaryLargeButton
+                onClick={() => (wasm ? makeProofs(wasm) : {})}
+              >
+                <PrimaryFontBase1>
+                  {wasm ? "PROVE IT!" : "Loading.."}
+                </PrimaryFontBase1>
               </PrimaryLargeButton>
             </InnerContainer>
           </OuterContainer>

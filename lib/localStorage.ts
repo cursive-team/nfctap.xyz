@@ -41,6 +41,17 @@ export async function saveSigmoji(sigmoji: Sigmoji): Promise<void> {
   );
 }
 
+export async function updateSigmoji(sigmoji: Sigmoji): Promise<void> {
+  const sigmojis = await loadSigmojis();
+  const index = sigmojis.findIndex((s) => s.emojiImg === sigmoji.emojiImg);
+  if (index !== -1) {
+    sigmojis[index] = sigmoji;
+  }
+  window.localStorage["sigmojis"] = JSON.stringify(
+    await Promise.all(sigmojis.map(serializeSigmoji))
+  );
+}
+
 export async function loadBackupState(): Promise<BackupState | undefined> {
   const serializedBackup = window.localStorage["backup"];
   if (serializedBackup != null && serializedBackup !== "") {
