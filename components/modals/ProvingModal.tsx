@@ -11,10 +11,10 @@ import {
   OuterContainer,
   InnerContainer,
 } from "../shared/Modal";
-import { LoadedWasm, initWasm, makeProofs } from "@/lib/zkProving";
+import { ProverWasm, initWasm, makeProofs } from "@/lib/zkProving";
 
 export default function ProvingModal() {
-  const [wasm, setWasm] = useState<LoadedWasm | null>(null);
+  const [wasm, setWasm] = useState<ProverWasm | null>(null);
 
   useEffect(() => {
     async function setup() {
