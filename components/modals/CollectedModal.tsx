@@ -2,12 +2,7 @@
 
 import { AppleWalletButton } from "../wallet/AppleWalletButton";
 import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
-import {
-  ModalBackground,
-  ModalContainer,
-  ModalDiv,
-  ModalHeader,
-} from "../shared/Modal";
+import Modal from "./Modal";
 import {
   PrimaryFontBase1,
   PrimaryFontH3,
@@ -100,110 +95,100 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   }, [args, router]);
 
   return (
-    <ModalBackground>
-      <ModalContainer>
-        <ModalDiv>
-          <ModalHeader />
-          <div className="px-2 justify-start items-start inline-flex">
-            <div className="w-[264px] flex-col justify-start items-center gap-8 inline-flex text-center">
-              {pcd && imageLink ? (
-                <>
-                  <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-                    Yay, collected!
-                  </PrimaryFontH3>
-                  <Image
-                    src={`/emoji-photo/${imageLink}`}
-                    width="160"
-                    height="160"
-                    alt="emoji"
-                  />
-                  <div className="flex-col justify-start items-center gap-6 inline-flex">
-                    {hasWalletBackup ? (
-                      <>
-                        <PrimaryFontH4
-                          style={{ color: "var(--woodsmoke-100)" }}
-                        >
-                          {"Update your backup!"}
-                        </PrimaryFontH4>
-                        <PrimaryFontSmall
-                          style={{
-                            textAlign: "center",
-                            color: "#888",
-                          }}
-                        >
-                          Your previous wallet backup will be replaced.
-                        </PrimaryFontSmall>
-                      </>
-                    ) : (
-                      <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
-                        {"Backup your collection!"}
-                      </PrimaryFontH4>
-                    )}
-                    <AppleWalletButton />
-                    <GoogleWalletButton />
-                  </div>
-                  {hasWalletBackup ? (
-                    <></>
-                  ) : (
-                    <div className="flex-col justify-start items-center mt-4 gap-6 inline-flex">
-                      <PrimaryFontSmall
-                        style={{
-                          textAlign: "center",
-                          color: "#888",
-                        }}
-                      >
-                        Alternatively you can copy/paste the data directly to
-                        the encrypted messaging or password manager of your
-                        choice.
-                      </PrimaryFontSmall>
-                      <SecondaryLargeButton
-                        onClick={async () => {
-                          const sigmojis = await loadSigmojis();
-                          const serializedSigmojis = JSON.stringify(sigmojis);
-                          navigator.clipboard.writeText(serializedSigmojis);
-                        }}
-                      >
-                        <PrimaryFontBase1
-                          style={{ color: "var(--woodsmoke-100)" }}
-                        >
-                          Copy data store
-                        </PrimaryFontBase1>
-                      </SecondaryLargeButton>
-                    </div>
-                  )}
-                </>
-              ) : alreadyCollected ? (
-                <>
-                  <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-                    {"You've already collected this sigmoji."}
-                  </PrimaryFontH3>
-                  <Image
-                    src={`/emoji-photo/${imageLink}`}
-                    width="160"
-                    height="160"
-                    alt="emoji"
-                  />
-                  <SecondaryLargeButton onClick={() => router.push("/home")}>
-                    <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-                      Back to app
-                    </PrimaryFontBase1>
-                    <Image
-                      src="/buttons/arrow-right-line.svg"
-                      width="16"
-                      height="16"
-                      alt="arrow"
-                    />
-                  </SecondaryLargeButton>{" "}
-                </>
+    <Modal>
+      <div className="px-2 justify-start items-start inline-flex">
+        <div className="w-[264px] flex-col justify-start items-center gap-8 inline-flex text-center">
+          {pcd && imageLink ? (
+            <>
+              <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+                Yay, collected!
+              </PrimaryFontH3>
+              <Image
+                src={`/emoji-photo/${imageLink}`}
+                width="160"
+                height="160"
+                alt="emoji"
+              />
+              <div className="flex-col justify-start items-center gap-6 inline-flex">
+                {hasWalletBackup ? (
+                  <>
+                    <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
+                      {"Update your backup!"}
+                    </PrimaryFontH4>
+                    <PrimaryFontSmall
+                      style={{
+                        textAlign: "center",
+                        color: "#888",
+                      }}
+                    >
+                      Your previous wallet backup will be replaced.
+                    </PrimaryFontSmall>
+                  </>
+                ) : (
+                  <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
+                    {"Backup your collection!"}
+                  </PrimaryFontH4>
+                )}
+                <AppleWalletButton />
+                <GoogleWalletButton />
+              </div>
+              {hasWalletBackup ? (
+                <></>
               ) : (
-                <div className="flex justify-center items-center">
-                  <LoadingSpinner />
+                <div className="flex-col justify-start items-center mt-4 gap-6 inline-flex">
+                  <PrimaryFontSmall
+                    style={{
+                      textAlign: "center",
+                      color: "#888",
+                    }}
+                  >
+                    Alternatively you can copy/paste the data directly to the
+                    encrypted messaging or password manager of your choice.
+                  </PrimaryFontSmall>
+                  <SecondaryLargeButton
+                    onClick={async () => {
+                      const sigmojis = await loadSigmojis();
+                      const serializedSigmojis = JSON.stringify(sigmojis);
+                      navigator.clipboard.writeText(serializedSigmojis);
+                    }}
+                  >
+                    <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
+                      Copy data store
+                    </PrimaryFontBase1>
+                  </SecondaryLargeButton>
                 </div>
               )}
+            </>
+          ) : alreadyCollected ? (
+            <>
+              <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+                {"You've already collected this sigmoji."}
+              </PrimaryFontH3>
+              <Image
+                src={`/emoji-photo/${imageLink}`}
+                width="160"
+                height="160"
+                alt="emoji"
+              />
+              <SecondaryLargeButton onClick={() => router.push("/home")}>
+                <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
+                  Back to app
+                </PrimaryFontBase1>
+                <Image
+                  src="/buttons/arrow-right-line.svg"
+                  width="16"
+                  height="16"
+                  alt="arrow"
+                />
+              </SecondaryLargeButton>{" "}
+            </>
+          ) : (
+            <div className="flex justify-center items-center">
+              <LoadingSpinner />
             </div>
-          </div>
-        </ModalDiv>
-      </ModalContainer>
-    </ModalBackground>
+          )}
+        </div>
+      </div>
+    </Modal>
   );
 }

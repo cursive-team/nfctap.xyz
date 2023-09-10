@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ModalBackground,
-  ModalContainer,
-  ModalDiv,
-  ModalHeader,
-} from "../shared/Modal";
+import Modal from "./Modal";
 import { PrimaryFontBase, PrimaryFontH3 } from "../core";
 import styled from "styled-components";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
@@ -120,38 +115,33 @@ export default function TapModal() {
   return args ? (
     <CollectedModal args={args} />
   ) : (
-    <ModalBackground>
-      <ModalContainer>
-        <ModalDiv>
-          <ModalHeader />
-          <OuterContainer>
-            <InnerContainer>
-              <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-                Place the NFC card on your phone.
-              </PrimaryFontH3>
-              <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-                {statusText}
-              </PrimaryFontBase>
-              <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-                {"If you still can't tap, check out the "}
-                <a
-                  href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
-                  target="_blank"
-                  style={{ textDecoration: "underline" }}
-                >
-                  troubleshooting guide
-                </a>
-                .
-              </PrimaryFontBase>
-            </InnerContainer>
-          </OuterContainer>
-          <img
-            src="/phone-tap.gif"
-            style={{ marginTop: "40px", marginBottom: "40px" }}
-          />
-        </ModalDiv>
-      </ModalContainer>
-    </ModalBackground>
+    <Modal>
+      <OuterContainer>
+        <InnerContainer>
+          <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+            Place the NFC card on your phone.
+          </PrimaryFontH3>
+          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            {statusText}
+          </PrimaryFontBase>
+          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            {"If you still can't tap, check out the "}
+            <a
+              href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
+              target="_blank"
+              style={{ textDecoration: "underline" }}
+            >
+              troubleshooting guide
+            </a>
+            .
+          </PrimaryFontBase>
+        </InnerContainer>
+      </OuterContainer>
+      <img
+        src="/phone-tap.gif"
+        style={{ marginTop: "40px", marginBottom: "40px" }}
+      />
+    </Modal>
   );
 }
 
