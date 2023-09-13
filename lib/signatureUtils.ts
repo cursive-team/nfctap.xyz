@@ -65,3 +65,9 @@ export function findV(
 
   throw new Error("Failed to find correct v value");
 }
+
+export function hexToUint8Array(publicKeyRaw: string) {
+  return new Uint8Array(
+    (publicKeyRaw.match(/.{1,2}/g) || []).map((byte) => parseInt(byte, 16))
+  );
+}

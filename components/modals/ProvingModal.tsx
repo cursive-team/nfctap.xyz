@@ -14,7 +14,7 @@ import {
 import { ProverWasm, initWasm, makeProofs } from "@/lib/zkProving";
 
 export default function ProvingModal() {
-  const [wasm, setWasm] = useState<ProverWasm | null>(null);
+  const [wasm, setWasm] = useState<ProverWasm>();
 
   useEffect(() => {
     async function setup() {

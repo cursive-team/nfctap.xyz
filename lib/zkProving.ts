@@ -6,10 +6,14 @@ import {
 } from "@personaelabs/spartan-ecdsa";
 import { loadSigmojis, updateSigmoji } from "@/lib/localStorage";
 import { cardPubKeys } from "./cardPubKeys";
-import { importPublic, ecrecover } from "@ethereumjs/util";
+import { importPublic } from "@ethereumjs/util";
 import { sha256 } from "js-sha256";
 import { serializeSigmojiZKP } from "@/lib/types";
-import { parseDERSignature, findV } from "@/lib/signatureUtils";
+import {
+  parseDERSignature,
+  findV,
+  hexToUint8Array,
+} from "@/lib/signatureUtils";
 
 export interface ProverWasm {
   poseidon: Poseidon;
@@ -35,10 +39,8 @@ export const makeProofs = async (proverWasm: ProverWasm) => {
   const pubKeyTree = new Tree(treeDepth, proverWasm.poseidon);
 
   for (const entry of Object.entries(cardPubKeys)) {
-    const secondaryPublicKeyRawUint8Array = new Uint8Array(
-      (entry[1].secondaryPublicKeyRaw.match(/.{1,2}/g) || []).map((byte) =>
-        parseInt(byte, 16)
-      )
+    const secondaryPublicKeyRawUint8Array = hexToUint8Array(
+      entry[1].secondaryPublicKeyRaw
     );
     const pubKey = importPublic(secondaryPublicKeyRawUint8Array);
     const pubKeyBuffer = Buffer.from(pubKey);
@@ -65,10 +67,8 @@ export const makeProofs = async (proverWasm: ProverWasm) => {
       }
 
       // setup pubkey + merkle proof
-      const secondaryPublicKeyRawUint8Array = new Uint8Array(
-        (sigmoji.PCD.claim.pubkeyHex.match(/.{1,2}/g) || []).map((byte) =>
-          parseInt(byte, 16)
-        )
+      const secondaryPublicKeyRawUint8Array = hexToUint8Array(
+        sigmoji.PCD.claim.pubkeyHex
       );
       const pubKey = importPublic(secondaryPublicKeyRawUint8Array);
       const pubKeyBuffer = Buffer.from(pubKey);
@@ -88,13 +88,7 @@ export const makeProofs = async (proverWasm: ProverWasm) => {
         )
         .update(rndBuf)
         .hex();
-      const msgHashMatch = msgHash.match(/.{1,2}/g);
-      if (msgHashMatch === null) {
-        continue;
-      }
-      const msgHashArray = new Uint8Array(
-        msgHashMatch.map((byte) => parseInt(byte, 16))
-      );
+      const msgHashArray = hexToUint8Array(msgHash);
 
       const v = findV(
         r,
