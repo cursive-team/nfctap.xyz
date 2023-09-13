@@ -53,3 +53,18 @@ export const ModalHeaderContainer = styled.div`
   align-items: center;
   align-self: stretch;
 `;
+
+export const OuterContainer = styled.div`
+  display: flex;
+  padding: 0px 8px;
+`;
+
+export const InnerContainer = styled.div`
+  display: flex;
+  max-width: 264px;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  gap: 24px;
+  flex: 1 0 0;
+`;

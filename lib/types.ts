@@ -1,4 +1,5 @@
 import { HaLoNoncePCD, serialize, deserialize } from "@pcd/halo-nonce-pcd";
+import { PublicInput } from "@personaelabs/spartan-ecdsa";
 
 export interface Sigmoji {
   emojiImg: string;
@@ -24,6 +25,27 @@ export async function deserializeSigmoji(
     emojiImg: data.emojiImg,
     PCD: await deserialize(data.stringPCD),
     ZKP: data.ZKP,
+  };
+}
+
+export function serializeSigmojiZKP(
+  proof: Uint8Array,
+  publicInput: PublicInput
+): string {
+  return JSON.stringify({
+    proof: proof,
+    publicInput: publicInput.serialize(),
+  });
+}
+
+export function deserializeSigmojiZKP(serializedZKP: string): {
+  proof: Uint8Array;
+  publicInput: PublicInput;
+} {
+  const data = JSON.parse(serializedZKP);
+  return {
+    proof: data.proof,
+    publicInput: PublicInput.deserialize(data.publicInput),
   };
 }
 
