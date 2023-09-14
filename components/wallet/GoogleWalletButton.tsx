@@ -4,23 +4,32 @@ import * as jose from "jose";
 import { useEffect, useState } from "react";
 import {
   loadBackupState,
+  loadSigmojiWalletBackup,
   loadSigmojis,
   saveBackupState,
 } from "@/lib/localStorage";
+import { Sigmoji } from "@/lib/types";
 import { PrimaryFontH4 } from "../core";
 
 export const GoogleWalletButton = () => {
-  const [serial, setSerial] = useState<string | undefined>(undefined);
-  const [firstTime, setFirstTime] = useState<boolean>(false);
   const [tempSerial, setTempSerial] = useState<string | undefined>(undefined);
   const [saveUrl, setSaveUrl] = useState<string | null>(null);
-  const [number, setNumber] = useState<number | undefined>(undefined);
   const [updated, setUpdated] = useState<boolean>(false);
+
+  const [serial, setSerial] = useState<string | undefined>(undefined);
+  const [firstTime, setFirstTime] = useState<boolean>(false);
+  const [number, setNumber] = useState<number | undefined>(undefined);
+  const [sigmojiWalletBackup, setSigmojiWalletBackup] = useState<
+    string | undefined
+  >(undefined);
 
   // determine if user already has a google backup
   useEffect(() => {
     loadSigmojis().then((sigmojis) => {
       setNumber(sigmojis.length);
+    });
+    loadSigmojiWalletBackup().then((serializedSigmojis) => {
+      setSigmojiWalletBackup(serializedSigmojis);
     });
     loadBackupState().then((backup) => {
       if (backup !== undefined && backup.type === "google") {
@@ -169,9 +178,9 @@ export const GoogleWalletButton = () => {
               serialNum: tempSerial,
             });
             window.location.href = saveUrl;
-          } else if (!firstTime && serial !== undefined && number) {
+          } else if (!firstTime && serial && number && sigmojiWalletBackup) {
             fetch(
-              `/api/updateGooglePass?number=${number}&serial=${serial}&collection=${window.localStorage["sigmojis"]}}`
+              `/api/updateGooglePass?number=${number}&serial=${serial}&collection=${sigmojiWalletBackup}`
             ).then((response) => {
               if (response.status === 200) {
                 setUpdated(true);
