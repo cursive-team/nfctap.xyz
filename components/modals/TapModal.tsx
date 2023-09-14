@@ -7,7 +7,7 @@ import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
 import { useEffect, useState } from "react";
 import { sha256 } from "js-sha256";
-import { HaLoNoncePCDArgs, HaLoNoncePCDPackage } from "@pcd/halo-nonce-pcd";
+import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import CollectedModal from "./CollectedModal";
 import { cardPubKeys } from "@/lib/cardPubKeys";
