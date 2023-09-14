@@ -19,7 +19,12 @@ import {
 import { useEffect, useState } from "react";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { Sigmoji } from "@/lib/types";
-import { loadBackupState, loadSigmojis, saveSigmoji } from "@/lib/localStorage";
+import {
+  loadBackupState,
+  loadSigmojis,
+  saveSigmoji,
+  loadSigmojiWalletBackup,
+} from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 
@@ -147,8 +152,8 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                   </PrimaryFontSmall>
                   <SecondaryLargeButton
                     onClick={async () => {
-                      const sigmojis = await loadSigmojis();
-                      const serializedSigmojis = JSON.stringify(sigmojis);
+                      const serializedSigmojis =
+                        await loadSigmojiWalletBackup();
                       navigator.clipboard.writeText(serializedSigmojis);
                     }}
                   >
