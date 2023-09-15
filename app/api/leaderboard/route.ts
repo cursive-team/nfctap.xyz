@@ -3,12 +3,11 @@ import {
   MembershipVerifier,
   defaultPubkeyMembershipVConfig,
 } from "@personaelabs/spartan-ecdsa";
+import prisma from "@/lib/prisma";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
-  // const { number, serial, collection } = Object.fromEntries(
-  //   searchParams.entries()
-  // );
+  const { proofs } = Object.fromEntries(searchParams.entries());
 
   const verifier = new MembershipVerifier({
     ...defaultPubkeyMembershipVConfig,
