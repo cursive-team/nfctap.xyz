@@ -99,7 +99,7 @@ export const addZKPToSigmoji = async (
   return sigmoji;
 };
 
-export const makeProofs = async (proverWasm: ProverWasm) => {
+export const setupTree = (proverWasm: ProverWasm) => {
   const treeDepth = 20;
   const pubKeyTree = new Tree(treeDepth, proverWasm.poseidon);
 
@@ -111,6 +111,12 @@ export const makeProofs = async (proverWasm: ProverWasm) => {
     const pubKeyBuffer = Buffer.from(pubKey);
     pubKeyTree.insert(proverWasm.poseidon.hashPubKey(pubKeyBuffer));
   }
+
+  return pubKeyTree;
+};
+
+export const makeProofs = async (proverWasm: ProverWasm) => {
+  const pubKeyTree = setupTree(proverWasm);
 
   // load in previous sigmojis
   const sigmojis = await loadSigmojis();
