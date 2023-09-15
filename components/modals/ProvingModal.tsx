@@ -49,7 +49,7 @@ export default function ProvingModal() {
 
           <PrimaryLargeButton onClick={() => (wasm ? makeProofs(wasm) : {})}>
             <PrimaryFontBase1>
-              {wasm ? "PROVE IT!" : "Loading.."}
+              {wasm ? "PROVE IT!" : "Loading..."}
             </PrimaryFontBase1>
           </PrimaryLargeButton>
         </InnerContainer>

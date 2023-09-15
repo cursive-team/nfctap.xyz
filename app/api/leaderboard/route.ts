@@ -7,7 +7,9 @@ import prisma from "@/lib/prisma";
 
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
-  const { proofs } = Object.fromEntries(searchParams.entries());
+  const { pseudonym, score, serializedZKPArray } = Object.fromEntries(
+    searchParams.entries()
+  );
 
   const verifier = new MembershipVerifier({
     ...defaultPubkeyMembershipVConfig,

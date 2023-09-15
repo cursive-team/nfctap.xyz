@@ -55,16 +55,16 @@ export default function HomeScreen() {
                   <CourierPrimeBase>{sigmoji.PCD.claim.nonce}</CourierPrimeBase>
                 </EditionHolder>
                 <PointsHolder>
-                  <CourierPrimeBase>0</CourierPrimeBase>
+                  <CourierPrimeBase>1</CourierPrimeBase>
                 </PointsHolder>
               </LeaderboardRow>
             ))}
           </LeaderboardContainer>
         )}
       </Chevron>
-      {/* <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
+      <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
         <></>
-      </Chevron> */}
+      </Chevron>
       <div style={{ marginTop: "auto" }}>
         <Footer />
       </div>
