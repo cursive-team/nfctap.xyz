@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+/* Helvetica Neue/H1 */
+export const PrimaryFontH1 = styled.h1`
+  font-family: "Helvetica Neue";
+  font-size: 33px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
 /* Helvetica Neue/H2 */
 export const PrimaryFontH2 = styled.h2`
   font-family: "Helvetica Neue";
@@ -63,6 +72,14 @@ export const PrimaryFontSmall1 = styled.p`
   line-height: normal;
 `;
 
+/* Helvetica Neue/XS */
+export const PrimaryFontXS = styled.p`
+  font-family: "Helvetica Neue";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
 /* Courier Prime/H4 */
 export const CourierPrimeH4 = styled.h4`
   font-family: var(--font-courier-prime);
