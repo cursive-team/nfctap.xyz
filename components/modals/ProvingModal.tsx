@@ -23,7 +23,7 @@ export default function ProvingModal() {
   const [wasm, setWasm] = useState<ProverWasm>();
   const [pseudonym, setPseudonym] = useState<string>("");
 
-  const [startedProving, setStartedProving] = useState<boolean>(true); // TODO: [startedProving, setStartedProving
+  const [startedProving, setStartedProving] = useState<boolean>(false); // TODO: [startedProving, setStartedProving
   const [score, setScore] = useState<number>(0);
   const [counter, setCounter] = useState(0);
 
@@ -32,6 +32,9 @@ export default function ProvingModal() {
       if (!wasm) {
         setWasm(await initWasm());
       }
+
+      const sigmojis = await loadSigmojis();
+      setScore(sigmojis.length);
     }
 
     setup();
@@ -44,7 +47,6 @@ export default function ProvingModal() {
 
     const pubKeyTree = setupTree(wasm);
     const sigmojis = await loadSigmojis();
-    setScore(sigmojis.length);
     const sigmojiPromises = sigmojis.map((sigmoji) =>
       addZKPToSigmoji(sigmoji, wasm, pubKeyTree)
     );
@@ -54,8 +56,33 @@ export default function ProvingModal() {
         return result;
       })
     );
+    const wrappedSigmojis = await Promise.all(wrappedSigmojiPromises);
+    const serializedZKPArray = JSON.stringify(
+      wrappedSigmojis.map((s) => s.ZKP)
+    );
 
-    await Promise.all(wrappedSigmojiPromises);
+    fetch("/api/leaderboard", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        pseudonym: pseudonym,
+        score: score,
+        serializedZKPArray: serializedZKPArray,
+      }),
+    }).then(async (response) => {
+      if (response.status === 200) {
+        const data = await response.json();
+        if (data.success) {
+          alert("Proof successfully verified!");
+        } else {
+          alert("Proof failed to verify.");
+        }
+      } else {
+        console.error("Error submitting proof to leaderboard");
+      }
+    });
   };
 
   return (
@@ -67,7 +94,7 @@ export default function ProvingModal() {
               Your score
             </PrimaryFontH3>
             <PrimaryFontH1 style={{ color: "var(--snow-flurry-200)" }}>
-              832
+              {score}
             </PrimaryFontH1>
           </div>
 
