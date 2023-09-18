@@ -18,8 +18,12 @@ import {
   addZKPToSigmoji,
 } from "@/lib/zkProving";
 import { loadSigmojis } from "@/lib/localStorage";
+import { useRouter } from "next/navigation";
+import { serializeSigmoji } from "@/lib/types";
 
 export default function ProvingModal() {
+  const router = useRouter();
+
   const [wasm, setWasm] = useState<ProverWasm>();
   const [pseudonym, setPseudonym] = useState<string>("");
 
@@ -47,14 +51,19 @@ export default function ProvingModal() {
 
     const pubKeyTree = setupTree(wasm);
     const sigmojis = await loadSigmojis();
+
+    // compute proofs in component to track progress for user
     const wrappedSigmojis = sigmojis.map((sigmoji) =>
       addZKPToSigmoji(sigmoji, wasm, pubKeyTree).then((result) => {
         setCounter((prevCounter) => prevCounter + 1);
         return result;
       })
     );
-    const sigmojisWithZKPs = await Promise.all(wrappedSigmojis);
-    const serializedZKPArray = sigmojisWithZKPs.map((s) => s.ZKP);
+    const sigmojisWithZKP = await Promise.all(wrappedSigmojis);
+    window.localStorage["sigmojis"] = JSON.stringify(
+      await Promise.all(sigmojisWithZKP.map(serializeSigmoji))
+    );
+    const serializedZKPArray = sigmojisWithZKP.map((s) => s.ZKP);
 
     fetch("/api/leaderboard", {
       method: "POST",
@@ -67,18 +76,19 @@ export default function ProvingModal() {
         serializedZKPArray: serializedZKPArray,
       }),
     }).then(async (response) => {
+      setProving(false);
+
       if (response.status === 200) {
         const data = await response.json();
         if (data.success) {
           alert("Proof successfully verified!");
+          router.push("/home");
         } else {
           alert("Proof failed to verify.");
         }
       } else {
         console.error("Error submitting proof to leaderboard");
       }
-
-      setProving(false);
     });
   };
 
