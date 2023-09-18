@@ -4,7 +4,7 @@ import {
   Poseidon,
   defaultPubkeyMembershipPConfig,
 } from "@personaelabs/spartan-ecdsa";
-import { loadSigmojis, updateSigmoji } from "@/lib/localStorage";
+import { loadSigmojis } from "@/lib/localStorage";
 import { cardPubKeys } from "./cardPubKeys";
 import { importPublic } from "@ethereumjs/util";
 import { sha256 } from "js-sha256";

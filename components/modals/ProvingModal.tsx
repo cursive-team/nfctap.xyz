@@ -23,7 +23,7 @@ export default function ProvingModal() {
   const [wasm, setWasm] = useState<ProverWasm>();
   const [pseudonym, setPseudonym] = useState<string>("");
 
-  const [startedProving, setStartedProving] = useState<boolean>(false); // TODO: [startedProving, setStartedProving
+  const [proving, setProving] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [counter, setCounter] = useState(0);
 
@@ -43,23 +43,18 @@ export default function ProvingModal() {
   const makeProofsWithCounter = async () => {
     if (!wasm) return;
 
-    setStartedProving(true);
+    setProving(true);
 
     const pubKeyTree = setupTree(wasm);
     const sigmojis = await loadSigmojis();
-    const sigmojiPromises = sigmojis.map((sigmoji) =>
-      addZKPToSigmoji(sigmoji, wasm, pubKeyTree)
-    );
-    const wrappedSigmojiPromises = sigmojiPromises.map((p) =>
-      p.then((result) => {
+    const wrappedSigmojis = sigmojis.map((sigmoji) =>
+      addZKPToSigmoji(sigmoji, wasm, pubKeyTree).then((result) => {
         setCounter((prevCounter) => prevCounter + 1);
         return result;
       })
     );
-    const wrappedSigmojis = await Promise.all(wrappedSigmojiPromises);
-    const serializedZKPArray = JSON.stringify(
-      wrappedSigmojis.map((s) => s.ZKP)
-    );
+    const sigmojisWithZKPs = await Promise.all(wrappedSigmojis);
+    const serializedZKPArray = sigmojisWithZKPs.map((s) => s.ZKP);
 
     fetch("/api/leaderboard", {
       method: "POST",
@@ -82,6 +77,8 @@ export default function ProvingModal() {
       } else {
         console.error("Error submitting proof to leaderboard");
       }
+
+      setProving(false);
     });
   };
 
@@ -109,7 +106,11 @@ export default function ProvingModal() {
             onClick={() => (wasm ? makeProofsWithCounter() : {})}
           >
             <PrimaryFontBase1>
-              {wasm && !startedProving ? "PROVE IT!" : "Loading..."}
+              {!wasm
+                ? "LOADING..."
+                : !proving
+                ? "PROVE IT!"
+                : `PROVING ${((counter / score) * 100.0).toFixed(1)}%`}
             </PrimaryFontBase1>
           </PrimaryLargeButton>
         </InnerContainer>

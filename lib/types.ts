@@ -3,7 +3,15 @@ import { PublicInput } from "@personaelabs/spartan-ecdsa";
 
 export interface Sigmoji {
   emojiImg: string;
+
+  /**
+   * PCD storing the card's signature
+   */
   PCD: HaLoNoncePCD;
+
+  /**
+   * Serialized ZKP.
+   */
   ZKP: string;
 }
 
@@ -32,20 +40,21 @@ export function serializeSigmojiZKP(
   proof: Uint8Array,
   publicInput: PublicInput
 ): string {
+  // need to convert to Array for JSON.stringify
   return JSON.stringify({
-    proof: proof,
-    publicInput: publicInput.serialize(),
+    proof: Array.from(proof),
+    publicInput: Array.from(publicInput.serialize()),
   });
 }
 
 export function deserializeSigmojiZKP(serializedZKP: string): {
   proof: Uint8Array;
-  publicInput: PublicInput;
+  publicInputSer: Uint8Array;
 } {
   const data = JSON.parse(serializedZKP);
   return {
-    proof: data.proof,
-    publicInput: PublicInput.deserialize(data.publicInput),
+    proof: new Uint8Array(data.proof),
+    publicInputSer: new Uint8Array(data.publicInput),
   };
 }
 
