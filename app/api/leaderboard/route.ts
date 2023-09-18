@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import {
-  MembershipVerifier,
-  defaultPubkeyMembershipVConfig,
-} from "@personaelabs/spartan-ecdsa";
+import { MembershipVerifier } from "@personaelabs/spartan-ecdsa";
 import prisma from "@/lib/prisma";
+import path from "path";
 
 export async function GET(request: Request) {
   const leaderboard = await prisma.leaderboard.findMany({
@@ -23,9 +21,14 @@ export async function POST(request: Request) {
   const bodyString = new TextDecoder().decode(bodyArrayBuffer);
   const { pseudonym, score, serializedZKPArray } = JSON.parse(bodyString);
 
-  const zkpArray = (JSON.parse(serializedZKPArray) as string[]).map((zkp) =>
-    JSON.parse(zkp)
-  );
+  // can't use deserializeSigmojiZKP due to some Next.js problem
+  const zkpArray = (serializedZKPArray || []).map((serializedZKP: string) => {
+    const data = JSON.parse(serializedZKP);
+    return {
+      proof: new Uint8Array(data.proof),
+      publicInputSer: new Uint8Array(data.publicInput),
+    };
+  });
 
   const verified = await verifyProofs(zkpArray);
   const scoreInt = parseInt(score);
@@ -44,17 +47,21 @@ export async function POST(request: Request) {
 async function verifyProofs(
   proofs: {
     proof: Uint8Array;
-    publicInput: Uint8Array;
+    publicInputSer: Uint8Array;
   }[]
 ): Promise<boolean> {
   const verifier = new MembershipVerifier({
-    ...defaultPubkeyMembershipVConfig,
+    circuit: path.resolve(
+      process.cwd(),
+      "./app/api/leaderboard/pubkey_membership.circuit"
+    ),
     enableProfiler: true,
   });
   await verifier.initWasm();
 
   for (const proof of proofs) {
-    const verified = await verifier.verify(proof.proof, proof.publicInput);
+    const verified = await verifier.verify(proof.proof, proof.publicInputSer);
+    console.log(verified);
     if (!verified) {
       return false;
     }
