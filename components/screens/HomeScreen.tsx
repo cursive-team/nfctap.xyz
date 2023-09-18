@@ -2,15 +2,24 @@ import { MainHeader } from "@/components/shared/Headers";
 import Chevron from "../shared/Chevron";
 import { useState, useEffect } from "react";
 import Footer from "../shared/Footer";
-import { PrimaryFontBase, CourierPrimeH4, CourierPrimeBase } from "../core";
+import {
+  PrimaryFontBase,
+  CourierPrimeH4,
+  CourierPrimeBase,
+  PrimaryFontBase1,
+} from "../core";
 import { loadSigmojis } from "@/lib/localStorage";
 import { Sigmoji } from "@/lib/types";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 import styled from "styled-components";
 import Image from "next/image";
 import { Leaderboard } from "@prisma/client";
+import { PrimaryLargeButton } from "../shared/Buttons";
+import { useRouter } from "next/navigation";
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[]>();
   const [leaderboard, setLeaderboard] = useState<Leaderboard[]>();
 
@@ -32,9 +41,7 @@ export default function HomeScreen() {
   });
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-    >
+    <div className="flex flex-col min-h-screen">
       <MainHeader />
 
       <Chevron initiallyOpen={true} bottom={false} text={"MY COLLECTION"}>
@@ -104,41 +111,86 @@ export default function HomeScreen() {
       </Chevron>
 
       <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
-        {!leaderboard ? (
+        {!leaderboard || !sigmojiArr ? (
           <LoadingSpinner />
-        ) : leaderboard.length === 0 ? (
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            Reveal your score with ZK!
-          </PrimaryFontBase>
         ) : (
           <LeaderboardContainer>
-            <LeaderboardTitle>
-              <FirstColumnContainer>
-                <CourierPrimeH4>Rank</CourierPrimeH4>
-              </FirstColumnContainer>
-              <SecondColumnContainer>
-                <CourierPrimeH4>Pseudonym</CourierPrimeH4>
-              </SecondColumnContainer>
-              <ThirdColumnContainer>
-                <CourierPrimeH4>Score</CourierPrimeH4>
-              </ThirdColumnContainer>
-            </LeaderboardTitle>
-            {leaderboard.map((row, index) => (
-              <LeaderboardRow
-                key={index}
-                isLast={index === leaderboard.length - 1}
+            {leaderboard.length === 0 ? (
+              <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+                Reveal your score with ZK!
+              </PrimaryFontBase>
+            ) : (
+              <>
+                <LeaderboardTitle>
+                  <FirstColumnContainer>
+                    <CourierPrimeH4>Rank</CourierPrimeH4>
+                  </FirstColumnContainer>
+                  <SecondColumnContainer>
+                    <CourierPrimeH4>Pseudonym</CourierPrimeH4>
+                  </SecondColumnContainer>
+                  <ThirdColumnContainer>
+                    <CourierPrimeH4>Score</CourierPrimeH4>
+                  </ThirdColumnContainer>
+                </LeaderboardTitle>
+                {leaderboard.map((row, index) => (
+                  <LeaderboardRow
+                    key={index}
+                    isLast={index === leaderboard.length - 1}
+                  >
+                    <FirstColumnContainer>
+                      <CourierPrimeBase>{index + 1}</CourierPrimeBase>
+                    </FirstColumnContainer>
+                    <SecondColumnContainer>
+                      <CourierPrimeBase>{row.pseudonym}</CourierPrimeBase>
+                    </SecondColumnContainer>
+                    <ThirdColumnContainer>
+                      <CourierPrimeBase>{row.score}</CourierPrimeBase>
+                    </ThirdColumnContainer>
+                  </LeaderboardRow>
+                ))}
+              </>
+            )}
+
+            <RevealContainer>
+              <RevealTextContainer>
+                <RevealTitleContainer>
+                  <CourierPrimeH4
+                    style={{
+                      color: "var(--snow-flurry-200)",
+                    }}
+                  >
+                    Score
+                  </CourierPrimeH4>
+                </RevealTitleContainer>
+                <RevealScoreContainer>
+                  <Image
+                    src="/buttons/eye-close-fill.svg"
+                    width="16"
+                    height="16"
+                    alt="eye"
+                  />
+                  <CourierPrimeH4
+                    style={{
+                      color: "var(--snow-flurry-200)",
+                    }}
+                  >
+                    {sigmojiArr.length}
+                  </CourierPrimeH4>
+                </RevealScoreContainer>
+              </RevealTextContainer>
+              <PrimaryLargeButton
+                style={{ width: "100%" }}
+                onClick={() => router.push("/prove")}
               >
-                <FirstColumnContainer>
-                  <CourierPrimeBase>{index + 1}</CourierPrimeBase>
-                </FirstColumnContainer>
-                <SecondColumnContainer>
-                  <CourierPrimeBase>{row.pseudonym}</CourierPrimeBase>
-                </SecondColumnContainer>
-                <ThirdColumnContainer>
-                  <CourierPrimeBase>{row.score}</CourierPrimeBase>
-                </ThirdColumnContainer>
-              </LeaderboardRow>
-            ))}
+                <Image
+                  src="/buttons/eye-2-line.svg"
+                  width="16"
+                  height="16"
+                  alt="eye"
+                />
+                <PrimaryFontBase1>REVEAL</PrimaryFontBase1>
+              </PrimaryLargeButton>
+            </RevealContainer>
           </LeaderboardContainer>
         )}
       </Chevron>
@@ -180,10 +232,46 @@ const ScoreContainer = styled.div`
   margin-top: 8px;
   padding: 16px 0px;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
   align-self: stretch;
   border-top: 1px solid var(--woodsmoke-700);
   background: var(--woodsmoke-950);
+`;
+
+const RevealContainer = styled.div`
+  display: flex;
+  margin-top: 40px;
+  padding: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  align-self: stretch;
+  border-radius: 8px;
+  background: var(--woodsmoke-900);
+`;
+
+const RevealTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  align-self: stretch;
+`;
+
+const RevealTitleContainer = styled.div`
+  display: flex;
+  height: 18px;
+  align-items: center;
+  gap: 8px;
+  flex: 1 0 0;
+`;
+
+const RevealScoreContainer = styled.div`
+  display: flex;
+  height: 18px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  flex: 1 0 0;
 `;
 
 const FirstColumnContainer = styled.div`
