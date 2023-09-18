@@ -8,9 +8,11 @@ import { Sigmoji } from "@/lib/types";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 import styled from "styled-components";
 import Image from "next/image";
+import { Leaderboard } from "@prisma/client";
 
 export default function HomeScreen() {
-  const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[] | null>(null);
+  const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[]>();
+  const [leaderboard, setLeaderboard] = useState<Leaderboard[]>();
 
   useEffect(() => {
     const loadSigmojiArr = async () => {
@@ -20,13 +22,23 @@ export default function HomeScreen() {
     loadSigmojiArr();
   }, []);
 
+  useEffect(() => {
+    const loadLeaderboard = async () => {
+      const response = await fetch("api/leaderboard");
+      const data = await response.json();
+      setLeaderboard(data);
+    };
+    loadLeaderboard();
+  });
+
   return (
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
       <MainHeader />
+
       <Chevron initiallyOpen={true} bottom={false} text={"MY COLLECTION"}>
-        {sigmojiArr === null ? (
+        {!sigmojiArr ? (
           <LoadingSpinner />
         ) : sigmojiArr.length === 0 ? (
           <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
@@ -35,35 +47,100 @@ export default function HomeScreen() {
         ) : (
           <LeaderboardContainer>
             <LeaderboardTitle>
-              <CourierPrimeH4>Sigmoji</CourierPrimeH4>
-              <div style={{ width: "100%" }}>
+              <FirstColumnContainer>
+                <CourierPrimeH4>Sigmoji</CourierPrimeH4>
+              </FirstColumnContainer>
+              <SecondColumnContainer>
                 <CourierPrimeH4>Edition</CourierPrimeH4>
-              </div>
-              <CourierPrimeH4>Points</CourierPrimeH4>
+              </SecondColumnContainer>
+              <ThirdColumnContainer>
+                <CourierPrimeH4>Points</CourierPrimeH4>
+              </ThirdColumnContainer>
             </LeaderboardTitle>
             {sigmojiArr.map((sigmoji, index) => (
-              <LeaderboardRow key={index}>
-                <EmojiHolder>
+              <LeaderboardRow
+                key={index}
+                isLast={index === sigmojiArr.length - 1}
+              >
+                <FirstColumnContainer>
                   <Image
                     src={`/emoji-photo/${sigmoji.emojiImg}`}
                     width="16"
                     height="16"
                     alt="emoji"
                   />
-                </EmojiHolder>
-                <EditionHolder>
+                </FirstColumnContainer>
+                <SecondColumnContainer>
                   <CourierPrimeBase>{sigmoji.PCD.claim.nonce}</CourierPrimeBase>
-                </EditionHolder>
-                <PointsHolder>
+                </SecondColumnContainer>
+                <ThirdColumnContainer>
                   <CourierPrimeBase>1</CourierPrimeBase>
-                </PointsHolder>
+                </ThirdColumnContainer>
+              </LeaderboardRow>
+            ))}
+            <ScoreContainer>
+              <FirstColumnContainer>
+                <CourierPrimeH4
+                  style={{
+                    color: "var(--snow-flurry-200)",
+                  }}
+                >
+                  Score
+                </CourierPrimeH4>
+              </FirstColumnContainer>
+              <SecondColumnContainer></SecondColumnContainer>
+              <ThirdColumnContainer>
+                <CourierPrimeH4
+                  style={{
+                    color: "var(--snow-flurry-200)",
+                  }}
+                >
+                  {sigmojiArr.length}
+                </CourierPrimeH4>
+              </ThirdColumnContainer>
+            </ScoreContainer>
+          </LeaderboardContainer>
+        )}
+      </Chevron>
+
+      <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
+        {!leaderboard ? (
+          <LoadingSpinner />
+        ) : leaderboard.length === 0 ? (
+          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            Reveal your score with ZK!
+          </PrimaryFontBase>
+        ) : (
+          <LeaderboardContainer>
+            <LeaderboardTitle>
+              <FirstColumnContainer>
+                <CourierPrimeH4>Rank</CourierPrimeH4>
+              </FirstColumnContainer>
+              <SecondColumnContainer>
+                <CourierPrimeH4>Pseudonym</CourierPrimeH4>
+              </SecondColumnContainer>
+              <ThirdColumnContainer>
+                <CourierPrimeH4>Score</CourierPrimeH4>
+              </ThirdColumnContainer>
+            </LeaderboardTitle>
+            {leaderboard.map((row, index) => (
+              <LeaderboardRow
+                key={index}
+                isLast={index === leaderboard.length - 1}
+              >
+                <FirstColumnContainer>
+                  <CourierPrimeBase>{index + 1}</CourierPrimeBase>
+                </FirstColumnContainer>
+                <SecondColumnContainer>
+                  <CourierPrimeBase>{row.pseudonym}</CourierPrimeBase>
+                </SecondColumnContainer>
+                <ThirdColumnContainer>
+                  <CourierPrimeBase>{row.score}</CourierPrimeBase>
+                </ThirdColumnContainer>
               </LeaderboardRow>
             ))}
           </LeaderboardContainer>
         )}
-      </Chevron>
-      <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
-        <></>
       </Chevron>
       <div style={{ marginTop: "auto" }}>
         <Footer />
@@ -88,32 +165,42 @@ const LeaderboardTitle = styled.div`
   align-self: stretch;
 `;
 
-const LeaderboardRow = styled.div`
+const LeaderboardRow = styled.div<{ isLast?: boolean }>`
   display: flex;
   padding: 4px 0px;
   align-items: center;
   gap: 24px;
   align-self: stretch;
-  &:not(:last-child) {
-    border-bottom: 1px solid rgba(231, 231, 231, 0.1);
-  }
+  border-bottom: ${(props) =>
+    props.isLast ? "none" : "1px solid rgba(231, 231, 231, 0.1)"};
 `;
 
-const EmojiHolder = styled.div`
+const ScoreContainer = styled.div`
+  display: flex;
+  margin-top: 8px;
+  padding: 16px 0px;
+  align-items: center;
+  gap: 16px;
+  align-self: stretch;
+  border-top: 1px solid var(--woodsmoke-700);
+  background: var(--woodsmoke-950);
+`;
+
+const FirstColumnContainer = styled.div`
   display: flex;
   width: 80px;
   align-items: flex-end;
   gap: 8px;
 `;
 
-const EditionHolder = styled.div`
+const SecondColumnContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
   flex: 1 0 0;
 `;
 
-const PointsHolder = styled.div`
+const ThirdColumnContainer = styled.div`
   display: flex;
   width: 72px;
   justify-content: flex-end;
