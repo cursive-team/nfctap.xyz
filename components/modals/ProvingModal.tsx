@@ -17,7 +17,10 @@ import {
   setupTree,
   addZKPToSigmoji,
 } from "@/lib/zkProving";
-import { loadSigmojis } from "@/lib/localStorage";
+import {
+  loadSigmojis,
+  serializeSigmojisInLocalStorage,
+} from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
 import { serializeSigmoji } from "@/lib/types";
 
@@ -60,9 +63,7 @@ export default function ProvingModal() {
       })
     );
     const sigmojisWithZKP = await Promise.all(wrappedSigmojis);
-    window.localStorage["sigmojis"] = JSON.stringify(
-      await Promise.all(sigmojisWithZKP.map(serializeSigmoji))
-    );
+    serializeSigmojisInLocalStorage(sigmojisWithZKP);
     const serializedZKPArray = sigmojisWithZKP.map((s) => s.ZKP);
 
     fetch("/api/leaderboard", {

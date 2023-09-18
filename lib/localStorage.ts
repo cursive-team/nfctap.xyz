@@ -72,9 +72,7 @@ export async function loadSigmojiWalletBackup(): Promise<string> {
 export async function saveSigmoji(sigmoji: Sigmoji): Promise<void> {
   const sigmojis = await loadSigmojis();
   sigmojis.push(sigmoji);
-  window.localStorage["sigmojis"] = JSON.stringify(
-    await Promise.all(sigmojis.map(serializeSigmoji))
-  );
+  serializeSigmojisInLocalStorage(sigmojis);
 }
 
 /**
@@ -87,9 +85,7 @@ export async function updateSigmoji(sigmoji: Sigmoji): Promise<void> {
   if (index !== -1) {
     sigmojis[index] = sigmoji;
   }
-  window.localStorage["sigmojis"] = JSON.stringify(
-    await Promise.all(sigmojis.map(serializeSigmoji))
-  );
+  serializeSigmojisInLocalStorage(sigmojis);
 }
 
 /**
@@ -110,4 +106,15 @@ export async function loadBackupState(): Promise<BackupState | undefined> {
  */
 export async function saveBackupState(backup: BackupState): Promise<void> {
   window.localStorage["backup"] = serializeBackupState(backup);
+}
+
+/**
+ * Serializes array of Sigmojis for localStorage backup.
+ */
+export async function serializeSigmojisInLocalStorage(
+  sigmojis: Sigmoji[]
+): Promise<void> {
+  window.localStorage["sigmojis"] = JSON.stringify(
+    await Promise.all(sigmojis.map(serializeSigmoji))
+  );
 }
