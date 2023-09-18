@@ -50,6 +50,7 @@ export default function ProvingModal() {
   const makeProofsWithCounter = async () => {
     if (!wasm) return;
 
+    setCounter(0);
     setProving(true);
 
     const pubKeyTree = setupTree(wasm);
