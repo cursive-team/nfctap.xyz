@@ -151,7 +151,7 @@ export const cardPubKeys2 = {
     tertiaryPublicKeyHash: null,
     address: "0x5A65AFe11008bfb2860551cc9aee290E90146561",
     edition_number: 11,
-    emoji: "blue_swirl",
+    emoji: "🌀",
   },
   "0xba6aa9695426ce050957d2bc85d3e0665e224d48dae4f31a9d93d61b81542987": {
     primaryPublicKeyRaw:
