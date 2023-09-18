@@ -79,4 +79,5 @@ const ChevronOpenContainer = styled.div<{ $noBorder?: boolean }>`
   align-self: stretch;
   border-bottom: ${(props) =>
     props.$noBorder ? "none" : "1px solid var(--woodsmoke-700, #4f4f4f)"};
+  padding-bottom: ${(props) => (props.$noBorder ? "64px" : "24px")};
 `;
