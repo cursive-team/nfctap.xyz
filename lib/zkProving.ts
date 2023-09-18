@@ -4,7 +4,10 @@ import {
   Poseidon,
   defaultPubkeyMembershipPConfig,
 } from "@personaelabs/spartan-ecdsa";
-import { loadSigmojis } from "@/lib/localStorage";
+import {
+  loadSigmojis,
+  serializeSigmojisInLocalStorage,
+} from "@/lib/localStorage";
 import { cardPubKeys } from "./cardPubKeys";
 import { importPublic } from "@ethereumjs/util";
 import { sha256 } from "js-sha256";
@@ -121,8 +124,5 @@ export const makeProofs = async (proverWasm: ProverWasm) => {
     sigmojis.map((sigmoji) => addZKPToSigmoji(sigmoji, proverWasm, pubKeyTree))
   );
 
-  // update localStorage
-  window.localStorage["sigmojis"] = JSON.stringify(
-    await Promise.all(sigmojisWithZKP.map(serializeSigmoji))
-  );
+  serializeSigmojisInLocalStorage(sigmojisWithZKP);
 };
