@@ -64,6 +64,8 @@ export async function POST(request: Request) {
     const fullMessage = `${emoji}: ${message}`;
     telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage);
 
+    await addChatLog({ message, sigmoji });
+
     return new NextResponse(undefined, {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -98,4 +100,21 @@ async function verifyProof(zkp: {
   await verifier.initWasm();
 
   return await verifier.verify(zkp.proof, zkp.publicInputSer);
+}
+
+/**
+ * Adds a new entry to the chat log.
+ * @param logEntry - The entry to add.
+ * @param logEntry.message - The message that was sent.
+ * @param logEntry.sigmoji - The Sigmoji the user is posting as. Currently represents the emojiImg of the Sigmoji.
+ */
+async function addChatLog(logEntry: { message: string; sigmoji: string }) {
+  try {
+    const newEntry = await prisma.chatLog.create({
+      data: logEntry,
+    });
+    console.log("New chat log entry:", newEntry);
+  } catch (error) {
+    console.error("Error adding chat log entry:", error);
+  }
 }
