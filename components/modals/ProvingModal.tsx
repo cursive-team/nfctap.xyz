@@ -129,9 +129,11 @@ export default function ProvingModal() {
           alert("The proof you submitted was invalid.");
         }
       } else {
-        const errorMsg = data.error?.message || "Unknown error";
         setProvingState(ProvingState.READY_TO_PROVE);
-        alert("Error submitting proof to leaderboard." + errorMsg);
+        if (data.error) {
+          console.error(data.error);
+        }
+        alert("Error submitting proof to leaderboard.");
       }
     });
   };
