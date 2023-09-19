@@ -5,6 +5,11 @@ import path from "path";
 
 const ZERO_KNOWLEDGE_PROOF_TYPE = "SPARTAN_ECDSA_SECP256K1";
 
+/**
+ * GET /api/leaderboard
+ * Gets all entries of the leaderboard.
+ * @returns A JSON response with the serialized leaderboard entries.
+ */
 export async function GET(request: Request) {
   const leaderboard = await prisma.leaderboard.findMany({
     orderBy: {
@@ -18,6 +23,18 @@ export async function GET(request: Request) {
   });
 }
 
+/**
+ * POST /api/leaderboard
+ * Receives a set of proofs claiming a certain score. Verifies proofs, and adds a new entry to the leaderboard.
+ * @param {object}   request - The request object. Consists of the following parameters encoded as JSON.
+ * @param {string}   request.pseudonym - The pseudonym of the user.
+ * @param {string}   request.score - The score of the user.
+ * @param {string[]} request.serializedZKPArray - The array of serialized zero-knowledge proofs.
+ * @param {string}   request.provingTime - The proving time it took the user to generate the proofs.
+ * @param {string}   request.proofCount - The number of new proofs the user had to generate.
+ * @returns A JSON response with a success boolean indicating whether the proofs were verified.
+ * @throws Throws an error if there was a problem adding the entry to the database.
+ */
 export async function POST(request: Request) {
   try {
     const bodyArrayBuffer = await request.arrayBuffer();
@@ -68,6 +85,13 @@ export async function POST(request: Request) {
   }
 }
 
+/**
+ * Verifies an array of proofs.
+ * @param proofs - An array of proofs to verify.
+ * @param proofs[].proof - The proof contents as a Uint8Array.
+ * @param proofs[].publicInputSer - The serialized public input of the proof.
+ * @returns A promise that resolves to a boolean indicating whether all proofs were verified.
+ */
 async function verifyProofs(
   proofs: {
     proof: Uint8Array;
@@ -94,6 +118,12 @@ async function verifyProofs(
   return true;
 }
 
+/**
+ * Adds a new entry to the leaderboard.
+ * @param entry - The entry to add.
+ * @param entry.pseudonym - The pseudonym of the user.
+ * @param entry.score - The score of the user.
+ */
 async function addLeaderboardEntry(entry: {
   pseudonym: string;
   score: number;
@@ -108,6 +138,15 @@ async function addLeaderboardEntry(entry: {
   }
 }
 
+/**
+ * Adds a new entry to the proof log.
+ * @param logEntry - The entry to add.
+ * @param logEntry.pseudonym - The pseudonym of the user.
+ * @param logEntry.score - The score of the user.
+ * @param logEntry.provingTime - The proving time it took the user to generate the proofs.
+ * @param logEntry.proofCount - The number of new proofs the user had to generate.
+ * @param logEntry.verified - Whether the proofs were verified.
+ */
 async function addProofLog(logEntry: {
   pseudonym: string;
   score: number;
