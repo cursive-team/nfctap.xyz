@@ -113,8 +113,8 @@ export default function ProvingModal() {
         proofCount: numUniqueProofs,
       }),
     }).then(async (response) => {
+      const data = await response.json();
       if (response.status === 200) {
-        const data = await response.json();
         if (data.success) {
           setProvingState(ProvingState.SUCCESS);
           saveLeaderboardEntry({ pseudonym, score });
@@ -129,8 +129,9 @@ export default function ProvingModal() {
           alert("The proof you submitted was invalid.");
         }
       } else {
+        const errorMsg = data.error?.message || "Unknown error";
         setProvingState(ProvingState.READY_TO_PROVE);
-        alert("Error submitting proof to leaderboard.");
+        alert("Error submitting proof to leaderboard." + errorMsg);
       }
     });
   };
