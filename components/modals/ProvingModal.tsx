@@ -110,6 +110,7 @@ export default function ProvingModal() {
         score,
         serializedZKPArray,
         provingTime,
+        proofCount: numUniqueProofs,
       }),
     }).then(async (response) => {
       if (response.status === 200) {
@@ -118,7 +119,7 @@ export default function ProvingModal() {
           setProvingState(ProvingState.SUCCESS);
           saveLeaderboardEntry({ pseudonym, score });
           alert(
-            `Proof successfully verified! Generated ${numUniqueProofs} new proofs in: ${provingTimeString(
+            `Score successfully verified! Generated ${numUniqueProofs} new proof(s) in: ${provingTimeString(
               provingTime
             )}.`
           );
