@@ -16,3 +16,14 @@ model Leaderboard {
   score       Int      @default(0)
   createdAt   DateTime @default(now())
 }
+
+model ProofLog {
+  id          Int      @id @default(autoincrement())
+  pseudonym   String   
+  score       Int      
+  provingTime Int
+  proofCount  Int
+  proofType   String
+  verified    Boolean  
+  createdAt   DateTime @default(now())
+}
