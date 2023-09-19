@@ -1,6 +1,6 @@
 import { MainHeader } from "@/components/shared/Headers";
 import Chevron from "../shared/Chevron";
-import { useState, useEffect } from "react";
+import { useState, useEffect, CSSProperties } from "react";
 import Footer from "../shared/Footer";
 import {
   PrimaryFontBase,
@@ -8,7 +8,7 @@ import {
   CourierPrimeBase,
   PrimaryFontBase1,
 } from "../core";
-import { loadSigmojis } from "@/lib/localStorage";
+import { loadLeaderboardEntries, loadSigmojis } from "@/lib/localStorage";
 import { Sigmoji } from "@/lib/types";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 import styled from "styled-components";
@@ -17,11 +17,18 @@ import { Leaderboard } from "@prisma/client";
 import { PrimaryLargeButton } from "../shared/Buttons";
 import { useRouter } from "next/navigation";
 
+type LeaderboardRow = {
+  pseudonym: string;
+  score: number;
+  rank: number;
+  belongsToUser: boolean;
+};
+
 export default function HomeScreen() {
   const router = useRouter();
 
   const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[]>();
-  const [leaderboard, setLeaderboard] = useState<Leaderboard[]>();
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>();
 
   useEffect(() => {
     const loadSigmojiArr = async () => {
@@ -34,11 +41,39 @@ export default function HomeScreen() {
   useEffect(() => {
     const loadLeaderboard = async () => {
       const response = await fetch("api/leaderboard");
-      const data = await response.json();
-      setLeaderboard(data);
+      const leaderboardEntries = (await response.json()) as Leaderboard[];
+      const userLeaderboardEntries = loadLeaderboardEntries();
+
+      let rank = 0;
+      let prevScore: Number | undefined;
+      let skip = 1;
+      const leaderboardRows = leaderboardEntries.map((entry, index) => {
+        if (index === 0 || entry.score !== prevScore) {
+          prevScore = entry.score;
+          rank += skip;
+          skip = 1;
+        } else {
+          skip++;
+        }
+
+        const belongsToUser = userLeaderboardEntries.includes(
+          JSON.stringify({
+            pseudonym: entry.pseudonym,
+            score: entry.score,
+          })
+        );
+
+        return {
+          pseudonym: entry.pseudonym,
+          score: entry.score,
+          rank: rank,
+          belongsToUser,
+        };
+      });
+      setLeaderboard(leaderboardRows);
     };
     loadLeaderboard();
-  });
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -132,22 +167,35 @@ export default function HomeScreen() {
                     <CourierPrimeH4>Score</CourierPrimeH4>
                   </ThirdColumnContainer>
                 </LeaderboardTitle>
-                {leaderboard.map((row, index) => (
-                  <LeaderboardRow
-                    key={index}
-                    isLast={index === leaderboard.length - 1}
-                  >
-                    <FirstColumnContainer>
-                      <CourierPrimeBase>{index + 1}</CourierPrimeBase>
-                    </FirstColumnContainer>
-                    <SecondColumnContainer>
-                      <CourierPrimeBase>{row.pseudonym}</CourierPrimeBase>
-                    </SecondColumnContainer>
-                    <ThirdColumnContainer>
-                      <CourierPrimeBase>{row.score}</CourierPrimeBase>
-                    </ThirdColumnContainer>
-                  </LeaderboardRow>
-                ))}
+                {leaderboard.map((row, index) => {
+                  const style = row.belongsToUser
+                    ? {
+                        color: "var(--snow-flurry-200)",
+                      }
+                    : undefined;
+                  return (
+                    <LeaderboardRow
+                      key={index}
+                      isLast={index === leaderboard.length - 1}
+                    >
+                      <FirstColumnContainer>
+                        <CourierPrimeBase style={style}>
+                          {row.rank}
+                        </CourierPrimeBase>
+                      </FirstColumnContainer>
+                      <SecondColumnContainer>
+                        <CourierPrimeBase style={style}>
+                          {row.pseudonym}
+                        </CourierPrimeBase>
+                      </SecondColumnContainer>
+                      <ThirdColumnContainer>
+                        <CourierPrimeBase style={style}>
+                          {row.score}
+                        </CourierPrimeBase>
+                      </ThirdColumnContainer>
+                    </LeaderboardRow>
+                  );
+                })}
               </>
             )}
 

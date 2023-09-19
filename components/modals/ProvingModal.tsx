@@ -19,6 +19,7 @@ import {
 } from "@/lib/zkProving";
 import {
   loadSigmojis,
+  saveLeaderboardEntry,
   serializeSigmojisInLocalStorage,
 } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
@@ -83,13 +84,14 @@ export default function ProvingModal() {
       if (response.status === 200) {
         const data = await response.json();
         if (data.success) {
+          saveLeaderboardEntry({ pseudonym, score });
           alert("Proof successfully verified!");
           router.push("/home");
         } else {
           alert("Proof failed to verify.");
         }
       } else {
-        console.error("Error submitting proof to leaderboard");
+        alert("Error submitting proof to leaderboard.");
       }
     });
   };

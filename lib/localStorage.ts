@@ -89,6 +89,49 @@ export async function updateSigmoji(sigmoji: Sigmoji): Promise<void> {
 }
 
 /**
+ * Serializes array of Sigmojis for localStorage backup.
+ */
+export async function serializeSigmojisInLocalStorage(
+  sigmojis: Sigmoji[]
+): Promise<void> {
+  window.localStorage["sigmojis"] = JSON.stringify(
+    await Promise.all(sigmojis.map(serializeSigmoji))
+  );
+}
+
+/**
+ * Saves a user's leaderboard entry to localStorage.
+ * @param {object} entry - The leaderboard entry to save.
+ * @param {string} entry.pseudonym - The pseudonym of the user.
+ * @param {number} entry.score - The score of the user.
+ */
+export function saveLeaderboardEntry(entry: {
+  pseudonym: string;
+  score: number;
+}): void {
+  const leaderboardEntries = loadLeaderboardEntries();
+  const serializedEntry = JSON.stringify(entry);
+  if (!leaderboardEntries.includes(serializedEntry)) {
+    leaderboardEntries.push(serializedEntry);
+  }
+
+  window.localStorage["leaderboard"] = JSON.stringify(leaderboardEntries);
+}
+
+/**
+ * Loads the leaderboard entries from localStorage.
+ * @returns {string[]} - An array of serialized leaderboard entries.
+ */
+export function loadLeaderboardEntries(): string[] {
+  const leaderboardEntries = window.localStorage["leaderboard"];
+  if (!leaderboardEntries) {
+    return [];
+  }
+
+  return JSON.parse(leaderboardEntries) || [];
+}
+
+/**
  * Loads the backup state from localStorage.
  * @returns {Promise<BackupState | undefined>} - A promise that resolves to the backup state or undefined if it doesn't exist.
  */
@@ -106,15 +149,4 @@ export async function loadBackupState(): Promise<BackupState | undefined> {
  */
 export async function saveBackupState(backup: BackupState): Promise<void> {
   window.localStorage["backup"] = serializeBackupState(backup);
-}
-
-/**
- * Serializes array of Sigmojis for localStorage backup.
- */
-export async function serializeSigmojisInLocalStorage(
-  sigmojis: Sigmoji[]
-): Promise<void> {
-  window.localStorage["sigmojis"] = JSON.stringify(
-    await Promise.all(sigmojis.map(serializeSigmoji))
-  );
 }
