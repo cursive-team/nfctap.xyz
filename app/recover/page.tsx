@@ -1,7 +1,7 @@
 "use client";
 
-import HomeScreen from "@/components/screens/HomeScreen";
+import RecoverScreen from "@/components/screens/RecoverScreen";
 
-export default function Home() {
-  return <HomeScreen />;
+export default function RecoverPage() {
+  return <RecoverScreen />;
 }

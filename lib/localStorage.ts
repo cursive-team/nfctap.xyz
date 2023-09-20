@@ -85,7 +85,23 @@ export async function updateSigmoji(sigmoji: Sigmoji): Promise<void> {
   if (index !== -1) {
     sigmojis[index] = sigmoji;
   }
+
   serializeSigmojisInLocalStorage(sigmojis);
+}
+
+/*
+ * Updates the sigmojis in local storage with a new list.
+ * Will overwrite any sigmojis that have the same emojiImg with the new list.
+ * @param newSigmojis - The new list of sigmojis to update with.
+ */
+export async function updateSigmojiList(newSigmojis: Sigmoji[]): Promise<void> {
+  const currentSigmojis = await loadSigmojis();
+  const newSigmojiKeys = newSigmojis.map((s) => s.emojiImg);
+  const updatedSigmojis = newSigmojis.concat(
+    currentSigmojis.filter((s) => !newSigmojiKeys.includes(s.emojiImg))
+  );
+
+  serializeSigmojisInLocalStorage(updatedSigmojis);
 }
 
 /**
