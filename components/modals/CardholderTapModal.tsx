@@ -24,7 +24,7 @@ export default function CardholderTapModal({
       const messageHash = hashMessage(message);
       let command = {
         name: "sign",
-        keyNo: 2,
+        keyNo: 1,
         digest: Buffer.from(messageHash).toString("hex"),
       };
 
