@@ -27,6 +27,7 @@ import {
 } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
+import { detectIncognito } from "detectincognitojs";
 
 export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const router = useRouter();
@@ -35,6 +36,19 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const [imageLink, setImageLink] = useState<string | undefined>(undefined);
   const [alreadyCollected, setAlreadyCollected] = useState(false);
   const [hasWalletBackup, setHasWalletBackup] = useState(false);
+
+  useEffect(() => {
+    const alertIncognito = async () => {
+      const isIncognito = await detectIncognito();
+      if (isIncognito.isPrivate) {
+        alert(
+          "Please disable private browsing in order to save your Sigmojis!"
+        );
+      }
+    };
+
+    alertIncognito();
+  }, []);
 
   useEffect(() => {
     const generatePCD = async () => {

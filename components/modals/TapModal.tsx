@@ -5,18 +5,32 @@ import Modal from "./Modal";
 import { PrimaryFontBase, PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { sha256 } from "js-sha256";
 import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import CollectedModal from "./CollectedModal";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { PrimaryLargeButton } from "../shared/Buttons";
+import { detectIncognito } from "detectincognitojs";
 
 export default function TapModal() {
   const [isTapping, setIsTapping] = useState<boolean>(false);
   const [statusText, setStatusText] = useState("Waiting for NFC setup...");
   const [args, setArgs] = useState<HaLoNoncePCDArgs | undefined>(undefined);
+
+  useEffect(() => {
+    const alertIncognito = async () => {
+      const isIncognito = await detectIncognito();
+      if (isIncognito.isPrivate) {
+        alert(
+          "Please disable private browsing in order to save your Sigmojis!"
+        );
+      }
+    };
+
+    alertIncognito();
+  }, []);
 
   // run code as soon as modal is rendered
   useEffect(() => {
