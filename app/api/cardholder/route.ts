@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Telegraf } from "telegraf";
-import { ethers } from "ethers";
 import { cardPubKeys } from "@/lib/cardPubKeys";
+import SigningKey from "@ethersproject/signing-key";
+import { hashMessage } from "@/lib/signatureUtils";
 
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
 const TELEGRAM_TEST_CHAT_ID = -4031859798;
@@ -45,9 +46,10 @@ export async function POST(request: Request) {
     const bodyArrayBuffer = await request.arrayBuffer();
     const bodyString = new TextDecoder().decode(bodyArrayBuffer);
     const { message, signature } = JSON.parse(bodyString);
+    const messageHash = hashMessage(message);
 
     const sig = `0x${signature.r}${signature.s}${signature.v.toString(16)}`;
-    const publicKey = ethers.verifyMessage(message, sig);
+    const publicKey = SigningKey.recoverPublicKey(messageHash, sig);
     console.log("Recovering public key: ", publicKey);
     if (!publicKey) {
       throw new Error("Could not recover public key from signature.");
