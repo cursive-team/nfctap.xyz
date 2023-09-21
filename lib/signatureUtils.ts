@@ -1,4 +1,15 @@
 import { ecrecover } from "@ethereumjs/util";
+import { hashPersonalMessage } from "@ethereumjs/util";
+
+/**
+ * Hashes a message using Ethereum personal_sign.
+ * @param message - Text representation of the message to hash.
+ * @returns The hash of the message as a Uint8Array.
+ */
+export function hashMessage(message: string): Uint8Array {
+  const messageBuffer = Buffer.from(message);
+  return hashPersonalMessage(messageBuffer);
+}
 
 export function parseDERSignature(signature: string) {
   const buf = Buffer.from(signature, "hex");
