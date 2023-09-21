@@ -11,8 +11,10 @@ import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import CollectedModal from "./CollectedModal";
 import { cardPubKeys } from "@/lib/cardPubKeys";
+import { PrimaryLargeButton } from "../shared/Buttons";
 
 export default function TapModal() {
+  const [isTapping, setIsTapping] = useState<boolean>(false);
   const [statusText, setStatusText] = useState("Waiting for NFC setup...");
   const [args, setArgs] = useState<HaLoNoncePCDArgs | undefined>(undefined);
 
@@ -109,12 +111,16 @@ export default function TapModal() {
       }
     }
 
-    runScan();
-  }, []);
+    if (isTapping) {
+      runScan();
+    }
+  }, [isTapping]);
 
-  return args ? (
-    <CollectedModal args={args} />
-  ) : (
+  if (args) {
+    return <CollectedModal args={args} />;
+  }
+
+  return isTapping ? (
     <Modal>
       <OuterContainer>
         <InnerContainer>
@@ -141,6 +147,19 @@ export default function TapModal() {
         src="/phone-tap.gif"
         style={{ marginTop: "40px", marginBottom: "40px" }}
       />
+    </Modal>
+  ) : (
+    <Modal>
+      <OuterContainer>
+        <InnerContainer>
+          <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+            Press the button below to begin tapping!
+          </PrimaryFontH3>
+          <PrimaryLargeButton onClick={() => setIsTapping(true)}>
+            Tap!
+          </PrimaryLargeButton>
+        </InnerContainer>
+      </OuterContainer>
     </Modal>
   );
 }
