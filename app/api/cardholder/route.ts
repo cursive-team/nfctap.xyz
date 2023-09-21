@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Telegraf } from "telegraf";
 import { cardPubKeys } from "@/lib/cardPubKeys";
-import SigningKey from "@ethersproject/signing-key";
+import { recoverPublicKey } from "ethers/lib/utils";
 import { hashMessage } from "@/lib/signatureUtils";
 
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     const messageHash = hashMessage(message);
 
     const sig = `0x${signature.r}${signature.s}${signature.v.toString(16)}`;
-    const publicKey = SigningKey.recoverPublicKey(messageHash, sig);
+    const publicKey = recoverPublicKey(messageHash, sig);
     console.log("Recovering public key: ", publicKey);
     if (!publicKey) {
       throw new Error("Could not recover public key from signature.");
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
  */
 function getSigmojiFromPublicKey(publicKey: string): string | undefined {
   for (const cardPubKey of Object.values(cardPubKeys)) {
-    if (cardPubKey.secondaryPublicKeyRaw === publicKey) {
+    if (cardPubKey.primaryPublicKeyRaw === publicKey) {
       return cardPubKey.image;
     }
   }

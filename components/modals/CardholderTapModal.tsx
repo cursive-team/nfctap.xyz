@@ -56,7 +56,7 @@ export default function CardholderTapModal({
           rawSignature: res.signature.raw,
           publicKey: res.publicKey,
         });
-        console.log("Tapped card: ", res);
+        console.log("Tapped card with public key: ", res.publicKey);
         setStatusText("Tapped card! Process result...");
       } catch (error) {
         console.error(error);
