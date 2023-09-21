@@ -10,7 +10,7 @@ import {
   PrimaryFontSmall,
 } from "../core";
 import Image from "next/image";
-import { SecondaryLargeButton } from "../shared/Buttons";
+import { PrimaryLargeButton, SecondaryLargeButton } from "../shared/Buttons";
 import {
   HaLoNoncePCDArgs,
   HaLoNoncePCD,
@@ -114,6 +114,9 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                 height="160"
                 alt="emoji"
               />
+              <PrimaryLargeButton onClick={() => router.push("/home")}>
+                View My Collection
+              </PrimaryLargeButton>
               <div className="flex-col justify-start items-center gap-6 inline-flex">
                 {hasWalletBackup ? (
                   <>
