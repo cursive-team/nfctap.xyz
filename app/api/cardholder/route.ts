@@ -50,13 +50,12 @@ export async function POST(request: Request) {
 
     const sig = `0x${signature.r}${signature.s}${signature.v.toString(16)}`;
     const publicKey = recoverPublicKey(messageHash, sig);
-    console.log("Recovering public key: ", publicKey);
     if (!publicKey) {
       throw new Error("Could not recover public key from signature.");
     }
 
-    const sigmoji = getSigmojiFromPublicKey(publicKey);
-    console.log("Sigmoji: ", sigmoji);
+    // Remove the 0x prefix from the public key
+    const sigmoji = getSigmojiFromPublicKey(publicKey.slice(2));
     if (!sigmoji) {
       throw new Error("Signature does not correspond to any card.");
     }
