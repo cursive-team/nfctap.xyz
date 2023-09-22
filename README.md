@@ -2,6 +2,10 @@
 
 This repository stores code for the SBC and FtC activations, which is being developed to learn from and iterate upon for a much larger Devconnect experience (200 cards, 5k attendees).
 
+## Developer guide
+
+This repo uses `yarn v1.22.19` for package management. Use `yarn` to install dependencies and `yarn dev` to run a development version of the codebase.
+
 ## Repo setup
 
 This repo uses Next.js 13 with the `app` folder. For styling, there is a mix of TailwindCSS and styled-components. Here are the different routes and their purposes:
