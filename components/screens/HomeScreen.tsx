@@ -102,7 +102,7 @@ export default function HomeScreen() {
             {sigmojiArr.map((sigmoji, index) => (
               <LeaderboardRow
                 key={index}
-                isLast={index === sigmojiArr.length - 1}
+                isFinalEntry={index === sigmojiArr.length - 1}
               >
                 <FirstColumnContainer>
                   <Image
@@ -176,7 +176,7 @@ export default function HomeScreen() {
                   return (
                     <LeaderboardRow
                       key={index}
-                      isLast={index === leaderboard.length - 1}
+                      isFinalEntry={index === leaderboard.length - 1}
                     >
                       <FirstColumnContainer>
                         <CourierPrimeBase style={style}>
@@ -265,14 +265,14 @@ const LeaderboardTitle = styled.div`
   align-self: stretch;
 `;
 
-const LeaderboardRow = styled.div<{ isLast?: boolean }>`
+const LeaderboardRow = styled.div<{ isFinalEntry?: boolean }>`
   display: flex;
   padding: 4px 0px;
   align-items: center;
   gap: 24px;
   align-self: stretch;
   border-bottom: ${(props) =>
-    props.isLast ? "none" : "1px solid rgba(231, 231, 231, 0.1)"};
+    props.isFinalEntry ? "none" : "1px solid rgba(231, 231, 231, 0.1)"};
 `;
 
 const ScoreContainer = styled.div`
