@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  swcMinify: true,
   webpack: (config) => {
     config.resolve.fallback = { fs: false };
     config.experiments = {

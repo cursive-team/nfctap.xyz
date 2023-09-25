@@ -11,7 +11,7 @@ import {
 import { cardPubKeys } from "./cardPubKeys";
 import { importPublic } from "@ethereumjs/util";
 import { sha256 } from "js-sha256";
-import { Sigmoji, serializeSigmoji, serializeSigmojiZKP } from "@/lib/types";
+import { Sigmoji, serializeSigmojiZKP } from "@/lib/types";
 import {
   parseDERSignature,
   findV,
