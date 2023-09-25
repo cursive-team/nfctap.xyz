@@ -19,9 +19,15 @@ This repo uses Next.js 13 with the `app` folder. For styling, there is a mix of 
 - `clear`
   - This route allows you to clear your collection in `localStorage`. This is primarily useful for testing purposes and is not accessible from the UI without going to the URL.
 - `recover`
-  - This route is where you can recover your collection from a Apple/Google wallet backup. The logic is not complete as of the writing of this README.
+  - This route is where you can recover your collection from a Apple/Google wallet backup.
 - `prove`
   - This route is where you will be able to post a score to the leaderboard. Right now it just tests the proving flow.
+- `chat`
+  - Chat for users who hold a specific Sigmoji. Select a Sigmoji in your collection, generate a proof that you own that Sigmoji, and chat as that Sigmoji. Chat messages are sent via Telegram.
+- `cardholder`
+  - Chat for users who own a Sigmoji card. Draft a chat message, tap your card to sign it, and chat as the cardholder of a certain Sigmoji.
+- `anon`
+  - Chat for users who have collected any Sigmoji. Generate a proof that you have collected any Sigmoji, pick a pseudonym, and chat with other Sigmoji collectors.
 
 ## Storage setup
 
