@@ -145,6 +145,27 @@ export default function HomeScreen() {
         )}
       </Chevron>
 
+      <Chevron initiallyOpen={false} bottom={false} text={"CHAT"}>
+        <PrimaryLargeButton
+          style={{ width: "100%" }}
+          onClick={() => router.push("/chat")}
+        >
+          <PrimaryFontBase1>COLLECTOR CHAT</PrimaryFontBase1>
+        </PrimaryLargeButton>
+        <PrimaryLargeButton
+          style={{ width: "100%" }}
+          onClick={() => router.push("/anon")}
+        >
+          <PrimaryFontBase1>ANON COLLECTOR CHAT</PrimaryFontBase1>
+        </PrimaryLargeButton>
+        <PrimaryLargeButton
+          style={{ width: "100%" }}
+          onClick={() => router.push("/cardholder")}
+        >
+          <PrimaryFontBase1>CARDHOLDER CHAT</PrimaryFontBase1>
+        </PrimaryLargeButton>
+      </Chevron>
+
       <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
         {!leaderboard || !sigmojiArr ? (
           <LoadingSpinner />
