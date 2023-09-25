@@ -29,8 +29,10 @@ model ProofLog {
 }
 
 model ChatLog {
-  id          Int      @id @default(autoincrement())
-  message     String 
-  sigmoji     String
-  createdAt   DateTime @default(now())
+  id                Int      @id @default(autoincrement())
+  message           String 
+  sigmoji           String?
+  pseudonym         String?
+  isCardholderChat  Boolean @default(false)
+  createdAt         DateTime @default(now())
 }

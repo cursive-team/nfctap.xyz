@@ -5,7 +5,11 @@ import { Telegraf } from "telegraf";
 import path from "path";
 
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-const TELEGRAM_TEST_CHAT_ID = -1001963446787;
+// This is super jank. List of pairs of (chatId, threadId) to send messages to.
+const TELEGRAM_TEST_CHAT_IDS = [
+  [-4031859798, undefined],
+  [-1001963446787, 1414],
+];
 const emojiMap: { [key: string]: string } = {
   "robot.png": "🤖",
   "invader.png": "👾",
@@ -82,9 +86,22 @@ export async function POST(request: Request) {
 
     const emoji = emojiMap[sigmoji];
     const fullMessage = `${emoji}: ${message}`;
-    telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage, {
-      message_thread_id: 1414,
-    });
+    for (const [chatId, threadId] of TELEGRAM_TEST_CHAT_IDS) {
+      try {
+        if (typeof threadId === "undefined") {
+          telegramBot.telegram.sendMessage(chatId!, fullMessage);
+        } else {
+          telegramBot.telegram.sendMessage(chatId!, fullMessage, {
+            message_thread_id: threadId,
+          });
+        }
+      } catch (error) {
+        console.error(
+          `Failed to send chat message to chatId: ${chatId}, threadId: ${threadId}\n`,
+          error
+        );
+      }
+    }
 
     await addChatLog({ message, sigmoji });
 
