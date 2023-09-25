@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 import { Telegraf } from "telegraf";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { recoverPublicKey } from "ethers/lib/utils";
 import { hashMessage } from "@/lib/signatureUtils";
 
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-const TELEGRAM_TEST_CHAT_ID = -1001963446787;
+// This is super jank. List of pairs of (chatId, threadId) to send messages to.
+const TELEGRAM_TEST_CHAT_IDS = [
+  [-4031859798, undefined],
+  [-1001963446787, 1414],
+];
 const emojiMap: { [key: string]: string } = {
   "robot.png": "🤖",
   "invader.png": "👾",
@@ -81,9 +86,24 @@ export async function POST(request: Request) {
 
     const emoji = emojiMap[sigmoji];
     const fullMessage = `Cardholder of ${emoji}: ${message}`;
-    telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage, {
-      message_thread_id: 1414,
-    });
+    for (const [chatId, threadId] of TELEGRAM_TEST_CHAT_IDS) {
+      try {
+        if (typeof threadId === "undefined") {
+          telegramBot.telegram.sendMessage(chatId!, fullMessage);
+        } else {
+          telegramBot.telegram.sendMessage(chatId!, fullMessage, {
+            message_thread_id: threadId,
+          });
+        }
+      } catch (error) {
+        console.error(
+          `Failed to send chat message to chatId: ${chatId}, threadId: ${threadId}\n`,
+          error
+        );
+      }
+    }
+
+    await addCardholderChatLog({ message, sigmoji });
 
     return new NextResponse(undefined, {
       status: 200,
@@ -112,4 +132,24 @@ function getSigmojiFromPublicKey(publicKey: string): string | undefined {
   }
 
   return;
+}
+
+/**
+ * Adds a new entry to the chat log.
+ * @param logEntry - The entry to add.
+ * @param logEntry.message - The message that was sent.
+ * @param logEntry.sigmoji - The Sigmoji the user is a cardholder of. Currently represents the emojiImg of the Sigmoji.
+ */
+async function addCardholderChatLog(logEntry: {
+  message: string;
+  sigmoji: string;
+}) {
+  try {
+    const newEntry = await prisma.chatLog.create({
+      data: { ...logEntry, isCardholderChat: true },
+    });
+    console.log("New chat log entry:", newEntry);
+  } catch (error) {
+    console.error("Error adding chat log entry:", error);
+  }
 }
