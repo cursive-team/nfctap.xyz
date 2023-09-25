@@ -26,8 +26,8 @@ export async function GET(request: Request) {
     return NextResponse.error();
   }
 
-  if (parseInt(number) > 20) {
-    console.error("[/api/generateApplePass] number > 20");
+  if (parseInt(number) > 40) {
+    console.error("[/api/generateApplePass] number > 40");
     return NextResponse.error();
   }
 
@@ -61,7 +61,7 @@ export async function GET(request: Request) {
   pkPass.headerFields.push({
     key: "collected",
     label: "Collected",
-    value: number + "/20",
+    value: number + "/40",
   });
 
   pkPass.backFields.push({

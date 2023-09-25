@@ -15,8 +15,8 @@ export async function GET(request: Request) {
     return NextResponse.error();
   }
 
-  if (parseInt(number) > 20) {
-    console.error("[/api/updateGooglePass] number > 20");
+  if (parseInt(number) > 40) {
+    console.error("[/api/updateGooglePass] number > 40");
     return NextResponse.error();
   }
 
@@ -51,7 +51,7 @@ export async function GET(request: Request) {
       {
         id: "collected",
         header: "COLLECTED",
-        body: `${number}/20`,
+        body: `${number}/40`,
       },
       {
         id: "location",
