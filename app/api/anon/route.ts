@@ -4,7 +4,7 @@ import { Telegraf } from "telegraf";
 import path from "path";
 
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-const TELEGRAM_TEST_CHAT_ID = -4031859798;
+const TELEGRAM_TEST_CHAT_ID = -1001963446787;
 
 /**
  * POST /api/anon
@@ -34,7 +34,9 @@ export async function POST(request: Request) {
     }
 
     const fullMessage = `A Sigmoji holder (${pseudonym}): ${message}`;
-    telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage);
+    telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage, {
+      message_thread_id: 1414,
+    });
 
     return new NextResponse(undefined, {
       status: 200,

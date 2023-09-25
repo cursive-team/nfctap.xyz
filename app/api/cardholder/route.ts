@@ -5,7 +5,7 @@ import { recoverPublicKey } from "ethers/lib/utils";
 import { hashMessage } from "@/lib/signatureUtils";
 
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-const TELEGRAM_TEST_CHAT_ID = -4031859798;
+const TELEGRAM_TEST_CHAT_ID = -1001963446787;
 const emojiMap: { [key: string]: string } = {
   "robot.png": "🤖",
   "invader.png": "👾",
@@ -81,7 +81,9 @@ export async function POST(request: Request) {
 
     const emoji = emojiMap[sigmoji];
     const fullMessage = `Cardholder of ${emoji}: ${message}`;
-    telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage);
+    telegramBot.telegram.sendMessage(TELEGRAM_TEST_CHAT_ID, fullMessage, {
+      message_thread_id: 1414,
+    });
 
     return new NextResponse(undefined, {
       status: 200,

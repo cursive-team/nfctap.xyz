@@ -9,7 +9,9 @@ export const MainHeader = () => {
   return (
     <MainContainer>
       <MainInnerDiv>
-        <Image src="/logo.svg" width="40" height="40" alt="Logo" priority />
+        <div onClick={() => router.push("/home")}>
+          <Image src="/logo.svg" width="40" height="40" alt="Logo" priority />
+        </div>
         <CollectButton onClick={() => router.push("/")}>
           <PrimaryFontBase1>COLLECT</PrimaryFontBase1>
         </CollectButton>
