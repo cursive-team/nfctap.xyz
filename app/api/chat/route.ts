@@ -4,13 +4,38 @@ import prisma from "@/lib/prisma";
 import { Telegraf } from "telegraf";
 import path from "path";
 
+export type ChatConfig = {
+  chatId: number;
+  threadId?: number;
+};
+
 const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-// This is super jank. List of pairs of (chatId, threadId) to send messages to.
-const TELEGRAM_TEST_CHAT_IDS = [
-  [-4031859798, undefined],
-  [-1001963446787, 1414],
-];
-const emojiMap: { [key: string]: string } = {
+// activeTelegramChats is a comma-separated (without spaces) list of chat config identifiers to send messages to.
+const activeTelegramChats = process.env.ACTIVE_TELEGRAM_CHATS!.split(",");
+const TELEGRAM_CHAT_CONFIGS: Record<string, ChatConfig> = {
+  testing: {
+    chatId: -4031859798,
+    threadId: undefined,
+  },
+  fundingthecommons: { chatId: -1001963446787, threadId: 1414 },
+};
+
+export const sendTelegramMessage = async (message: string) => {
+  for (const activeTelegramChatId of activeTelegramChats) {
+    const { chatId, threadId } = TELEGRAM_CHAT_CONFIGS[activeTelegramChatId];
+    try {
+      telegramBot.telegram.sendMessage(chatId!, message, {
+        message_thread_id: threadId,
+      });
+    } catch (error) {
+      console.error(
+        `Failed to send chat message to chatId: ${chatId}, threadId: ${threadId}\n`,
+        error
+      );
+    }
+  }
+};
+export const emojiMap: { [key: string]: string } = {
   "robot.png": "🤖",
   "invader.png": "👾",
   "ninja.png": "🥷",
@@ -86,22 +111,7 @@ export async function POST(request: Request) {
 
     const emoji = emojiMap[sigmoji];
     const fullMessage = `${emoji}: ${message}`;
-    for (const [chatId, threadId] of TELEGRAM_TEST_CHAT_IDS) {
-      try {
-        if (typeof threadId === "undefined") {
-          telegramBot.telegram.sendMessage(chatId!, fullMessage);
-        } else {
-          telegramBot.telegram.sendMessage(chatId!, fullMessage, {
-            message_thread_id: threadId,
-          });
-        }
-      } catch (error) {
-        console.error(
-          `Failed to send chat message to chatId: ${chatId}, threadId: ${threadId}\n`,
-          error
-        );
-      }
-    }
+    sendTelegramMessage(fullMessage);
 
     await addChatLog({ message, sigmoji });
 

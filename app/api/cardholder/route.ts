@@ -1,58 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { Telegraf } from "telegraf";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { recoverPublicKey } from "ethers/lib/utils";
 import { hashMessage } from "@/lib/signatureUtils";
-
-const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-// This is super jank. List of pairs of (chatId, threadId) to send messages to.
-const TELEGRAM_TEST_CHAT_IDS = [
-  [-4031859798, undefined],
-  [-1001963446787, 1414],
-];
-const emojiMap: { [key: string]: string } = {
-  "robot.png": "🤖",
-  "invader.png": "👾",
-  "ninja.png": "🥷",
-  "turtle.png": "🐢",
-  "pizza.png": "🍕",
-  "pinata.png": "🪅",
-  "unicorn.png": "🦄",
-  "mushroom.png": "🍄",
-  "soccer.png": "⚽️",
-  "pumpkin.png": "🎃",
-  "avocado.png": "🥑",
-  "nerd.png": "🤓",
-  "ghost.png": "👻",
-  "cowboy.png": "🤠",
-  "alien.png": "👽",
-  "icecream.png": "🍦",
-  "fairy.png": "🧚",
-  "butterfly.png": "🦋",
-  "bubbles.png": "🧼",
-  "dolphin.png": "🐬",
-  "angry-cat.png": "😾",
-  "baby-angel.png": "👼",
-  "blue-swirl.png": "🌀",
-  "boba.png": "🧋",
-  "caterpillar.png": "🐛",
-  "clown.png": "🤡",
-  "cookie.png": "🍪",
-  "crystal-ball.png": "🔮",
-  "dumpling.png": "🥟",
-  "eyes.png": "👀",
-  "fingers-crossed.png": "🤞",
-  "handshake.png": "🤝",
-  "head-exploding.png": "🤯",
-  "lollipop.png": "🍭",
-  "magic-wand.png": "🪄",
-  "palette.png": "🎨",
-  "poop.png": "💩",
-  "skull.png": "💀",
-  "sloth.png": "🦥",
-  "squirrel.png": "🐿",
-};
+import { emojiMap, sendTelegramMessage } from "../chat/route";
 
 /**
  * POST /api/cardholder
@@ -86,22 +37,7 @@ export async function POST(request: Request) {
 
     const emoji = emojiMap[sigmoji];
     const fullMessage = `Cardholder of ${emoji}: ${message}`;
-    for (const [chatId, threadId] of TELEGRAM_TEST_CHAT_IDS) {
-      try {
-        if (typeof threadId === "undefined") {
-          telegramBot.telegram.sendMessage(chatId!, fullMessage);
-        } else {
-          telegramBot.telegram.sendMessage(chatId!, fullMessage, {
-            message_thread_id: threadId,
-          });
-        }
-      } catch (error) {
-        console.error(
-          `Failed to send chat message to chatId: ${chatId}, threadId: ${threadId}\n`,
-          error
-        );
-      }
-    }
+    sendTelegramMessage(fullMessage);
 
     await addCardholderChatLog({ message, sigmoji });
 
