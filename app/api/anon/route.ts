@@ -1,15 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { MembershipVerifier } from "@personaelabs/spartan-ecdsa";
-import { Telegraf } from "telegraf";
 import path from "path";
-
-const telegramBot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-// This is super jank. List of pairs of (chatId, threadId) to send messages to.
-const TELEGRAM_TEST_CHAT_IDS = [
-  [-4031859798, undefined],
-  [-1001963446787, 1414],
-];
+import { sendTelegramMessage } from "../chat/route";
 
 /**
  * POST /api/anon
@@ -39,22 +32,7 @@ export async function POST(request: Request) {
     }
 
     const fullMessage = `A Sigmoji holder (${pseudonym}): ${message}`;
-    for (const [chatId, threadId] of TELEGRAM_TEST_CHAT_IDS) {
-      try {
-        if (typeof threadId === "undefined") {
-          telegramBot.telegram.sendMessage(chatId!, fullMessage);
-        } else {
-          telegramBot.telegram.sendMessage(chatId!, fullMessage, {
-            message_thread_id: threadId,
-          });
-        }
-      } catch (error) {
-        console.error(
-          `Failed to send chat message to chatId: ${chatId}, threadId: ${threadId}\n`,
-          error
-        );
-      }
-    }
+    sendTelegramMessage(fullMessage);
 
     await addAnonChatLog({ message, pseudonym });
 
