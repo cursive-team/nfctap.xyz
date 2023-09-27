@@ -26,7 +26,6 @@ export const sendTelegramMessage = async (message: string) => {
     try {
       telegramBot.telegram.sendMessage(chatId!, message, {
         message_thread_id: threadId,
-        parse_mode: "MarkdownV2",
       });
     } catch (error) {
       console.error(
