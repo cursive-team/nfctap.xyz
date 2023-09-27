@@ -7,15 +7,23 @@ import {
   CourierPrimeH4,
   CourierPrimeBase,
   PrimaryFontBase1,
+  PrimaryFontSmall,
 } from "../core";
-import { loadLeaderboardEntries, loadSigmojis } from "@/lib/localStorage";
+import {
+  loadLeaderboardEntries,
+  loadSigmojis,
+  loadBackupState,
+  loadSigmojiWalletBackup,
+} from "@/lib/localStorage";
 import { Sigmoji } from "@/lib/types";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 import styled from "styled-components";
 import Image from "next/image";
 import { Leaderboard } from "@prisma/client";
-import { PrimaryLargeButton } from "../shared/Buttons";
+import { PrimaryLargeButton, SecondaryLargeButton } from "../shared/Buttons";
 import { useRouter } from "next/navigation";
+import { AppleWalletButton } from "../wallet/AppleWalletButton";
+import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
 
 type LeaderboardRow = {
   pseudonym: string;
@@ -29,13 +37,24 @@ export default function HomeScreen() {
 
   const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[]>();
   const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>();
+  const [hasWalletBackup, setHasWalletBackup] = useState(false);
 
   useEffect(() => {
-    const loadSigmojiArr = async () => {
+    const loadState = async () => {
       const arr = await loadSigmojis();
       setSigmojiArr(arr);
+
+      // pull backup state
+      const backup = await loadBackupState();
+      if (
+        backup !== undefined &&
+        (backup.type === "apple" || backup.type === "google")
+      ) {
+        setHasWalletBackup(true);
+      }
     };
-    loadSigmojiArr();
+
+    loadState();
   }, []);
 
   useEffect(() => {
@@ -150,23 +169,26 @@ export default function HomeScreen() {
           style={{ width: "100%" }}
           onClick={() => router.push("/chat")}
         >
+          <PrimaryFontBase1>💬</PrimaryFontBase1>
           <PrimaryFontBase1>COLLECTOR CHAT</PrimaryFontBase1>
         </PrimaryLargeButton>
         <PrimaryLargeButton
           style={{ width: "100%" }}
           onClick={() => router.push("/anon")}
         >
+          <PrimaryFontBase1>🕵️‍♂️</PrimaryFontBase1>
           <PrimaryFontBase1>ANON COLLECTOR CHAT</PrimaryFontBase1>
         </PrimaryLargeButton>
         <PrimaryLargeButton
           style={{ width: "100%" }}
           onClick={() => router.push("/cardholder")}
         >
+          <PrimaryFontBase1>💳</PrimaryFontBase1>
           <PrimaryFontBase1>CARDHOLDER CHAT</PrimaryFontBase1>
         </PrimaryLargeButton>
       </Chevron>
 
-      <Chevron initiallyOpen={false} bottom={true} text={"REVEALED SCORES"}>
+      <Chevron initiallyOpen={false} bottom={false} text={"REVEALED SCORES"}>
         {!leaderboard || !sigmojiArr ? (
           <LoadingSpinner />
         ) : (
@@ -263,6 +285,53 @@ export default function HomeScreen() {
           </LeaderboardContainer>
         )}
       </Chevron>
+
+      {!sigmojiArr || sigmojiArr.length === 0 ? (
+        <></>
+      ) : (
+        <Chevron
+          initiallyOpen={true}
+          bottom={true}
+          text={"BACKUP SIGMOJIS"}
+          noToggle={true}
+        >
+          {hasWalletBackup ? (
+            <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+              {`Update your existing backup!`}
+            </PrimaryFontBase>
+          ) : (
+            <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+              {`Currently, your sigmojis live in your browser, where they will be 
+            cleared with time. To keep your sigmojis forever, back them up to 
+            a more permanent store! `}
+            </PrimaryFontBase>
+          )}
+          <div className="flex flex-col justify-center items-center gap-6 inline-flex w-full">
+            <AppleWalletButton />
+            <GoogleWalletButton />
+            {/* <PrimaryFontSmall
+            style={{
+              textAlign: "center",
+              color: "#888",
+            }}
+          >
+            Alternatively you can copy/paste the data directly to the encrypted
+            messaging app or password manager of your choice.
+          </PrimaryFontSmall> */}
+            <SecondaryLargeButton
+              onClick={async () => {
+                const serializedSigmojis = await loadSigmojiWalletBackup();
+                navigator.clipboard.writeText(serializedSigmojis);
+              }}
+            >
+              <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
+                Copy data store
+              </PrimaryFontBase1>
+            </SecondaryLargeButton>
+          </div>
+        </Chevron>
+      )}
+
       <div style={{ marginTop: "auto" }}>
         <Footer />
       </div>

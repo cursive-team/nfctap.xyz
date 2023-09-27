@@ -1,14 +1,7 @@
 "use client";
 
-import { AppleWalletButton } from "../wallet/AppleWalletButton";
-import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
 import Modal from "./Modal";
-import {
-  PrimaryFontBase1,
-  PrimaryFontH3,
-  PrimaryFontH4,
-  PrimaryFontSmall,
-} from "../core";
+import { PrimaryFontBase1, PrimaryFontH3, PrimaryFontH4 } from "../core";
 import Image from "next/image";
 import { SecondaryLargeButton } from "../shared/Buttons";
 import {
@@ -19,14 +12,10 @@ import {
 import { useEffect, useState } from "react";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { Sigmoji } from "@/lib/types";
-import {
-  loadBackupState,
-  loadSigmojis,
-  saveSigmoji,
-  loadSigmojiWalletBackup,
-} from "@/lib/localStorage";
+import { loadSigmojis, saveSigmoji } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
+import { detectIncognito } from "detectincognitojs";
 
 export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const router = useRouter();
@@ -34,19 +23,18 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const [pcd, setPCD] = useState<HaLoNoncePCD | undefined>(undefined);
   const [imageLink, setImageLink] = useState<string | undefined>(undefined);
   const [alreadyCollected, setAlreadyCollected] = useState(false);
-  const [hasWalletBackup, setHasWalletBackup] = useState(false);
+
+  const alertIncognito = async () => {
+    const isIncognito = await detectIncognito();
+    if (isIncognito.isPrivate) {
+      alert(
+        "Please copy this link into a non-incognito tab in order to save your Sigmojis!"
+      );
+    }
+  };
 
   useEffect(() => {
     const generatePCD = async () => {
-      // pull backup state
-      const backup = await loadBackupState();
-      if (
-        backup !== undefined &&
-        (backup.type === "apple" || backup.type === "google")
-      ) {
-        setHasWalletBackup(true);
-      }
-
       // make the main signature PCD
       let producedPCD;
       try {
@@ -114,55 +102,9 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                 height="160"
                 alt="emoji"
               />
-              <div className="flex-col justify-start items-center gap-6 inline-flex">
-                {hasWalletBackup ? (
-                  <>
-                    <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
-                      {"Update your backup!"}
-                    </PrimaryFontH4>
-                    <PrimaryFontSmall
-                      style={{
-                        textAlign: "center",
-                        color: "#888",
-                      }}
-                    >
-                      Your previous wallet backup will be replaced.
-                    </PrimaryFontSmall>
-                  </>
-                ) : (
-                  <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
-                    {"Backup your collection!"}
-                  </PrimaryFontH4>
-                )}
-                <AppleWalletButton />
-                <GoogleWalletButton />
-              </div>
-              {hasWalletBackup ? (
-                <></>
-              ) : (
-                <div className="flex-col justify-start items-center mt-4 gap-6 inline-flex">
-                  <PrimaryFontSmall
-                    style={{
-                      textAlign: "center",
-                      color: "#888",
-                    }}
-                  >
-                    Alternatively you can copy/paste the data directly to the
-                    encrypted messaging or password manager of your choice.
-                  </PrimaryFontSmall>
-                  <SecondaryLargeButton
-                    onClick={async () => {
-                      const serializedSigmojis =
-                        await loadSigmojiWalletBackup();
-                      navigator.clipboard.writeText(serializedSigmojis);
-                    }}
-                  >
-                    <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-                      Copy data store
-                    </PrimaryFontBase1>
-                  </SecondaryLargeButton>
-                </div>
-              )}
+              <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
+                {`You have edition ${pcd.claim.nonce} of this Sigmoji.`}
+              </PrimaryFontBase1>
             </>
           ) : alreadyCollected ? (
             <>
@@ -175,23 +117,28 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                 height="160"
                 alt="emoji"
               />
-              <SecondaryLargeButton onClick={() => router.push("/home")}>
-                <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-                  Back to app
-                </PrimaryFontBase1>
-                <Image
-                  src="/buttons/arrow-right-line.svg"
-                  width="16"
-                  height="16"
-                  alt="arrow"
-                />
-              </SecondaryLargeButton>{" "}
             </>
           ) : (
             <div className="flex justify-center items-center">
               <LoadingSpinner />
             </div>
           )}
+          <SecondaryLargeButton
+            onClick={async () => {
+              await alertIncognito();
+              router.push("/home");
+            }}
+          >
+            <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
+              Back to app
+            </PrimaryFontBase1>
+            <Image
+              src="/buttons/arrow-right-line.svg"
+              width="16"
+              height="16"
+              alt="arrow"
+            />
+          </SecondaryLargeButton>{" "}
         </div>
       </div>
     </Modal>

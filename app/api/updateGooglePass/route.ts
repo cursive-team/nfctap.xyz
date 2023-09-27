@@ -56,12 +56,12 @@ export async function GET(request: Request) {
       {
         id: "location",
         header: "LOCATION",
-        body: "Stanford",
+        body: "Berlin",
       },
       {
         id: "event",
         header: "EVENT",
-        body: "SBC",
+        body: "FtC",
       },
       {
         id: "year",

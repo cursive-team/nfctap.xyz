@@ -97,7 +97,7 @@ export const GoogleWalletButton = () => {
         header: {
           defaultValue: {
             language: "en",
-            value: "Sigmojis I",
+            value: "Sigmojis",
           },
         },
         textModulesData: [
@@ -114,12 +114,12 @@ export const GoogleWalletButton = () => {
           {
             id: "location",
             header: "LOCATION",
-            body: "Stanford",
+            body: "Berlin",
           },
           {
             id: "event",
             header: "EVENT",
-            body: "SBC",
+            body: "FtC",
           },
           {
             id: "year",
@@ -193,8 +193,8 @@ export const GoogleWalletButton = () => {
           <Image
             src="/buttons/AddToGoogleWallet.svg"
             alt="Add To Google Wallet"
-            width={201}
-            height={42}
+            width={264}
+            height={52}
             sizes="100vw"
             style={
               saveUrl || (serial && number) ? {} : { filter: "grayscale(100%)" }
