@@ -8,11 +8,13 @@ export default function Chevron({
   initiallyOpen,
   bottom,
   children,
+  noToggle,
 }: {
   text: string;
   initiallyOpen: boolean;
   bottom: boolean;
   children: React.ReactNode;
+  noToggle?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
@@ -20,19 +22,28 @@ export default function Chevron({
     <>
       {isOpen ? (
         <ChevronOpenContainer $noBorder={bottom}>
-          <ChevronTextArrowContainer onClick={() => setIsOpen(!isOpen)}>
+          <ChevronTextArrowContainer
+            onClick={() => {
+              if (noToggle) return;
+              setIsOpen(!isOpen);
+            }}
+          >
             <div style={{ width: "100%" }}>
               <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
                 {text}
               </PrimaryFontH4>
             </div>
-            <Image
-              src="/buttons/chevron-up.svg"
-              width="24"
-              height="24"
-              alt="Chevron"
-              priority
-            />
+            {noToggle ? (
+              <></>
+            ) : (
+              <Image
+                src="/buttons/chevron-up.svg"
+                width="24"
+                height="24"
+                alt="Chevron"
+                priority
+              />
+            )}
           </ChevronTextArrowContainer>
           {children}
         </ChevronOpenContainer>

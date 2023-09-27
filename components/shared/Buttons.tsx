@@ -10,6 +10,11 @@ export const CollectButton = styled.div`
   flex-shrink: 0;
   border-radius: 6px;
   background: var(--snow-flurry-200);
+  transition: transform 0.2s ease; // smooth transform transition
+
+  &:active {
+    transform: scale(0.95); // scale down a bit when clicked
+  }
 `;
 
 export const PrimaryLargeButton = styled.button`

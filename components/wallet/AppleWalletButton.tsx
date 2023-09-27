@@ -49,8 +49,8 @@ export const AppleWalletButton = () => {
         <Image
           src="/buttons/AddToAppleWallet.svg"
           alt="Add to Apple Wallet"
-          width={201}
-          height={42}
+          width={264}
+          height={52}
           sizes="100vw"
           style={number && serial ? {} : { filter: "grayscale(100%)" }}
         />

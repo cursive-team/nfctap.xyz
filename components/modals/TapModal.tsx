@@ -2,10 +2,10 @@
 
 import { OuterContainer, InnerContainer } from "../shared/Modal";
 import Modal from "./Modal";
-import { PrimaryFontBase, PrimaryFontH3 } from "../core";
+import { PrimaryFontBase, PrimaryFontBase1, PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { sha256 } from "js-sha256";
 import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
@@ -13,8 +13,11 @@ import CollectedModal from "./CollectedModal";
 import { cardPubKeys } from "@/lib/cardPubKeys";
 import { PrimaryLargeButton } from "../shared/Buttons";
 import { detectIncognito } from "detectincognitojs";
+import { useRouter } from "next/navigation";
 
 export default function TapModal() {
+  const router = useRouter();
+
   const [isTapping, setIsTapping] = useState<boolean>(false);
   const [statusText, setStatusText] = useState("Waiting for NFC setup...");
   const [args, setArgs] = useState<HaLoNoncePCDArgs | undefined>(undefined);
@@ -24,13 +27,14 @@ export default function TapModal() {
       const isIncognito = await detectIncognito();
       if (isIncognito.isPrivate) {
         alert(
-          "Please disable private browsing in order to save your Sigmojis!"
+          "Please move to a non-incognito tab in order to save your Sigmojis!"
         );
+        router.push("/home");
       }
     };
 
     alertIncognito();
-  }, []);
+  }, [router]);
 
   // run code as soon as modal is rendered
   useEffect(() => {
@@ -123,6 +127,7 @@ export default function TapModal() {
         // "Scanning failed, reload to retry. Details: " + String(e)
         setStatusText("Scanning failed, reload page to retry.");
       }
+      setIsTapping(false);
     }
 
     if (isTapping) {
@@ -134,16 +139,22 @@ export default function TapModal() {
     return <CollectedModal args={args} />;
   }
 
-  return isTapping ? (
+  return (
     <Modal>
       <OuterContainer>
         <InnerContainer>
           <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-            Place the NFC card on your phone.
+            Place the NFC card near your phone.
           </PrimaryFontH3>
+          <img src="/phone-tap.gif" />
           <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            {statusText}
+            {isTapping ? statusText : ""}
           </PrimaryFontBase>
+          <PrimaryLargeButton onClick={() => setIsTapping(true)}>
+            <PrimaryFontBase1>
+              {isTapping ? "TAPPING..." : "READY TO TAP"}
+            </PrimaryFontBase1>
+          </PrimaryLargeButton>
           <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
             {"If you still can't tap, check out the "}
             <a
@@ -155,23 +166,6 @@ export default function TapModal() {
             </a>
             .
           </PrimaryFontBase>
-        </InnerContainer>
-      </OuterContainer>
-      <img
-        src="/phone-tap.gif"
-        style={{ marginTop: "40px", marginBottom: "40px" }}
-      />
-    </Modal>
-  ) : (
-    <Modal>
-      <OuterContainer>
-        <InnerContainer>
-          <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-            Press the button below to begin tapping!
-          </PrimaryFontH3>
-          <PrimaryLargeButton onClick={() => setIsTapping(true)}>
-            Tap!
-          </PrimaryLargeButton>
         </InnerContainer>
       </OuterContainer>
     </Modal>

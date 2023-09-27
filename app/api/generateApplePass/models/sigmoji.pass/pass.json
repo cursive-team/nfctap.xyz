@@ -5,7 +5,7 @@
   "serialNumber": "0000001",
   "maxDistance": 1000,
   "organizationName": "nfctap.xyz",
-  "description": "Sigmojis I",
+  "description": "Sigmojis",
   "logoText": "nfctap.xyz",
   "barcodes": [
     {
@@ -25,7 +25,7 @@
       {
         "key": "collection",
         "label": "Collection",
-        "value": "Sigmojis I"
+        "value": "Sigmojis"
       },
       {
         "key": "score",
@@ -37,12 +37,12 @@
       {
         "key": "location",
         "label": "Location",
-        "value": "Stanford"
+        "value": "Berlin"
       },
       {
         "key": "event",
         "label": "Event",
-        "value": "SBC"
+        "value": "FtC"
       },
       {
         "key": "year",
