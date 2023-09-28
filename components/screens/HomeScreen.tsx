@@ -24,6 +24,7 @@ import { PrimaryLargeButton, SecondaryLargeButton } from "../shared/Buttons";
 import { useRouter } from "next/navigation";
 import { AppleWalletButton } from "../wallet/AppleWalletButton";
 import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
+import { Button } from "../ui/button";
 
 type LeaderboardRow = {
   pseudonym: string;
@@ -269,18 +270,20 @@ export default function HomeScreen() {
                   </CourierPrimeH4>
                 </RevealScoreContainer>
               </RevealTextContainer>
-              <PrimaryLargeButton
+              <Button
                 style={{ width: "100%" }}
                 onClick={() => router.push("/prove")}
               >
-                <Image
-                  src="/buttons/eye-2-line.svg"
-                  width="16"
-                  height="16"
-                  alt="eye"
-                />
-                <PrimaryFontBase1>REVEAL</PrimaryFontBase1>
-              </PrimaryLargeButton>
+                <div className="flex gap-1">
+                  <Image
+                    src="/buttons/eye-2-line.svg"
+                    width="16"
+                    height="16"
+                    alt="eye"
+                  />
+                  <PrimaryFontBase1>REVEAL</PrimaryFontBase1>
+                </div>
+              </Button>
             </RevealContainer>
           </LeaderboardContainer>
         )}

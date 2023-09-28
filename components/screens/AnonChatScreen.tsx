@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 import { Sigmoji } from "@/lib/types";
 import { loadSigmojis } from "@/lib/localStorage";
 import {
-  ProverWasm,
   addZKPToSigmoji,
-  initWasm,
   setupTree,
 } from "@/lib/zkProving";
 import { Input } from "../shared/Input";
+import { useWasm } from "@/hooks/useWasm";
+import { Button } from "../ui/button";
 
 enum ChatDisplayState {
   LOADING,
@@ -23,22 +23,14 @@ enum ChatDisplayState {
 }
 
 export default function ChatScreen() {
-  const [wasm, setWasm] = useState<ProverWasm>();
   const [pseudonym, setPseudonym] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
     ChatDisplayState.LOADING
   );
+  const [disabled, setDisabled] = useState(false)
 
-  useEffect(() => {
-    async function setup() {
-      if (!wasm) {
-        setWasm(await initWasm());
-      }
-    }
-
-    setup();
-  }, [wasm]);
+  const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm()
 
   useEffect(() => {
     if (wasm) {
@@ -84,6 +76,7 @@ export default function ChatScreen() {
     }
 
     setDisplayState(ChatDisplayState.SUBMITTING);
+    setDisabled(true)
     await fetch("/api/anon", {
       method: "POST",
       headers: {
@@ -107,6 +100,7 @@ export default function ChatScreen() {
         alert("Error sending chat message.");
       }
     });
+    setDisabled(false)
   };
 
   const getDisplayText = () => {
@@ -139,9 +133,9 @@ export default function ChatScreen() {
         </CourierPrimeBase>
         <Input header="Pseudonym" value={pseudonym} setValue={setPseudonym} />
         <TextArea header="Message" value={message} setValue={setMessage} />
-        <PrimaryLargeButton disabled={!wasm} onClick={onSubmit}>
+        <Button className="w-full" disabled={!wasm || disabled} loading={isLoadingWasm} onClick={onSubmit}>
           {getDisplayText()}
-        </PrimaryLargeButton>
+        </Button>
       </ChatContainer>
       <div style={{ marginTop: "auto" }}>
         <Footer />
