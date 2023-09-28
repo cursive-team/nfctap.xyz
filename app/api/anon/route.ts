@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       throw new Error("Proof failed verification");
     }
 
-    const fullMessage = `A Sigmoji holder (${pseudonym}): ${message}`;
+    const fullMessage = `Anon Collector (${pseudonym}): ${message}`;
     sendTelegramMessage(fullMessage);
 
     await addAnonChatLog({ message, pseudonym });
