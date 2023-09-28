@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     }
 
     const emoji = emojiMap[sigmoji];
-    const fullMessage = `${emoji}: ${message}`;
+    const fullMessage = `Collector of ${emoji}: ${message}`;
     sendTelegramMessage(fullMessage);
 
     await addChatLog({ message, sigmoji });
