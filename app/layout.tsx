@@ -26,9 +26,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${courier_prime.variable}`}>
         <QueryClientWrapper>
-          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>s
+          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </QueryClientWrapper>
-       
       </body>
     </html>
   );
