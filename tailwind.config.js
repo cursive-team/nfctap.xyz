@@ -6,6 +6,9 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      helvetica: ['"Helvetica Neue"', 'sans-serif']
+    },
     extend: {
       colors: {
         'snow-flurry': {

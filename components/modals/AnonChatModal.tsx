@@ -1,9 +1,4 @@
-import styled from "styled-components";
-import { MainHeader } from "@/components/shared/Headers";
-import Footer from "@/components/shared/Footer";
 import { TextArea } from "@/components/shared/TextArea";
-import { PrimaryLargeButton } from "@/components/shared/Buttons";
-import { CourierPrimeBase, PrimaryFontH1 } from "@/components/core";
 import { useEffect, useState } from "react";
 import { Sigmoji } from "@/lib/types";
 import { loadSigmojis } from "@/lib/localStorage";
@@ -11,6 +6,7 @@ import { addZKPToSigmoji, setupTree } from "@/lib/zkProving";
 import { Input } from "../shared/Input";
 import { useWasm } from "@/hooks/useWasm";
 import { Button } from "../ui/button";
+import Modal from "./Modal";
 
 enum ChatDisplayState {
   LOADING,
@@ -19,7 +15,7 @@ enum ChatDisplayState {
   SUBMITTING,
 }
 
-export default function ChatScreen() {
+export default function AnonChatModal() {
   const [pseudonym, setPseudonym] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
@@ -27,7 +23,8 @@ export default function ChatScreen() {
   );
   const [disabled, setDisabled] = useState(false);
 
-  const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm();
+  const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } =
+    useWasm();
 
   useEffect(() => {
     if (wasm) {
@@ -38,13 +35,12 @@ export default function ChatScreen() {
   const generateProofForSigmoji = async (
     sigmoji: Sigmoji
   ): Promise<Sigmoji> => {
-    if (!wasm) throw new Error("WASM not initialized");
+    if (!wasm || !pubKeyTree) throw new Error("WASM not initialized");
 
     if (sigmoji.ZKP) {
       return sigmoji;
     }
 
-    const pubKeyTree = setupTree(wasm);
     return addZKPToSigmoji(sigmoji, wasm, pubKeyTree);
   };
 
@@ -115,20 +111,19 @@ export default function ChatScreen() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <MainHeader />
-      <ChatContainer>
-        <PrimaryFontH1 style={{ color: "var(--woodsmoke-100)" }}>
-          Anon Chat
-        </PrimaryFontH1>
-        <CourierPrimeBase style={{ maxWidth: "90%" }}>
-          Chat pseudonymously with other Sigmoji holders! Messages will be sent
-          to the Sigmoji Telegram group.
-        </CourierPrimeBase>
-        <CourierPrimeBase style={{ maxWidth: "90%" }}>
-          You will only be defined by the pseudonym you select, but you must
-          have a Sigmoji to use this chat.
-        </CourierPrimeBase>
+    <Modal
+      title="Anon Chat"
+      description={
+        <>
+          <span>
+            Chat pseudonymously with other Sigmoji holders! You must have a
+            Sigmoji to use this chat. Your message will be sent to the FtC
+            residency TG group.
+          </span>
+        </>
+      }
+    >
+      <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
         <Input header="Pseudonym" value={pseudonym} setValue={setPseudonym} />
         <TextArea header="Message" value={message} setValue={setMessage} />
         <Button
@@ -139,20 +134,7 @@ export default function ChatScreen() {
         >
           {getDisplayText()}
         </Button>
-      </ChatContainer>
-      <div style={{ marginTop: "auto" }}>
-        <Footer />
       </div>
-    </div>
+    </Modal>
   );
 }
-
-const ChatContainer = styled.div`
-  display: flex;
-  gap: 16px;
-  padding: 8px;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-  align-self: stretch;
-`;

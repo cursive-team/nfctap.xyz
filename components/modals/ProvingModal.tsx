@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  PrimaryFontH1,
-  PrimaryFontH3,
-  PrimaryFontBase,
-  PrimaryFontBase1,
-} from "../core";
 import { Input } from "../shared/Input";
-import { OuterContainer, InnerContainer } from "../shared/Modal";
 import Modal from "./Modal";
 import { addZKPToSigmoji } from "@/lib/zkProving";
 import {
@@ -124,43 +117,40 @@ export default function ProvingModal() {
   const showCounter = parseInt(counterPercentage) > 0;
 
   return (
-    <Modal>
-      <OuterContainer>
-        <InnerContainer>
-          <div className="flex-col justify-center items-center gap-2 inline-flex">
-            <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-              Your score
-            </PrimaryFontH3>
-            <PrimaryFontH1 style={{ color: "var(--snow-flurry-200)" }}>
-              {score}
-            </PrimaryFontH1>
-          </div>
-
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            Create a pseudonym and make a zk proof to share it on the
-            leaderboard.
-          </PrimaryFontBase>
-
-          <Input
-            disabled={isDisabled}
-            header="Pseudonym"
-            value={pseudonym}
-            setValue={setPseudonym}
-          />
-          <FieldWrapper
-            description={showCounter ? `PROVING ${counterPercentage}%` : ""}
-            className="w-full"
-          >
-            <Button
-              disabled={isDisabled}
-              loading={loadingProof || loadingMetadata}
-              onClick={onProve}
-            >
-              <PrimaryFontBase1>{proveText}</PrimaryFontBase1>
-            </Button>
-          </FieldWrapper>
-        </InnerContainer>
-      </OuterContainer>
+    <Modal
+      title={
+        <>
+          <span className="block font-helvetica text-2xl font-bold text-woodsmoke-100">
+            Your score
+          </span>
+          <span className="block font-helvetica text-4xl font-bold text-snow-flurry-200">
+            {score}
+          </span>
+        </>
+      }
+      description="Create a pseudonym and make a zk proof to share it on the leaderboard."
+    >
+      <Input
+        disabled={isDisabled}
+        header="Pseudonym"
+        value={pseudonym}
+        setValue={setPseudonym}
+      />
+      <FieldWrapper
+        description={showCounter ? `PROVING ${counterPercentage}%` : ""}
+        className="w-full"
+      >
+        <Button
+          className="w-full"
+          disabled={isDisabled}
+          loading={loadingProof || loadingMetadata}
+          onClick={onProve}
+        >
+          <span className="font-helvetica font-medium text-base">
+            {proveText}
+          </span>
+        </Button>
+      </FieldWrapper>
     </Modal>
   );
 }

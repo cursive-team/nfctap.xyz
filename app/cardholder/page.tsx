@@ -1,7 +1,7 @@
 "use client";
 
-import CardholderScreen from "@/components/screens/CardholderScreen";
+import CardholderModal from "@/components/modals/CardholderModal";
 
 export default function Home() {
-  return <CardholderScreen />;
+  return <CardholderModal />;
 }

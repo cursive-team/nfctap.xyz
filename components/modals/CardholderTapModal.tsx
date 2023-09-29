@@ -1,11 +1,10 @@
 "use client";
 
-import { OuterContainer, InnerContainer } from "../shared/Modal";
 import Modal from "./Modal";
 import { PrimaryFontBase, PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { useEffect, useState } from "react";
-import { SignMessageArgs } from "../screens/CardholderScreen";
+import { SignMessageArgs } from "./CardholderModal";
 import { hashMessage } from "@/lib/signatureUtils";
 
 export type CardholderTapModalProps = {
@@ -68,32 +67,24 @@ export default function CardholderTapModal({
   }, [onTap, message]);
 
   return (
-    <Modal>
-      <OuterContainer>
-        <InnerContainer>
-          <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-            Place the NFC card on your phone.
-          </PrimaryFontH3>
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            {statusText}
-          </PrimaryFontBase>
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            {"If you still can't tap, check out the "}
-            <a
-              href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
-              target="_blank"
-              style={{ textDecoration: "underline" }}
-            >
-              troubleshooting guide
-            </a>
-            .
-          </PrimaryFontBase>
-        </InnerContainer>
-      </OuterContainer>
-      <img
-        src="/phone-tap.gif"
-        style={{ marginTop: "40px", marginBottom: "40px" }}
-      />
+    <Modal footer={<img src="/phone-tap.gif" className="py-10" />}>
+      <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+        Place the NFC card on your phone.
+      </PrimaryFontH3>
+      <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+        {statusText}
+      </PrimaryFontBase>
+      <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+        {"If you still can't tap, check out the "}
+        <a
+          href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
+          target="_blank"
+          className="underline"
+        >
+          troubleshooting guide
+        </a>
+        .
+      </PrimaryFontBase>
     </Modal>
   );
 }

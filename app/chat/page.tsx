@@ -1,7 +1,7 @@
 "use client";
 
-import ChatScreen from "@/components/screens/ChatScreen";
+import ChatModal from "@/components/modals/ChatModal";
 
 export default function Home() {
-  return <ChatScreen />;
+  return <ChatModal />;
 }

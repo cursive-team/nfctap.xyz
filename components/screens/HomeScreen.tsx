@@ -165,7 +165,7 @@ export default function HomeScreen() {
         )}
       </Chevron>
 
-      <Chevron initiallyOpen={false} bottom={false} text={"CHAT"}>
+      <Chevron initiallyOpen={false} bottom={false} text={"TELEGRAM"}>
         <PrimaryLargeButton
           style={{ width: "100%" }}
           onClick={() => router.push("/chat")}
@@ -189,7 +189,7 @@ export default function HomeScreen() {
         </PrimaryLargeButton>
       </Chevron>
 
-      <Chevron initiallyOpen={false} bottom={false} text={"REVEALED SCORES"}>
+      <Chevron initiallyOpen={false} bottom={false} text={"LEADERBOARD"}>
         {!leaderboard || !sigmojiArr ? (
           <LoadingSpinner />
         ) : (

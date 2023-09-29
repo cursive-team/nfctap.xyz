@@ -12,6 +12,7 @@
   "dependencies": {
     "@arx-research/libhalo": "^1.2.17",
     "@ethereumjs/util": "^9.0.0",
+    "@headlessui/react": "^1.7.17",
     "@pcd/halo-nonce-pcd": "^0.2.1",
     "@pcd/passport-ui": "^0.6.1",
     "@pcd/pcd-types": "^0.6.3",

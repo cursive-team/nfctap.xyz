@@ -1,8 +1,7 @@
 "use client";
 
-import { OuterContainer, InnerContainer } from "../shared/Modal";
-import Modal from "./Modal";
-import { PrimaryFontBase, PrimaryFontBase1, PrimaryFontH3 } from "../core";
+import Modal  from "./Modal";
+import { PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
 import { useEffect, useState } from "react";
@@ -11,9 +10,9 @@ import { HaLoNoncePCDArgs } from "@pcd/halo-nonce-pcd";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import CollectedModal from "./CollectedModal";
 import { cardPubKeys } from "@/lib/cardPubKeys";
-import { PrimaryLargeButton } from "../shared/Buttons";
 import { detectIncognito } from "detectincognitojs";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 export default function TapModal() {
   const router = useRouter();
@@ -140,34 +139,31 @@ export default function TapModal() {
   }
 
   return (
-    <Modal>
-      <OuterContainer>
-        <InnerContainer>
-          <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
-            Place the NFC card near your phone.
-          </PrimaryFontH3>
-          <img src="/phone-tap.gif" />
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            {isTapping ? statusText : ""}
-          </PrimaryFontBase>
-          <PrimaryLargeButton onClick={() => setIsTapping(true)}>
-            <PrimaryFontBase1>
-              {isTapping ? "TAPPING..." : "READY TO TAP"}
-            </PrimaryFontBase1>
-          </PrimaryLargeButton>
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
-            {"If you still can't tap, check out the "}
-            <a
-              href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
-              target="_blank"
-              style={{ textDecoration: "underline" }}
-            >
-              troubleshooting guide
-            </a>
-            .
-          </PrimaryFontBase>
-        </InnerContainer>
-      </OuterContainer>
+    <Modal 
+      title={
+        <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+          Place the NFC card near your phone.
+        </PrimaryFontH3>
+      }
+    >
+      <img src="/phone-tap.gif" />
+      <span className="text-base font-helvetica text-woodsmoke-100 font-normal leading-[140%]">
+        {isTapping ? statusText : ""}
+      </span>
+      <Button className="w-full" onClick={() => setIsTapping(true)}>
+        {isTapping ? "TAPPING..." : "READY TO TAP"}
+      </Button>
+      <span className="text-base font-helvetica text-woodsmoke-100 font-normal leading-[140%]">
+        {"If you still can't tap, check out the "}
+        <a
+          href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
+          target="_blank"
+          style={{ textDecoration: "underline" }}
+        >
+          troubleshooting guide
+        </a>
+        .
+      </span>
     </Modal>
   );
 }

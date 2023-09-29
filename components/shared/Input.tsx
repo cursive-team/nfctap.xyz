@@ -15,7 +15,7 @@ export const Input = ({ value, setValue, header, disabled }: InputProps) => {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       {header && (
         <HeaderDiv>
           <HeaderText>{header}</HeaderText>
@@ -28,7 +28,7 @@ export const Input = ({ value, setValue, header, disabled }: InputProps) => {
 
 const InputField = styled.input`
   display: flex;
-  width: 264px;
+  width: 100%;
   height: 42px;
   flex-direction: column;
   text-align: center;

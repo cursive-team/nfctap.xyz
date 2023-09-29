@@ -14,7 +14,7 @@ export const TextArea = ({ value, setValue, header }: TextAreaProps) => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       {header && (
         <HeaderDiv>
           <HeaderText>{header}</HeaderText>
@@ -27,7 +27,7 @@ export const TextArea = ({ value, setValue, header }: TextAreaProps) => {
 
 const TextAreaField = styled.textarea`
   display: flex;
-  width: 264px;
+  width: 100%;
   height: 126px;
   padding: 4px 4px 4px 4px;
   flex-direction: column;
