@@ -1,7 +1,7 @@
 "use client";
 
-import AnonChatScreen from "@/components/screens/AnonChatScreen";
+import AnonChatModal from "@/components/modals/AnonChatModal";
 
 export default function Home() {
-  return <AnonChatScreen />;
+  return <AnonChatModal />;
 }

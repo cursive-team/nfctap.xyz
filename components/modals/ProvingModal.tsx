@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import { Input } from "../shared/Input";
 import Modal from "./Modal";
-import {
-  addZKPToSigmoji,
-} from "@/lib/zkProving";
+import { addZKPToSigmoji } from "@/lib/zkProving";
 import {
   saveLeaderboardEntry,
   serializeSigmojisInLocalStorage,
@@ -119,10 +117,10 @@ export default function ProvingModal() {
   const showCounter = parseInt(counterPercentage) > 0;
 
   return (
-    <Modal 
+    <Modal
       title={
         <>
-          <span className="bloxk font-helvetica text-2xl font-bold text-woodsmoke-100">
+          <span className="block font-helvetica text-2xl font-bold text-woodsmoke-100">
             Your score
           </span>
           <span className="block font-helvetica text-4xl font-bold text-snow-flurry-200">
@@ -132,7 +130,6 @@ export default function ProvingModal() {
       }
       description="Create a pseudonym and make a zk proof to share it on the leaderboard."
     >
-      
       <Input
         disabled={isDisabled}
         header="Pseudonym"
@@ -149,7 +146,9 @@ export default function ProvingModal() {
           loading={loadingProof || loadingMetadata}
           onClick={onProve}
         >
-          <span className="font-helvetica font-medium text-base">{proveText}</span>
+          <span className="font-helvetica font-medium text-base">
+            {proveText}
+          </span>
         </Button>
       </FieldWrapper>
     </Modal>

@@ -1,7 +1,7 @@
 import { TextArea } from "@/components/shared/TextArea";
 import { useState } from "react";
-import CardholderTapModal from "../modals/CardholderTapModal";
-import Modal from "../modals/Modal";
+import CardholderTapModal from "./CardholderTapModal";
+import Modal from "./Modal";
 import { Button } from "../ui/button";
 
 export type SignMessageArgs = {
@@ -20,7 +20,7 @@ enum CardholderDisplayState {
   SUBMITTING,
 }
 
-export default function CardholderScreen() {
+export default function CardholderModal() {
   const [message, setMessage] = useState("");
   const [displayState, setDisplayState] = useState<CardholderDisplayState>(
     CardholderDisplayState.CHAT
@@ -77,18 +77,17 @@ export default function CardholderScreen() {
   }
 
   return (
-    <Modal 
+    <Modal
       title="Cardholder Chat"
       description={
         <>
           <span>
-            Chat pseudonymously with other Sigmoji holders! Messages will be sent
-            to the Sigmoji Telegram group. This chat is only available to Sigmoji
-            Cardholders.
+            Chat as a Sigmoji cardholder! Your message will be sent to the FtC
+            residency TG group.
           </span>
           <span>
-            When you send a chat message, you will be asked to tap your card. This
-            will generate a signature that authenticates your message.
+            When you send a chat message, you will be prompted tap your card.
+            This will generate a signature to authenticate your message.
           </span>
         </>
       }

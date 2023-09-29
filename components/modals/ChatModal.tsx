@@ -7,7 +7,7 @@ import { addZKPToSigmoji, setupTree } from "@/lib/zkProving";
 import { useSigmojis } from "@/hooks/useSigmojis";
 import { useWasm } from "@/hooks/useWasm";
 import { Button } from "../ui/button";
-import Modal from "../modals/Modal";
+import Modal from "./Modal";
 import { Dropdown, DropdownProps } from "../ui/dropdown";
 
 enum ChatDisplayState {
@@ -17,7 +17,7 @@ enum ChatDisplayState {
   SUBMITTING,
 }
 
-export default function ChatScreen() {
+export default function ChatModal() {
   const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm();
   const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
   const [isDisabled, setDisabled] = useState(false);
@@ -110,32 +110,33 @@ export default function ChatScreen() {
       case ChatDisplayState.SUBMITTING:
         return "SENDING MESSAGE...";
     }
-  };  
+  };
 
-  const sigmojisOptions: DropdownProps["items"] = sigmojis?.map(({emojiImg}) => {
-    return {
-      content: (
-        <Image
-          src={`/emoji-photo/${emojiImg}`}
-          width="24"
-          height="24"
-          alt="emoji"
-          className="mx-auto"
-        />
-      ),
-      onClick: () => onSelectSigmoji(emojiImg),
-    }
-  }) ?? []
+  const sigmojisOptions: DropdownProps["items"] =
+    sigmojis?.map(({ emojiImg }) => {
+      return {
+        content: (
+          <Image
+            src={`/emoji-photo/${emojiImg}`}
+            width="24"
+            height="24"
+            alt="emoji"
+            className="mx-auto"
+          />
+        ),
+        onClick: () => onSelectSigmoji(emojiImg),
+      };
+    }) ?? [];
 
   return (
-    <Modal 
-      title="Chat"
-      description="Chat pseudonymously with other Sigmoji holders! Messages will be sent to the Sigmoji Telegram group."
-    > 
+    <Modal
+      title="Collector Chat"
+      description="Chat as a collector of Sigmojis! Your message will be sent to the FtC residency TG group."
+    >
       <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
         {selectedSigmoji && (
           <div className="flex flex-col gap-2 items-center">
-            <Dropdown 
+            <Dropdown
               label={
                 <>
                   <span>Select a Sigmoji to chat as:</span>
@@ -147,7 +148,7 @@ export default function ChatScreen() {
                   />
                 </>
               }
-              items={sigmojisOptions} 
+              items={sigmojisOptions}
             />
           </div>
         )}

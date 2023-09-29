@@ -4,7 +4,7 @@ import Modal from "./Modal";
 import { PrimaryFontBase, PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { useEffect, useState } from "react";
-import { SignMessageArgs } from "../screens/CardholderScreen";
+import { SignMessageArgs } from "./CardholderModal";
 import { hashMessage } from "@/lib/signatureUtils";
 
 export type CardholderTapModalProps = {

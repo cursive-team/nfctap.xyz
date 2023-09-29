@@ -3,15 +3,16 @@
 import Image from "next/image";
 import { ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { PrimaryFontH2 } from "../core";
 
 interface ModalProps {
-  title?: ReactNode
-  description?: ReactNode
-  children: ReactNode,
-  footer?: ReactNode
+  title?: ReactNode;
+  description?: ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
 }
 
-const  ModalHeader = () => {
+const ModalHeader = () => {
   const router = useRouter();
 
   return (
@@ -21,19 +22,26 @@ const  ModalHeader = () => {
       </div>
     </div>
   );
-}
+};
 
 const OuterContainer = ({ children }: Pick<ModalProps, "children">) => {
-  return <div className="flex px-2">{children}</div>
-}
+  return <div className="flex px-2">{children}</div>;
+};
 
 const InnerContainer = ({ children }: Pick<ModalProps, "children">) => {
-  return <div className="flex flex-col text-center gap-6 items-center px-4">
-    {children}
-  </div>
-}
+  return (
+    <div className="flex flex-col text-center gap-6 items-center px-4">
+      {children}
+    </div>
+  );
+};
 
-export default function Modal({ children, footer, title, description }: ModalProps) {
+export default function Modal({
+  children,
+  footer,
+  title,
+  description,
+}: ModalProps) {
   return (
     <div className="flex items-center pt-[40px] pb-[80px] bg-[#282828]/80 min-w-[100vw] min-h-screen">
       <div className="flex items-center flex-col px-4 w-full">
@@ -41,10 +49,20 @@ export default function Modal({ children, footer, title, description }: ModalPro
           <ModalHeader />
           <OuterContainer>
             <InnerContainer>
-              {(title || description) && <div className="flex flex-col gap-4 text-center self-stretch p-2">
-                {title && <h1 className="text-4xl font-bold text-woodsmoke-100 leading-normal">{title}</h1>}
-                {description && <span className="flex flex-col gap-4 text-base font-normal font-helvetica leading-[140%] text-woodsmoke-100">{description}</span>}
-              </div>}
+              {(title || description) && (
+                <div className="flex flex-col gap-4 text-center self-stretch p-2">
+                  {title && (
+                    <PrimaryFontH2 className="text-woodsmoke-100 leading-normal">
+                      {title}
+                    </PrimaryFontH2>
+                  )}
+                  {description && (
+                    <span className="flex flex-col gap-4 text-base font-normal font-helvetica leading-[140%] text-woodsmoke-100">
+                      {description}
+                    </span>
+                  )}
+                </div>
+              )}
               {children}
             </InnerContainer>
           </OuterContainer>

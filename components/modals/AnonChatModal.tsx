@@ -6,7 +6,7 @@ import { addZKPToSigmoji, setupTree } from "@/lib/zkProving";
 import { Input } from "../shared/Input";
 import { useWasm } from "@/hooks/useWasm";
 import { Button } from "../ui/button";
-import Modal from "../modals/Modal";
+import Modal from "./Modal";
 
 enum ChatDisplayState {
   LOADING,
@@ -15,7 +15,7 @@ enum ChatDisplayState {
   SUBMITTING,
 }
 
-export default function ChatScreen() {
+export default function AnonChatModal() {
   const [pseudonym, setPseudonym] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
@@ -23,7 +23,8 @@ export default function ChatScreen() {
   );
   const [disabled, setDisabled] = useState(false);
 
-  const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } = useWasm();
+  const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } =
+    useWasm();
 
   useEffect(() => {
     if (wasm) {
@@ -110,12 +111,15 @@ export default function ChatScreen() {
   };
 
   return (
-    <Modal 
-      title="Anon Chat" 
+    <Modal
+      title="Anon Chat"
       description={
         <>
-        <span>Chat pseudonymously with other Sigmoji holders! Messages will be sent to the Sigmoji Telegram group.</span>
-        <span>You will only be defined by the pseudonym you select, but you must</span>
+          <span>
+            Chat pseudonymously with other Sigmoji holders! You must have a
+            Sigmoji to use this chat. Your message will be sent to the FtC
+            residency TG group.
+          </span>
         </>
       }
     >
