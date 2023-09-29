@@ -53,6 +53,8 @@ export default function ChatModal() {
   };
 
   const onSubmit = async () => {
+    setDisabled(true);
+
     if (!message) {
       alert("Please enter a message.");
       return;
@@ -65,8 +67,6 @@ export default function ChatModal() {
       alert("Invalid Sigmoji selected.");
       return;
     }
-
-    setDisabled(true);
 
     if (!sigmoji.ZKP) {
       setDisplayState(ChatDisplayState.PROVING);
@@ -139,12 +139,19 @@ export default function ChatModal() {
             <Dropdown
               label={
                 <>
-                  <span>Select a Sigmoji to chat as:</span>
+                  <span>Select Sigmoji to chat as:</span>
                   <Image
                     src={`/emoji-photo/${selectedSigmoji}`}
                     width="24"
                     height="24"
                     alt="emoji"
+                  />
+                  <Image
+                    src="/buttons/chevron-down.svg"
+                    width="24"
+                    height="24"
+                    alt="Chevron"
+                    priority
                   />
                 </>
               }
