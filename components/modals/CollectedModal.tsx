@@ -52,9 +52,18 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
         return;
       }
 
-      // make sure we haven't already collected this sigmoji
+      // make sure we haven't already collected this sigmoji if it isn't an event one
       const sigmojis = await loadSigmojis();
       for (const sigmoji of sigmojis) {
+        if (
+          sigmoji.PCD.claim.pubkeyHex.toLowerCase() ===
+            "04cf92e6ba430b9850fb9d32f37205cd0824ffacf9d67db38dada0e38a22722556b376390fecda5c3672e1b1a96d10c758841623f709420bb4c778d8620aa21694" &&
+          sigmoji.PCD.claim.nonce <= 114
+        ) {
+          // users can recollect if they already have the pinata from vivek
+          continue;
+        }
+
         if (
           sigmoji.PCD.claim.pubkeyHex.toLowerCase() ===
           producedPCD.claim.pubkeyHex.toLowerCase()
