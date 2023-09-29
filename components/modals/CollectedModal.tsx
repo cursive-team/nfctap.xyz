@@ -16,6 +16,7 @@ import { loadSigmojis, saveSigmoji } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 import { detectIncognito } from "detectincognitojs";
+import { attestationText } from "@/lib/attestationData";
 
 export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const router = useRouter();
@@ -103,7 +104,11 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
                 alt="emoji"
               />
               <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-                {`You have edition ${pcd.claim.nonce} of this Sigmoji.`}
+                {attestationText(pcd) !== undefined
+                  ? `You have collected a "${attestationText(
+                      pcd
+                    )}" attestation.`
+                  : `You have edition ${pcd.claim.nonce} of this Sigmoji.`}
               </PrimaryFontBase1>
             </>
           ) : alreadyCollected ? (

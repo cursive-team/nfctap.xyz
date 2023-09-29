@@ -47,7 +47,8 @@ export default function HomeScreen() {
       const arr = await loadSigmojis();
       setSigmojiArr(arr);
       setEventSigmojiTotal(
-        arr.filter((sigmoji) => attestationText(sigmoji) !== undefined).length
+        arr.filter((sigmoji) => attestationText(sigmoji.PCD) !== undefined)
+          .length
       );
 
       // pull backup state
@@ -104,10 +105,10 @@ export default function HomeScreen() {
     <div className="flex flex-col min-h-screen">
       <MainHeader />
 
-      <Chevron initiallyOpen={true} bottom={false} text={"SIGMOJIS"}>
+      <Chevron initiallyOpen={true} bottom={false} text={"SIGMOJIDEX"}>
         {!sigmojiArr ? (
           <LoadingSpinner />
-        ) : sigmojiArr.length === 0 ? (
+        ) : sigmojiArr.length - eventSigmojiTotal === 0 ? (
           <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
             Get tapping to start collecting!
           </PrimaryFontBase>
@@ -125,7 +126,7 @@ export default function HomeScreen() {
               </ThirdColumnContainer>
             </LeaderboardTitle>
             {sigmojiArr
-              .filter((sigmoji) => attestationText(sigmoji) === undefined)
+              .filter((sigmoji) => attestationText(sigmoji.PCD) === undefined)
               .map((sigmoji, index) => {
                 return (
                   <LeaderboardRow
@@ -194,7 +195,7 @@ export default function HomeScreen() {
                 </ThirdColumnContainer>
               </LeaderboardTitle>
               {sigmojiArr
-                .filter((sigmoji) => attestationText(sigmoji) !== undefined)
+                .filter((sigmoji) => attestationText(sigmoji.PCD) !== undefined)
                 .map((sigmoji, index) => {
                   return (
                     <LeaderboardRow
@@ -212,7 +213,7 @@ export default function HomeScreen() {
                       <SecondColumnContainer></SecondColumnContainer>
                       <ThirdColumnContainer style={{ width: "100%" }}>
                         <CourierPrimeBase>
-                          {attestationText(sigmoji)}
+                          {attestationText(sigmoji.PCD)}
                         </CourierPrimeBase>
                       </ThirdColumnContainer>
                     </LeaderboardRow>
