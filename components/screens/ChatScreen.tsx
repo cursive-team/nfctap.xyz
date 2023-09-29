@@ -7,13 +7,10 @@ import { CourierPrimeBase, PrimaryFontH1 } from "@/components/core";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Sigmoji } from "@/lib/types";
-import { loadSigmojis } from "@/lib/localStorage";
-import {
-  ProverWasm,
-  addZKPToSigmoji,
-  initWasm,
-  setupTree,
-} from "@/lib/zkProving";
+import { ProverWasm, addZKPToSigmoji, setupTree } from "@/lib/zkProving";
+import { useSigmojis } from "@/hooks/useSigmojis";
+import { useWasm } from "@/hooks/useWasm";
+import { Button } from "../ui/button";
 
 enum ChatDisplayState {
   LOADING,
@@ -23,36 +20,22 @@ enum ChatDisplayState {
 }
 
 export default function ChatScreen() {
-  const [wasm, setWasm] = useState<ProverWasm>();
-  const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[]>([]);
+  const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm();
+  const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
+  const [isDisabled, setDisabled] = useState(false);
+
   const [selectedSigmoji, setSelectedSigmoji] = useState<string>();
   const [message, setMessage] = useState("");
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
-    ChatDisplayState.LOADING
+    ChatDisplayState.READY
   );
 
-  useEffect(() => {
-    async function setup() {
-      if (!wasm) {
-        setWasm(await initWasm());
-      }
-
-      const arr = await loadSigmojis();
-      setSigmojiArr(arr);
-
-      if (arr.length > 0) {
-        setSelectedSigmoji(arr[0].emojiImg);
-      }
-    }
-
-    setup();
-  }, [wasm]);
+  const isLoading = isLoadingWasm || isLoadingSigmojis;
 
   useEffect(() => {
-    if (wasm) {
-      setDisplayState(ChatDisplayState.READY);
-    }
-  }, [wasm]);
+    if (sigmojis?.length === 0) return;
+    setSelectedSigmoji(sigmojis[0].emojiImg);
+  }, [sigmojis]);
 
   const onSelectSigmoji = (emojiImg: string) => {
     setSelectedSigmoji(emojiImg);
@@ -77,7 +60,7 @@ export default function ChatScreen() {
       return;
     }
 
-    let sigmoji = sigmojiArr.find(
+    let sigmoji = sigmojis.find(
       (sigmoji) => sigmoji.emojiImg === selectedSigmoji
     );
     if (!sigmoji) {
@@ -85,12 +68,15 @@ export default function ChatScreen() {
       return;
     }
 
+    setDisabled(true);
+
     if (!sigmoji.ZKP) {
       setDisplayState(ChatDisplayState.PROVING);
       sigmoji = await generateProofForSigmoji(sigmoji);
     }
 
     setDisplayState(ChatDisplayState.SUBMITTING);
+
     await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -114,12 +100,11 @@ export default function ChatScreen() {
         alert("Error sending chat message.");
       }
     });
+    setDisabled(false);
   };
 
   const getDisplayText = () => {
     switch (displayState) {
-      case ChatDisplayState.LOADING:
-        return "LOADING...";
       case ChatDisplayState.READY:
         return "SEND";
       case ChatDisplayState.PROVING:
@@ -146,7 +131,7 @@ export default function ChatScreen() {
               Select a Sigmoji to chat as:
             </CourierPrimeBase>
             <SigmojiContainer>
-              {sigmojiArr.map((sigmoji, index) => (
+              {sigmojis?.map((sigmoji, index) => (
                 <button
                   key={index}
                   onClick={() => onSelectSigmoji(sigmoji.emojiImg)}
@@ -174,9 +159,14 @@ export default function ChatScreen() {
           </SelectionContainer>
         )}
         <TextArea header="Message" value={message} setValue={setMessage} />
-        <PrimaryLargeButton disabled={!wasm} onClick={onSubmit}>
+        <Button
+          className="w-full"
+          disabled={!wasm || isLoading || isDisabled}
+          loading={isLoading}
+          onClick={onSubmit}
+        >
           {getDisplayText()}
-        </PrimaryLargeButton>
+        </Button>
       </ChatContainer>
       <div style={{ marginTop: "auto" }}>
         <Footer />

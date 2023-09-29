@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Courier_Prime } from "next/font/google";
 import StyledComponentsRegistry from "@/lib/registry";
+import QueryClientWrapper from "@/components/shared/QueryClientWrapper";
+
 
 const courier_prime = Courier_Prime({
   weight: "400",
@@ -23,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${courier_prime.variable}`}>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <QueryClientWrapper>
+          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        </QueryClientWrapper>
       </body>
     </html>
   );

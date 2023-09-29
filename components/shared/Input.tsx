@@ -6,9 +6,10 @@ interface InputProps {
   value: string;
   setValue: (value: string) => void;
   header?: string;
+  disabled?: boolean;
 }
 
-export const Input = ({ value, setValue, header }: InputProps) => {
+export const Input = ({ value, setValue, header, disabled }: InputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
@@ -20,7 +21,7 @@ export const Input = ({ value, setValue, header }: InputProps) => {
           <HeaderText>{header}</HeaderText>
         </HeaderDiv>
       )}
-      <InputField value={value} onChange={handleChange} />
+      <InputField disabled={disabled} value={value} onChange={handleChange} />
     </div>
   );
 };

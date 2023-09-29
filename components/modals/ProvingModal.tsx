@@ -8,73 +8,48 @@ import {
   PrimaryFontBase1,
 } from "../core";
 import { Input } from "../shared/Input";
-import { PrimaryLargeButton } from "../shared/Buttons";
 import { OuterContainer, InnerContainer } from "../shared/Modal";
 import Modal from "./Modal";
+import { addZKPToSigmoji } from "@/lib/zkProving";
 import {
-  ProverWasm,
-  initWasm,
-  setupTree,
-  addZKPToSigmoji,
-} from "@/lib/zkProving";
-import {
-  loadSigmojis,
   saveLeaderboardEntry,
   serializeSigmojisInLocalStorage,
 } from "@/lib/localStorage";
 import { useRouter } from "next/navigation";
-
-enum ProvingState {
-  LOADING,
-  READY_TO_PROVE,
-  PROVING,
-  SUBMITTING,
-  SUCCESS,
-}
+import { Button } from "../ui/button";
+import { FieldWrapper } from "../ui/field";
+import { useWasm } from "@/hooks/useWasm";
+import { useSigmojis } from "@/hooks/useSigmojis";
+import { provingTimeString } from "@/lib/utils";
 
 export default function ProvingModal() {
   const router = useRouter();
-  const [provingState, setProvingState] = useState<ProvingState>(
-    ProvingState.LOADING
-  );
-  const [wasm, setWasm] = useState<ProverWasm>();
+  const [loadingProof, setLoadingProof] = useState<boolean>(false);
+
+  const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } =
+    useWasm();
+  const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
+  const loadingMetadata = isLoadingWasm || isLoadingSigmojis;
+
   const [score, setScore] = useState<number>(0);
   const [counter, setCounter] = useState(0);
   const [pseudonym, setPseudonym] = useState<string>("");
 
   useEffect(() => {
-    async function setup() {
-      if (!wasm) {
-        setWasm(await initWasm());
-      }
-
-      const sigmojis = await loadSigmojis();
-      setScore(sigmojis.length);
-    }
-
-    setup();
-  });
-
-  useEffect(() => {
-    if (wasm) {
-      setProvingState(ProvingState.READY_TO_PROVE);
-    }
-  }, [wasm]);
+    if (!sigmojis) return;
+    setScore(sigmojis.length);
+  }, [sigmojis]);
 
   const makeProofsWithCounter = async (): Promise<{
     serializedZKPArray: string[];
     numUniqueProofs: Number;
   }> => {
-    if (!wasm) throw new Error("WASM not initialized");
-
+    if (!wasm || !pubKeyTree) throw new Error("WASM not initialized");
     setCounter(0);
-
-    const pubKeyTree = setupTree(wasm);
-    const sigmojis = await loadSigmojis();
 
     // compute proofs in component to track progress for user
     let numExistingProofs = 0;
-    const wrappedSigmojis = sigmojis.map(async (sigmoji) => {
+    const wrappedSigmojis = sigmojis?.map(async (sigmoji) => {
       if (sigmoji.ZKP) {
         numExistingProofs++;
       }
@@ -83,20 +58,19 @@ export default function ProvingModal() {
         return result;
       });
     });
-    const sigmojisWithZKP = await Promise.all(wrappedSigmojis);
+    const sigmojisWithZKP = await Promise.all(wrappedSigmojis as any);
     await serializeSigmojisInLocalStorage(sigmojisWithZKP);
     return {
       serializedZKPArray: sigmojisWithZKP.map((s) => s.ZKP),
-      numUniqueProofs: sigmojis.length - numExistingProofs,
+      numUniqueProofs: (sigmojis?.length ?? 0) - numExistingProofs,
     };
   };
 
   const proveAndSubmitScore = async () => {
-    setProvingState(ProvingState.PROVING);
+    if (!wasm) throw new Error("WASM not initialized");
     const startTime = new Date().getTime();
     const { serializedZKPArray, numUniqueProofs } =
       await makeProofsWithCounter();
-    setProvingState(ProvingState.SUBMITTING);
     const endTime = new Date().getTime();
     const provingTime = endTime - startTime;
 
@@ -116,7 +90,6 @@ export default function ProvingModal() {
       const data = await response.json();
       if (response.status === 200) {
         if (data.success) {
-          setProvingState(ProvingState.SUCCESS);
           saveLeaderboardEntry({ pseudonym, score });
           alert(
             `Score successfully verified! Generated ${numUniqueProofs} new proof(s) in: ${provingTimeString(
@@ -125,11 +98,9 @@ export default function ProvingModal() {
           );
           router.push("/home");
         } else {
-          setProvingState(ProvingState.READY_TO_PROVE);
           alert("The proof you submitted was invalid.");
         }
       } else {
-        setProvingState(ProvingState.READY_TO_PROVE);
         if (data.error) {
           console.error(data.error);
         }
@@ -138,36 +109,19 @@ export default function ProvingModal() {
     });
   };
 
-  const provingTimeString = (duration: number): string => {
-    const seconds = Math.floor((duration / 1000) % 60);
-    const minutes = Math.floor((duration / (1000 * 60)) % 60);
-    const hours = Math.floor(duration / (1000 * 60 * 60));
-
-    let timeString = `${seconds}s`;
-    if (minutes > 0 || hours > 0) {
-      timeString = `${minutes}m ${timeString}`;
-    }
-    if (hours > 0) {
-      timeString = `${hours}h ${timeString}`;
-    }
-
-    return timeString;
+  const onProve = async () => {
+    if (!wasm) return console.error("WASM not initialized");
+    setLoadingProof(true);
+    await proveAndSubmitScore();
+    setLoadingProof(false);
   };
 
-  const buttonText = () => {
-    switch (provingState) {
-      case ProvingState.LOADING:
-        return "LOADING...";
-      case ProvingState.READY_TO_PROVE:
-        return "PROVE IT!";
-      case ProvingState.PROVING:
-        return `PROVING ${((counter / score) * 100.0).toFixed(1)}%`;
-      case ProvingState.SUBMITTING:
-        return "SUBMITTING PROOF...";
-      case ProvingState.SUCCESS:
-        return "SUCCESS!";
-    }
-  };
+  const proveText = !loadingMetadata ? "PROVE IT!" : "LOADING...";
+  const counterPercentage = (((counter || 0) / (score || 0)) * 100.0).toFixed(
+    1
+  );
+  const isDisabled = loadingProof || loadingMetadata;
+  const showCounter = parseInt(counterPercentage) > 0;
 
   return (
     <Modal>
@@ -187,11 +141,24 @@ export default function ProvingModal() {
             leaderboard.
           </PrimaryFontBase>
 
-          <Input header="Pseudonym" value={pseudonym} setValue={setPseudonym} />
-
-          <PrimaryLargeButton onClick={wasm ? proveAndSubmitScore : () => {}}>
-            <PrimaryFontBase1>{buttonText()}</PrimaryFontBase1>
-          </PrimaryLargeButton>
+          <Input
+            disabled={isDisabled}
+            header="Pseudonym"
+            value={pseudonym}
+            setValue={setPseudonym}
+          />
+          <FieldWrapper
+            description={showCounter ? `PROVING ${counterPercentage}%` : ""}
+            className="w-full"
+          >
+            <Button
+              disabled={isDisabled}
+              loading={loadingProof || loadingMetadata}
+              onClick={onProve}
+            >
+              <PrimaryFontBase1>{proveText}</PrimaryFontBase1>
+            </Button>
+          </FieldWrapper>
         </InnerContainer>
       </OuterContainer>
     </Modal>
