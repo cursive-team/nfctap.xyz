@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { AppleWalletButton } from "../wallet/AppleWalletButton";
 import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
 import { Button } from "../ui/button";
+import { attestationText } from "@/lib/attestationData";
 
 type LeaderboardRow = {
   pseudonym: string;
@@ -39,11 +40,15 @@ export default function HomeScreen() {
   const [sigmojiArr, setSigmojiArr] = useState<Sigmoji[]>();
   const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>();
   const [hasWalletBackup, setHasWalletBackup] = useState(false);
+  const [eventSigmojiTotal, setEventSigmojiTotal] = useState(0);
 
   useEffect(() => {
     const loadState = async () => {
       const arr = await loadSigmojis();
       setSigmojiArr(arr);
+      setEventSigmojiTotal(
+        arr.filter((sigmoji) => attestationText(sigmoji) !== undefined).length
+      );
 
       // pull backup state
       const backup = await loadBackupState();
@@ -99,7 +104,7 @@ export default function HomeScreen() {
     <div className="flex flex-col min-h-screen">
       <MainHeader />
 
-      <Chevron initiallyOpen={true} bottom={false} text={"MY COLLECTION"}>
+      <Chevron initiallyOpen={true} bottom={false} text={"SIGMOJIS"}>
         {!sigmojiArr ? (
           <LoadingSpinner />
         ) : sigmojiArr.length === 0 ? (
@@ -119,27 +124,35 @@ export default function HomeScreen() {
                 <CourierPrimeH4>Points</CourierPrimeH4>
               </ThirdColumnContainer>
             </LeaderboardTitle>
-            {sigmojiArr.map((sigmoji, index) => (
-              <LeaderboardRow
-                key={index}
-                isFinalEntry={index === sigmojiArr.length - 1}
-              >
-                <FirstColumnContainer>
-                  <Image
-                    src={`/emoji-photo/${sigmoji.emojiImg}`}
-                    width="16"
-                    height="16"
-                    alt="emoji"
-                  />
-                </FirstColumnContainer>
-                <SecondColumnContainer>
-                  <CourierPrimeBase>{sigmoji.PCD.claim.nonce}</CourierPrimeBase>
-                </SecondColumnContainer>
-                <ThirdColumnContainer>
-                  <CourierPrimeBase>1</CourierPrimeBase>
-                </ThirdColumnContainer>
-              </LeaderboardRow>
-            ))}
+            {sigmojiArr
+              .filter((sigmoji) => attestationText(sigmoji) === undefined)
+              .map((sigmoji, index) => {
+                return (
+                  <LeaderboardRow
+                    key={index}
+                    isFinalEntry={
+                      index === sigmojiArr.length - eventSigmojiTotal - 1
+                    }
+                  >
+                    <FirstColumnContainer>
+                      <Image
+                        src={`/emoji-photo/${sigmoji.emojiImg}`}
+                        width="16"
+                        height="16"
+                        alt="emoji"
+                      />
+                    </FirstColumnContainer>
+                    <SecondColumnContainer>
+                      <CourierPrimeBase>
+                        {sigmoji.PCD.claim.nonce}
+                      </CourierPrimeBase>
+                    </SecondColumnContainer>
+                    <ThirdColumnContainer>
+                      <CourierPrimeBase>1</CourierPrimeBase>
+                    </ThirdColumnContainer>
+                  </LeaderboardRow>
+                );
+              })}
             <ScoreContainer>
               <FirstColumnContainer>
                 <CourierPrimeH4
@@ -147,7 +160,7 @@ export default function HomeScreen() {
                     color: "var(--snow-flurry-200)",
                   }}
                 >
-                  Score
+                  Total
                 </CourierPrimeH4>
               </FirstColumnContainer>
               <SecondColumnContainer></SecondColumnContainer>
@@ -157,13 +170,81 @@ export default function HomeScreen() {
                     color: "var(--snow-flurry-200)",
                   }}
                 >
-                  {sigmojiArr.length}
+                  {sigmojiArr.length - eventSigmojiTotal}
                 </CourierPrimeH4>
               </ThirdColumnContainer>
             </ScoreContainer>
           </LeaderboardContainer>
         )}
       </Chevron>
+
+      {eventSigmojiTotal > 0 ? (
+        <Chevron initiallyOpen={true} bottom={false} text={"ATTESTATIONS"}>
+          {!sigmojiArr ? (
+            <LoadingSpinner />
+          ) : (
+            <LeaderboardContainer>
+              <LeaderboardTitle>
+                <FirstColumnContainer>
+                  <CourierPrimeH4>Sigmoji</CourierPrimeH4>
+                </FirstColumnContainer>
+                <SecondColumnContainer></SecondColumnContainer>
+                <ThirdColumnContainer>
+                  <CourierPrimeH4>Meaning</CourierPrimeH4>
+                </ThirdColumnContainer>
+              </LeaderboardTitle>
+              {sigmojiArr
+                .filter((sigmoji) => attestationText(sigmoji) !== undefined)
+                .map((sigmoji, index) => {
+                  return (
+                    <LeaderboardRow
+                      key={index}
+                      isFinalEntry={index === eventSigmojiTotal - 1}
+                    >
+                      <FirstColumnContainer>
+                        <Image
+                          src={`/emoji-photo/${sigmoji.emojiImg}`}
+                          width="16"
+                          height="16"
+                          alt="emoji"
+                        />
+                      </FirstColumnContainer>
+                      <SecondColumnContainer></SecondColumnContainer>
+                      <ThirdColumnContainer style={{ width: "100%" }}>
+                        <CourierPrimeBase>
+                          {attestationText(sigmoji)}
+                        </CourierPrimeBase>
+                      </ThirdColumnContainer>
+                    </LeaderboardRow>
+                  );
+                })}
+              <ScoreContainer>
+                <FirstColumnContainer>
+                  <CourierPrimeH4
+                    style={{
+                      color: "var(--snow-flurry-200)",
+                    }}
+                  >
+                    Total
+                  </CourierPrimeH4>
+                </FirstColumnContainer>
+                <SecondColumnContainer></SecondColumnContainer>
+                <ThirdColumnContainer>
+                  <CourierPrimeH4
+                    style={{
+                      color: "var(--snow-flurry-200)",
+                    }}
+                  >
+                    {eventSigmojiTotal}
+                  </CourierPrimeH4>
+                </ThirdColumnContainer>
+              </ScoreContainer>
+            </LeaderboardContainer>
+          )}
+        </Chevron>
+      ) : (
+        <></>
+      )}
 
       <Chevron initiallyOpen={false} bottom={false} text={"TELEGRAM"}>
         <PrimaryLargeButton
