@@ -1,11 +1,8 @@
-import styled from "styled-components";
-import { MainHeader } from "@/components/shared/Headers";
-import Footer from "@/components/shared/Footer";
 import { TextArea } from "@/components/shared/TextArea";
-import { PrimaryLargeButton } from "@/components/shared/Buttons";
-import { CourierPrimeBase, PrimaryFontH1 } from "@/components/core";
 import { useState } from "react";
 import CardholderTapModal from "../modals/CardholderTapModal";
+import Modal from "../modals/Modal";
+import { Button } from "../ui/button";
 
 export type SignMessageArgs = {
   digest: string;
@@ -80,39 +77,28 @@ export default function CardholderScreen() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <MainHeader />
-      <ChatContainer>
-        <PrimaryFontH1 style={{ color: "var(--woodsmoke-100)" }}>
-          Cardholder Chat
-        </PrimaryFontH1>
-        <CourierPrimeBase style={{ maxWidth: "90%" }}>
-          Chat pseudonymously with other Sigmoji holders! Messages will be sent
-          to the Sigmoji Telegram group. This chat is only available to Sigmoji
-          Cardholders.
-        </CourierPrimeBase>
-        <CourierPrimeBase style={{ color: "var(--woodsmoke-100)" }}>
-          When you send a chat message, you will be asked to tap your card. This
-          will generate a signature that authenticates your message.
-        </CourierPrimeBase>
+    <Modal 
+      title="Cardholder Chat"
+      description={
+        <>
+          <span>
+            Chat pseudonymously with other Sigmoji holders! Messages will be sent
+            to the Sigmoji Telegram group. This chat is only available to Sigmoji
+            Cardholders.
+          </span>
+          <span>
+            When you send a chat message, you will be asked to tap your card. This
+            will generate a signature that authenticates your message.
+          </span>
+        </>
+      }
+    >
+      <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
         <TextArea header="Message" value={message} setValue={setMessage} />
-        <PrimaryLargeButton onClick={onSubmit}>
+        <Button className="w-full" onClick={onSubmit}>
           {getDisplayText()}
-        </PrimaryLargeButton>
-      </ChatContainer>
-      <div style={{ marginTop: "auto" }}>
-        <Footer />
+        </Button>
       </div>
-    </div>
+    </Modal>
   );
 }
-
-const ChatContainer = styled.div`
-  display: flex;
-  gap: 16px;
-  padding: 8px;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-  align-self: stretch;
-`;
