@@ -24,5 +24,12 @@ export function attestationText(pcd: HaLoNoncePCD): string | undefined {
     return "Attended ZK Alpha Day";
   }
 
+  if (
+    pcd.claim.pubkeyHex.toLowerCase() ===
+    "04ddaf8c2c9c6f12db6455d5cdcae27cf92551f574d1fdeca48aa7ba19c54e9b5d6f7089d825fff4d9918509c026b2fa19ecb05286f8c268e84ae0cc926cceac6d"
+  ) {
+    return "Curiosity jackpot!!";
+  }
+
   return undefined;
 }
