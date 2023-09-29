@@ -7,11 +7,7 @@ import { CourierPrimeBase, PrimaryFontH1 } from "@/components/core";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Sigmoji } from "@/lib/types";
-import {
-  ProverWasm,
-  addZKPToSigmoji,
-  setupTree,
-} from "@/lib/zkProving";
+import { ProverWasm, addZKPToSigmoji, setupTree } from "@/lib/zkProving";
 import { useSigmojis } from "@/hooks/useSigmojis";
 import { useWasm } from "@/hooks/useWasm";
 import { Button } from "../ui/button";
@@ -24,9 +20,9 @@ enum ChatDisplayState {
 }
 
 export default function ChatScreen() {
-  const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm()
-  const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis()
-  const [isDisabled, setDisabled] = useState(false)
+  const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm();
+  const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
+  const [isDisabled, setDisabled] = useState(false);
 
   const [selectedSigmoji, setSelectedSigmoji] = useState<string>();
   const [message, setMessage] = useState("");
@@ -34,13 +30,12 @@ export default function ChatScreen() {
     ChatDisplayState.READY
   );
 
-  const isLoading = isLoadingWasm || isLoadingSigmojis
+  const isLoading = isLoadingWasm || isLoadingSigmojis;
 
   useEffect(() => {
-    if (sigmojis?.length === 0) return
+    if (sigmojis?.length === 0) return;
     setSelectedSigmoji(sigmojis[0].emojiImg);
-  }, [sigmojis])
-
+  }, [sigmojis]);
 
   const onSelectSigmoji = (emojiImg: string) => {
     setSelectedSigmoji(emojiImg);
@@ -65,8 +60,6 @@ export default function ChatScreen() {
       return;
     }
 
-  
-
     let sigmoji = sigmojis.find(
       (sigmoji) => sigmoji.emojiImg === selectedSigmoji
     );
@@ -75,6 +68,8 @@ export default function ChatScreen() {
       return;
     }
 
+    setDisabled(true);
+
     if (!sigmoji.ZKP) {
       setDisplayState(ChatDisplayState.PROVING);
       sigmoji = await generateProofForSigmoji(sigmoji);
@@ -82,7 +77,6 @@ export default function ChatScreen() {
 
     setDisplayState(ChatDisplayState.SUBMITTING);
 
-    setDisabled(true)
     await fetch("/api/chat", {
       method: "POST",
       headers: {
@@ -106,7 +100,7 @@ export default function ChatScreen() {
         alert("Error sending chat message.");
       }
     });
-    setDisabled(false)
+    setDisabled(false);
   };
 
   const getDisplayText = () => {
@@ -165,7 +159,12 @@ export default function ChatScreen() {
           </SelectionContainer>
         )}
         <TextArea header="Message" value={message} setValue={setMessage} />
-        <Button className="w-full" disabled={!wasm || isLoading || isDisabled} loading={isLoading} onClick={onSubmit}>
+        <Button
+          className="w-full"
+          disabled={!wasm || isLoading || isDisabled}
+          loading={isLoading}
+          onClick={onSubmit}
+        >
           {getDisplayText()}
         </Button>
       </ChatContainer>

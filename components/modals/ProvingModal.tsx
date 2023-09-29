@@ -10,9 +10,7 @@ import {
 import { Input } from "../shared/Input";
 import { OuterContainer, InnerContainer } from "../shared/Modal";
 import Modal from "./Modal";
-import {
-  addZKPToSigmoji,
-} from "@/lib/zkProving";
+import { addZKPToSigmoji } from "@/lib/zkProving";
 import {
   saveLeaderboardEntry,
   serializeSigmojisInLocalStorage,
@@ -24,33 +22,29 @@ import { useWasm } from "@/hooks/useWasm";
 import { useSigmojis } from "@/hooks/useSigmojis";
 import { provingTimeString } from "@/lib/utils";
 
-
 export default function ProvingModal() {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingProof, setLoadingProof] = useState<boolean>(false);
 
-  const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } = useWasm()
-  const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis()
+  const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } =
+    useWasm();
+  const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
+  const loadingMetadata = isLoadingWasm || isLoadingSigmojis;
 
-  const isLoading = isLoadingWasm || isLoadingSigmojis
-  
   const [score, setScore] = useState<number>(0);
   const [counter, setCounter] = useState(0);
   const [pseudonym, setPseudonym] = useState<string>("");
 
   useEffect(() => {
-    if (!sigmojis) return
+    if (!sigmojis) return;
     setScore(sigmojis.length);
-  }, [sigmojis])
-
-
+  }, [sigmojis]);
 
   const makeProofsWithCounter = async (): Promise<{
     serializedZKPArray: string[];
     numUniqueProofs: Number;
   }> => {
     if (!wasm || !pubKeyTree) throw new Error("WASM not initialized");
-
     setCounter(0);
 
     // compute proofs in component to track progress for user
@@ -115,21 +109,19 @@ export default function ProvingModal() {
     });
   };
 
-
   const onProve = async () => {
     if (!wasm) return console.error("WASM not initialized");
-    setLoading(true)
-    await proveAndSubmitScore()
-    setLoading(false)
-  }
+    setLoadingProof(true);
+    await proveAndSubmitScore();
+    setLoadingProof(false);
+  };
 
-  const proveText = !isLoading ? "PROVE IT!" : "LOADING...";
-  const counterPercentage = (((counter || 0) / (score || 0)) * 100.0).toFixed(1)
-  const isDisabled = loading || isLoading
-  const showCounter = parseInt(counterPercentage) > 0
-
-  console.log(counter + score, parseInt('1.2'))
-
+  const proveText = !loadingMetadata ? "PROVE IT!" : "LOADING...";
+  const counterPercentage = (((counter || 0) / (score || 0)) * 100.0).toFixed(
+    1
+  );
+  const isDisabled = loadingProof || loadingMetadata;
+  const showCounter = parseInt(counterPercentage) > 0;
 
   return (
     <Modal>
@@ -149,9 +141,21 @@ export default function ProvingModal() {
             leaderboard.
           </PrimaryFontBase>
 
-          <Input disabled={isDisabled} header="Pseudonym" value={pseudonym} setValue={setPseudonym} />
-          <FieldWrapper description={showCounter ? `PROVING ${counterPercentage}%` : ''} className='w-full'>
-            <Button disabled={isDisabled} loading={loading || isLoading} onClick={onProve}>
+          <Input
+            disabled={isDisabled}
+            header="Pseudonym"
+            value={pseudonym}
+            setValue={setPseudonym}
+          />
+          <FieldWrapper
+            description={showCounter ? `PROVING ${counterPercentage}%` : ""}
+            className="w-full"
+          >
+            <Button
+              disabled={isDisabled}
+              loading={loadingProof || loadingMetadata}
+              onClick={onProve}
+            >
               <PrimaryFontBase1>{proveText}</PrimaryFontBase1>
             </Button>
           </FieldWrapper>
