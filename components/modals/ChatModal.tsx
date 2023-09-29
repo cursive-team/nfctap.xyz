@@ -9,6 +9,7 @@ import { useWasm } from "@/hooks/useWasm";
 import { Button } from "../ui/button";
 import Modal from "./Modal";
 import { Dropdown, DropdownProps } from "../ui/dropdown";
+import { sha256 } from "js-sha256";
 
 enum ChatDisplayState {
   LOADING,
@@ -68,6 +69,12 @@ export default function ChatModal() {
       return;
     }
 
+    // enable manifestation
+    let postedMessage = message;
+    if (sigmoji.emojiImg === "magic-wand.png") {
+      postedMessage = sha256(message);
+    }
+
     if (!sigmoji.ZKP) {
       setDisplayState(ChatDisplayState.PROVING);
       sigmoji = await generateProofForSigmoji(sigmoji);
@@ -81,7 +88,7 @@ export default function ChatModal() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: message,
+        message: postedMessage,
         sigmoji: sigmoji.emojiImg,
         serializedZKP: sigmoji.ZKP,
       }),
@@ -159,7 +166,15 @@ export default function ChatModal() {
             />
           </div>
         )}
-        <TextArea header="Message" value={message} setValue={setMessage} />
+        <TextArea
+          header={
+            selectedSigmoji === "magic-wand.png"
+              ? "Hash Manifestation"
+              : "Message"
+          }
+          value={message}
+          setValue={setMessage}
+        />
         <Button
           className="w-full"
           disabled={!wasm || isLoading || isDisabled}
