@@ -117,8 +117,13 @@ export default function AnonChatModal() {
         <>
           <span>
             Chat pseudonymously with other Sigmoji holders! You must have a
-            Sigmoji to use this chat. Your message will be sent to the FtC
-            residency TG group.
+            Sigmoji to use this chat. Your message will be sent to the{" "}
+            <a href="https://t.me/c/1963446787/1414">
+              <b>
+                <u>FtC residency TG group</u>
+              </b>
+            </a>
+            .
           </span>
         </>
       }

@@ -82,8 +82,13 @@ export default function CardholderModal() {
       description={
         <>
           <span>
-            Chat as a Sigmoji cardholder! Your message will be sent to the FtC
-            residency TG group.
+            Chat as a Sigmoji cardholder! Your message will be sent to the{" "}
+            <a href="https://t.me/c/1963446787/1414">
+              <b>
+                <u>FtC residency TG group</u>
+              </b>
+            </a>
+            .
           </span>
           <span>
             When you send a chat message, you will be prompted tap your card.

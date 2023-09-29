@@ -138,7 +138,19 @@ export default function ChatModal() {
   return (
     <Modal
       title="Collector Chat"
-      description="Chat as a collector of Sigmojis! Your message will be sent to the FtC residency TG group."
+      description={
+        <>
+          <span>
+            Chat as a collector of Sigmojis! Your message will be sent to the{" "}
+            <a href="https://t.me/c/1963446787/1414">
+              <b>
+                <u>FtC residency TG group</u>
+              </b>
+            </a>
+            .
+          </span>
+        </>
+      }
     >
       <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
         {selectedSigmoji && (
