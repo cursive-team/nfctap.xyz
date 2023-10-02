@@ -1,9 +1,6 @@
 import React from "react";
 import { SecondaryHeader } from "../shared/Headers";
-import {
-  PrimaryFontSmall1,
-} from "../core";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 
 export enum FirstTimeUserResponse {
   NONE = "NONE",
