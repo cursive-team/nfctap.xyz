@@ -1,52 +1,37 @@
-import styled, { keyframes } from "styled-components";
-
-export const LoadingSpinner = () => {
+const LoadingInline = ({
+  className,
+  style
+}: Pick<Partial<HTMLDivElement>, "className" | "style">) => {
   return (
-    <LdsFacebook>
-      <LdsFacebookDiv />
-      <LdsFacebookDiv />
-      <LdsFacebookDiv />
-    </LdsFacebook>
+    <div
+      className={`animate-lsd-facebook-animation inline-block absolute w-[8px] bg-woodsmoke-100 ${className}`}
+      style={{ ...style } as any}
+    >
+    </div>
   );
 };
 
-const ldsFacebookAnimation = keyframes`
-  0% {
-    top: 4px;
-    height: 32px;
-  }
-  50%, 100% {
-    top: 12px;
-    height: 16px;
-  }
-`;
-
-const LdsFacebookDiv = styled.div`
-  display: inline-block;
-  position: absolute;
-  width: 8px;
-  background: var(--woodsmoke-100);
-  animation: ${ldsFacebookAnimation} 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-
-  &:nth-child(1) {
-    left: 4px;
-    animation-delay: -0.24s;
-  }
-
-  &:nth-child(2) {
-    left: 16px;
-    animation-delay: -0.12s;
-  }
-
-  &:nth-child(3) {
-    left: 28px;
-    animation-delay: 0;
-  }
-`;
-
-const LdsFacebook = styled.div`
-  display: inline-block;
-  position: relative;
-  width: 40px;
-  height: 40px;
-`;
+export const LoadingSpinner = () => {
+  return (
+    <div className="inline-block relative w-10 h-10">
+      <LoadingInline
+        className="left-[4px]"
+        style={{
+          animationDelay: "-0.24s",
+        } as any}
+      />
+      <LoadingInline
+        className="left-[16px]"
+        style={{
+          animationDelay: "-0.12s",
+        } as any}
+      />
+      <LoadingInline
+        className="left-[28px]"
+        style={{
+          animationDelay: "0",
+        } as any}
+      />
+    </div>
+  );
+};

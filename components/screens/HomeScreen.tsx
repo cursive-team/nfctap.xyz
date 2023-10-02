@@ -1,6 +1,6 @@
 import { MainHeader } from "@/components/shared/Headers";
 import Chevron from "../shared/Chevron";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import Footer from "../shared/Footer";
 import {
   loadLeaderboardEntries,
@@ -10,7 +10,6 @@ import {
 } from "@/lib/localStorage";
 import { Sigmoji } from "@/lib/types";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
-import styled from "styled-components";
 import Image from "next/image";
 import { Leaderboard } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -18,12 +17,63 @@ import { AppleWalletButton } from "../wallet/AppleWalletButton";
 import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
 import { Button } from "../ui/button";
 import { attestationText } from "@/lib/attestationData";
+import { cn } from "@/lib/utils";
 
 type LeaderboardRow = {
   pseudonym: string;
   score: number;
   rank: number;
   belongsToUser: boolean;
+};
+
+interface LeaderboardProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+const LeaderboardContainer = ({ children }: LeaderboardProps) => {
+  return (
+    <div className="flex flex-col items-start self-stretch px-2">
+      {children}
+    </div>
+  );
+};
+
+const ScoreContainer = ({ children }: LeaderboardProps) => {
+  return (
+    <div className="flex items-center gap-6 py-4 border-t border-t-woodsmoke-700 bg-woodsmoke-950 mt-2 w-full">
+      {children}
+    </div>
+  );
+};
+
+const LeaderboardTable = ({
+  children,
+  className,
+  ...props
+}: LeaderboardProps) => {
+  return (
+    <div
+      className={`grid grid-cols-[80px_1fr_72px] items-center self-stretch gap-6 w-full ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
+
+const LeaderboardRow = ({
+  children,
+  isFinalEntry,
+}: LeaderboardProps & { isFinalEntry: boolean }) => {
+  return (
+    <div
+      className={cn("flex py-1 items-center gap-6 self-stretch w-full", {
+        "border-b border-b-woodsmoke-700": !isFinalEntry,
+      })}
+    >
+      {children}
+    </div>
+  );
 };
 
 export default function HomeScreen() {
@@ -106,17 +156,13 @@ export default function HomeScreen() {
           </span>
         ) : (
           <LeaderboardContainer>
-            <LeaderboardTitle>
-              <FirstColumnContainer>
-                <span className="courier-font-sm">Sigmoji</span>
-              </FirstColumnContainer>
-              <SecondColumnContainer>
-                <span className="courier-font-sm">Edition</span>
-              </SecondColumnContainer>
+            <LeaderboardTable className="py-2">
+              <span className="courier-font-sm">Sigmoji</span>
+              <span className="courier-font-sm">Edition</span>
               <div className="flex gap-2 items-end w-[72px] justify-end">
                 <span className="courier-font-sm">Points</span>
               </div>
-            </LeaderboardTitle>
+            </LeaderboardTable>
             {sigmojiArr
               .filter((sigmoji) => attestationText(sigmoji.PCD) === undefined)
               .map((sigmoji, index) => {
@@ -127,37 +173,37 @@ export default function HomeScreen() {
                       index === sigmojiArr.length - eventSigmojiTotal - 1
                     }
                   >
-                    <FirstColumnContainer>
+                    <div className="flex items-end gap-2 w-[80px]">
                       <Image
                         src={`/emoji-photo/${sigmoji.emojiImg}`}
                         width="16"
                         height="16"
                         alt="emoji"
                       />
-                    </FirstColumnContainer>
-                    <SecondColumnContainer>
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
                       <span className="courier-font-base">
                         {sigmoji.PCD.claim.nonce}
                       </span>
-                    </SecondColumnContainer>
-                    <ThirdColumnContainer>
+                    </div>
+                    <div className="flex w-[72px] items-center justify-end gap-2">
                       <span className="courier-font-base">1</span>
-                    </ThirdColumnContainer>
+                    </div>
                   </LeaderboardRow>
                 );
               })}
             <ScoreContainer>
-              <FirstColumnContainer>
-                <span  className="courier-font-sm text-snow-flurry-200">
+              <div className="flex items-end gap-2 w-[80px]">
+                <span className="courier-font-sm text-snow-flurry-200">
                   Total
                 </span>
-              </FirstColumnContainer>
-              <SecondColumnContainer></SecondColumnContainer>
-              <ThirdColumnContainer>
-                <span className="courier-font-sm text-snow-flurry-200"                >
+              </div>
+              <div className="flex items-center gap-2 flex-1"></div>
+              <div className="flex w-[72px] items-center justify-end gap-2">
+                <span className="courier-font-sm text-snow-flurry-200">
                   {sigmojiArr.length - eventSigmojiTotal}
                 </span>
-              </ThirdColumnContainer>
+              </div>
             </ScoreContainer>
           </LeaderboardContainer>
         )}
@@ -169,15 +215,15 @@ export default function HomeScreen() {
             <LoadingSpinner />
           ) : (
             <LeaderboardContainer>
-              <LeaderboardTitle>
-                <FirstColumnContainer>
+              <LeaderboardTable className="py-2">
+                <div className="flex items-end gap-2 w-[80px]">
                   <span className="courier-font-sm">Sigmoji</span>
-                </FirstColumnContainer>
-                <SecondColumnContainer></SecondColumnContainer>
-                <ThirdColumnContainer>
+                </div>
+                <div className="flex items-center gap-2 flex-1"></div>
+                <div className="flex w-[72px] items-center justify-end gap-2">
                   <span className="courier-font-sm">Meaning</span>
-                </ThirdColumnContainer>
-              </LeaderboardTitle>
+                </div>
+              </LeaderboardTable>
               {sigmojiArr
                 .filter((sigmoji) => attestationText(sigmoji.PCD) !== undefined)
                 .map((sigmoji, index) => {
@@ -186,35 +232,35 @@ export default function HomeScreen() {
                       key={index}
                       isFinalEntry={index === eventSigmojiTotal - 1}
                     >
-                      <FirstColumnContainer>
+                      <div className="flex items-end gap-2 w-[80px]">
                         <Image
                           src={`/emoji-photo/${sigmoji.emojiImg}`}
                           width="16"
                           height="16"
                           alt="emoji"
                         />
-                      </FirstColumnContainer>
-                      <SecondColumnContainer></SecondColumnContainer>
-                      <ThirdColumnContainer style={{ width: "100%" }}>
+                      </div>
+                      <div className="flex items-center gap-2 flex-1"></div>
+                      <div className="flex w-full items-center justify-end gap-2">
                         <span className="courier-font-base">
                           {attestationText(sigmoji.PCD)}
                         </span>
-                      </ThirdColumnContainer>
+                      </div>
                     </LeaderboardRow>
                   );
                 })}
               <ScoreContainer>
-                <FirstColumnContainer>
+                <div className="flex items-end gap-2 w-[80px]">
                   <span className="courier-font-sm text-snow-flurry-200">
                     Total
                   </span>
-                </FirstColumnContainer>
-                <SecondColumnContainer></SecondColumnContainer>
-                <ThirdColumnContainer>
+                </div>
+                <div className="flex items-center gap-2 flex-1"></div>
+                <div className="flex w-[72px] items-center justify-end gap-2">
                   <span className="courier-font-sm text-snow-flurry-200">
                     {eventSigmojiTotal}
                   </span>
-                </ThirdColumnContainer>
+                </div>
               </ScoreContainer>
             </LeaderboardContainer>
           )}
@@ -225,7 +271,7 @@ export default function HomeScreen() {
 
       <Chevron initiallyOpen={false} bottom={false} text={"TELEGRAM"}>
         <Button
-          style={{ width: "100%" }}
+          className="w-full"
           onClick={() => router.push("/chat")}
           icon="💬"
         >
@@ -258,16 +304,16 @@ export default function HomeScreen() {
               </span>
             ) : (
               <>
-                <div className="grid grid-cols-[80px_1fr_72px] items-center w-full">
+                <div className="grid grid-cols-[80px_1fr_72px] items-center w-full gap-6">
                   <div className="flex self-end gap-2">
                     <span className="courier-font-sm">Rank</span>
                   </div>
-                  <SecondColumnContainer>
+                  <div className="flex items-center gap-2 flex-1">
                     <span className="courier-font-sm">Pseudonym</span>
-                  </SecondColumnContainer>
-                  <ThirdColumnContainer>
+                  </div>
+                  <div className="flex w-[72px] items-center justify-end gap-2">
                     <span className="courier-font-sm">Score</span>
-                  </ThirdColumnContainer>
+                  </div>
                 </div>
                 {leaderboard.map((row, index) => {
                   const style = row.belongsToUser
@@ -280,35 +326,35 @@ export default function HomeScreen() {
                       key={index}
                       isFinalEntry={index === leaderboard.length - 1}
                     >
-                      <FirstColumnContainer>
+                      <div className="flex items-end gap-2 w-[80px]">
                         <span className="courier-font-base" style={style}>
                           {row.rank}
                         </span>
-                      </FirstColumnContainer>
-                      <SecondColumnContainer>
+                      </div>
+                      <div className="flex items-center gap-2 flex-1">
                         <span className="courier-font-base" style={style}>
                           {row.pseudonym}
                         </span>
-                      </SecondColumnContainer>
-                      <ThirdColumnContainer>
+                      </div>
+                      <div className="flex w-[72px] items-center justify-end gap-2">
                         <span className="courier-font-base" style={style}>
                           {row.score}
                         </span>
-                      </ThirdColumnContainer>
+                      </div>
                     </LeaderboardRow>
                   );
                 })}
               </>
             )}
 
-            <RevealContainer>
-              <RevealTextContainer>
-                <RevealTitleContainer>
+            <div className="flex flex-col mt-10 p-6 items-start self-stretch gap-6 bg-woodsmoke-950 rounded-2xl">
+              <div className="flex items-center gap-[25px] self-stretch">
+                <div className="flex h-[18px] items-center w-full gap-2">
                   <span className="courier-font-sm text-snow-flurry-200">
                     Score
                   </span>
-                </RevealTitleContainer>
-                <RevealScoreContainer>
+                </div>
+                <div className="flex h-[18px] justify-end items-center gap-2 w-full">
                   <Image
                     src="/buttons/eye-close-fill.svg"
                     width="16"
@@ -318,10 +364,10 @@ export default function HomeScreen() {
                   <span className="courier-font-sm text-snow-flurry-200">
                     {sigmojiArr.length}
                   </span>
-                </RevealScoreContainer>
-              </RevealTextContainer>
+                </div>
+              </div>
               <Button
-                style={{ width: "100%" }}
+                className="w-full"
                 onClick={() => router.push("/prove")}
               >
                 <div className="flex gap-1">
@@ -334,7 +380,7 @@ export default function HomeScreen() {
                   <span>REVEAL</span>
                 </div>
               </Button>
-            </RevealContainer>
+            </div>
           </LeaderboardContainer>
         )}
       </Chevron>
@@ -376,106 +422,9 @@ export default function HomeScreen() {
         </Chevron>
       )}
 
-      <div style={{ marginTop: "auto" }}>
+      <div className="mt-auto">
         <Footer />
       </div>
     </div>
   );
 }
-
-
-const LeaderboardContainer = styled.div`
-  display: flex;
-  padding: 0px 8px 0px 8px;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-`;
-
-const LeaderboardTitle = styled.div`
-  display: flex;
-  padding: 8px 0px;
-  align-items: center;
-  gap: 24px;
-  align-self: stretch;
-`;
-
-const LeaderboardRow = styled.div<{ isFinalEntry?: boolean }>`
-  display: flex;
-  padding: 4px 0px;
-  align-items: center;
-  gap: 24px;
-  align-self: stretch;
-  border-bottom: ${(props) =>
-    props.isFinalEntry ? "none" : "1px solid rgba(231, 231, 231, 0.1)"};
-`;
-
-const ScoreContainer = styled.div`
-  display: flex;
-  margin-top: 8px;
-  padding: 16px 0px;
-  align-items: center;
-  gap: 24px;
-  align-self: stretch;
-  border-top: 1px solid var(--woodsmoke-700);
-  background: var(--woodsmoke-950);
-`;
-
-const RevealContainer = styled.div`
-  display: flex;
-  margin-top: 40px;
-  padding: 24px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 32px;
-  align-self: stretch;
-  border-radius: 8px;
-  background: var(--woodsmoke-900);
-`;
-
-const RevealTextContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  align-self: stretch;
-`;
-
-const RevealTitleContainer = styled.div`
-  display: flex;
-  height: 18px;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-`;
-
-const RevealScoreContainer = styled.div`
-  display: flex;
-  height: 18px;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-`;
-
-const FirstColumnContainer = styled.div`
-  display: flex;
-  width: 80px;
-  align-items: flex-end;
-  gap: 8px;
-`;
-
-const SecondColumnContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-`;
-
-
-const ThirdColumnContainer = styled.div`
-  display: flex;
-  width: 72px;
-  justify-content: flex-end;
-  align-items: flex-end;
-  gap: 8px;
-`;

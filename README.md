@@ -8,7 +8,7 @@ This repo uses `yarn v1.22.19` for package management. Use `yarn` to install dep
 
 ## Repo setup
 
-This repo uses Next.js 13 with the `app` folder. For styling, there is a mix of TailwindCSS and styled-components. Here are the different routes and their purposes:
+This repo uses Next.js 13 with the `app` folder. For styling there is TailwindCSS. Here are the different routes and their purposes:
 
 - `default`
   - Right now, this screen is where the "foreground tap" logic is stored. This is where the browser uses FIDO2/WebAuthn APIs to get data from the card, which is generally more performant/less finicky than "background taps", where the phone detects the card without being on `nfctap.xyz`. The reason this logic is stored at the default route is because the card itself has a QR code to `nfctap.xyz` that is supposed to let people foreground tap. In future iterations, the current `home` route would live at the default page, and the foreground tap logic would live at a different route.
