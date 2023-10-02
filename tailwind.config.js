@@ -7,7 +7,8 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      helvetica: ['"Helvetica Neue"', 'sans-serif']
+      helvetica: ['"Helvetica Neue"', 'sans-serif'],
+      courier: ['var(--font-courier-prime)', 'sans-serif'],
     },
     extend: {
       colors: {

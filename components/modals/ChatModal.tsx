@@ -1,5 +1,3 @@
-import { TextArea } from "@/components/shared/TextArea";
-import { CourierPrimeBase, PrimaryFontBase } from "@/components/core";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Sigmoji } from "@/lib/types";
@@ -10,6 +8,7 @@ import { Button } from "../ui/button";
 import Modal from "./Modal";
 import { Dropdown, DropdownProps } from "../ui/dropdown";
 import { sha256 } from "js-sha256";
+import { TextArea } from "../ui/textarea";
 
 enum ChatDisplayState {
   LOADING,
@@ -178,14 +177,14 @@ export default function ChatModal() {
             />
           </div>
         )}
-        <TextArea
-          header={
+        <TextArea 
+          label={
             selectedSigmoji === "magic-wand.png"
               ? "Hash Manifestation"
               : "Message"
           }
           value={message}
-          setValue={setMessage}
+          onChange={(e: any) => setMessage(e?.target?.value)} 
         />
         <Button
           className="w-full"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Input } from "../shared/Input";
+import { Input } from "../ui/input";
 import Modal from "./Modal";
 import { addZKPToSigmoji } from "@/lib/zkProving";
 import {
@@ -130,12 +130,8 @@ export default function ProvingModal() {
       }
       description="Create a pseudonym and make a zk proof to share it on the leaderboard."
     >
-      <Input
-        disabled={isDisabled}
-        header="Pseudonym"
-        value={pseudonym}
-        setValue={setPseudonym}
-      />
+      
+      <Input label="Pseudonym" disabled={isDisabled} value={pseudonym} onChange={(e: any) => setPseudonym(e?.target?.value)} />
       <FieldWrapper
         description={showCounter ? `PROVING ${counterPercentage}%` : ""}
         className="w-full"

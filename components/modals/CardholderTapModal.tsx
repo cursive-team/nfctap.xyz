@@ -1,7 +1,6 @@
 "use client";
 
 import Modal from "./Modal";
-import { PrimaryFontBase, PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { useEffect, useState } from "react";
 import { SignMessageArgs } from "./CardholderModal";
@@ -68,13 +67,13 @@ export default function CardholderTapModal({
 
   return (
     <Modal footer={<img src="/phone-tap.gif" className="py-10" />}>
-      <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+      <span className="font-helvetica text-[23px] font-bold leading-none text-woodsmoke-100">
         Place the NFC card on your phone.
-      </PrimaryFontH3>
-      <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+      </span>
+      <span className="font-helvetica text-base font-normal leading-[22.4px] text-woodsmoke-100">
         {statusText}
-      </PrimaryFontBase>
-      <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+      </span>
+      <span className="font-helvetica text-base font-normal leading-[22.4px] text-woodsmoke-100">
         {"If you still can't tap, check out the "}
         <a
           href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
@@ -84,7 +83,7 @@ export default function CardholderTapModal({
           troubleshooting guide
         </a>
         .
-      </PrimaryFontBase>
+      </span>
     </Modal>
   );
 }

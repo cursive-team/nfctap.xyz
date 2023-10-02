@@ -8,7 +8,6 @@ import {
   loadSigmojis,
   saveBackupState,
 } from "@/lib/localStorage";
-import { PrimaryFontH4 } from "../core";
 
 export const GoogleWalletButton = () => {
   const [tempSerial, setTempSerial] = useState<string>();
@@ -186,9 +185,9 @@ export const GoogleWalletButton = () => {
         disabled={!(saveUrl || (serial && number))}
       >
         {updated ? (
-          <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
+          <span className="font-helvetica text-[19px] font-bold leading-none text-woodsmoke-100">
             Updated!
-          </PrimaryFontH4>
+          </span>
         ) : (
           <Image
             src="/buttons/AddToGoogleWallet.svg"

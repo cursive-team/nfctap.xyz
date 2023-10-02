@@ -1,14 +1,7 @@
 import { MainHeader } from "@/components/shared/Headers";
 import Chevron from "../shared/Chevron";
-import { useState, useEffect, CSSProperties } from "react";
+import { useState, useEffect } from "react";
 import Footer from "../shared/Footer";
-import {
-  PrimaryFontBase,
-  CourierPrimeH4,
-  CourierPrimeBase,
-  PrimaryFontBase1,
-  PrimaryFontSmall,
-} from "../core";
 import {
   loadLeaderboardEntries,
   loadSigmojis,
@@ -20,7 +13,6 @@ import { LoadingSpinner } from "../shared/LoadingSpinner";
 import styled from "styled-components";
 import Image from "next/image";
 import { Leaderboard } from "@prisma/client";
-import { PrimaryLargeButton, SecondaryLargeButton } from "../shared/Buttons";
 import { useRouter } from "next/navigation";
 import { AppleWalletButton } from "../wallet/AppleWalletButton";
 import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
@@ -109,21 +101,21 @@ export default function HomeScreen() {
         {!sigmojiArr ? (
           <LoadingSpinner />
         ) : sigmojiArr.length - eventSigmojiTotal === 0 ? (
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+          <span className="primary-font-base">
             Get tapping to start collecting!
-          </PrimaryFontBase>
+          </span>
         ) : (
           <LeaderboardContainer>
             <LeaderboardTitle>
               <FirstColumnContainer>
-                <CourierPrimeH4>Sigmoji</CourierPrimeH4>
+                <span className="courier-font-sm">Sigmoji</span>
               </FirstColumnContainer>
               <SecondColumnContainer>
-                <CourierPrimeH4>Edition</CourierPrimeH4>
+                <span className="courier-font-sm">Edition</span>
               </SecondColumnContainer>
-              <ThirdColumnContainer>
-                <CourierPrimeH4>Points</CourierPrimeH4>
-              </ThirdColumnContainer>
+              <div className="flex gap-2 items-end w-[72px] justify-end">
+                <span className="courier-font-sm">Points</span>
+              </div>
             </LeaderboardTitle>
             {sigmojiArr
               .filter((sigmoji) => attestationText(sigmoji.PCD) === undefined)
@@ -144,35 +136,27 @@ export default function HomeScreen() {
                       />
                     </FirstColumnContainer>
                     <SecondColumnContainer>
-                      <CourierPrimeBase>
+                      <span className="courier-font-base">
                         {sigmoji.PCD.claim.nonce}
-                      </CourierPrimeBase>
+                      </span>
                     </SecondColumnContainer>
                     <ThirdColumnContainer>
-                      <CourierPrimeBase>1</CourierPrimeBase>
+                      <span className="courier-font-base">1</span>
                     </ThirdColumnContainer>
                   </LeaderboardRow>
                 );
               })}
             <ScoreContainer>
               <FirstColumnContainer>
-                <CourierPrimeH4
-                  style={{
-                    color: "var(--snow-flurry-200)",
-                  }}
-                >
+                <span  className="courier-font-sm text-snow-flurry-200">
                   Total
-                </CourierPrimeH4>
+                </span>
               </FirstColumnContainer>
               <SecondColumnContainer></SecondColumnContainer>
               <ThirdColumnContainer>
-                <CourierPrimeH4
-                  style={{
-                    color: "var(--snow-flurry-200)",
-                  }}
-                >
+                <span className="courier-font-sm text-snow-flurry-200"                >
                   {sigmojiArr.length - eventSigmojiTotal}
-                </CourierPrimeH4>
+                </span>
               </ThirdColumnContainer>
             </ScoreContainer>
           </LeaderboardContainer>
@@ -187,11 +171,11 @@ export default function HomeScreen() {
             <LeaderboardContainer>
               <LeaderboardTitle>
                 <FirstColumnContainer>
-                  <CourierPrimeH4>Sigmoji</CourierPrimeH4>
+                  <span className="courier-font-sm">Sigmoji</span>
                 </FirstColumnContainer>
                 <SecondColumnContainer></SecondColumnContainer>
                 <ThirdColumnContainer>
-                  <CourierPrimeH4>Meaning</CourierPrimeH4>
+                  <span className="courier-font-sm">Meaning</span>
                 </ThirdColumnContainer>
               </LeaderboardTitle>
               {sigmojiArr
@@ -212,32 +196,24 @@ export default function HomeScreen() {
                       </FirstColumnContainer>
                       <SecondColumnContainer></SecondColumnContainer>
                       <ThirdColumnContainer style={{ width: "100%" }}>
-                        <CourierPrimeBase>
+                        <span className="courier-font-base">
                           {attestationText(sigmoji.PCD)}
-                        </CourierPrimeBase>
+                        </span>
                       </ThirdColumnContainer>
                     </LeaderboardRow>
                   );
                 })}
               <ScoreContainer>
                 <FirstColumnContainer>
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                  <span className="courier-font-sm text-snow-flurry-200">
                     Total
-                  </CourierPrimeH4>
+                  </span>
                 </FirstColumnContainer>
                 <SecondColumnContainer></SecondColumnContainer>
                 <ThirdColumnContainer>
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                  <span className="courier-font-sm text-snow-flurry-200">
                     {eventSigmojiTotal}
-                  </CourierPrimeH4>
+                  </span>
                 </ThirdColumnContainer>
               </ScoreContainer>
             </LeaderboardContainer>
@@ -248,27 +224,27 @@ export default function HomeScreen() {
       )}
 
       <Chevron initiallyOpen={false} bottom={false} text={"TELEGRAM"}>
-        <PrimaryLargeButton
+        <Button
           style={{ width: "100%" }}
           onClick={() => router.push("/chat")}
+          icon="💬"
         >
-          <PrimaryFontBase1>💬</PrimaryFontBase1>
-          <PrimaryFontBase1>COLLECTOR CHAT</PrimaryFontBase1>
-        </PrimaryLargeButton>
-        <PrimaryLargeButton
-          style={{ width: "100%" }}
+          COLLECTOR CHAT
+        </Button>
+        <Button
+          className="w-full"
           onClick={() => router.push("/anon")}
+          icon="🕵️‍♂️"
         >
-          <PrimaryFontBase1>🕵️‍♂️</PrimaryFontBase1>
-          <PrimaryFontBase1>ANON COLLECTOR CHAT</PrimaryFontBase1>
-        </PrimaryLargeButton>
-        <PrimaryLargeButton
-          style={{ width: "100%" }}
+          ANON COLLECTOR CHAT
+        </Button>
+        <Button
+          className="w-full"
           onClick={() => router.push("/cardholder")}
+          icon="💳"
         >
-          <PrimaryFontBase1>💳</PrimaryFontBase1>
-          <PrimaryFontBase1>CARDHOLDER CHAT</PrimaryFontBase1>
-        </PrimaryLargeButton>
+          CARDHOLDER CHAT
+        </Button>
       </Chevron>
 
       <Chevron initiallyOpen={false} bottom={false} text={"LEADERBOARD"}>
@@ -277,22 +253,22 @@ export default function HomeScreen() {
         ) : (
           <LeaderboardContainer>
             {leaderboard.length === 0 ? (
-              <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+              <span className="primary-font-base">
                 Reveal your score with ZK!
-              </PrimaryFontBase>
+              </span>
             ) : (
               <>
-                <LeaderboardTitle>
-                  <FirstColumnContainer>
-                    <CourierPrimeH4>Rank</CourierPrimeH4>
-                  </FirstColumnContainer>
+                <div className="grid grid-cols-[80px_1fr_72px] items-center w-full">
+                  <div className="flex self-end gap-2">
+                    <span className="courier-font-sm">Rank</span>
+                  </div>
                   <SecondColumnContainer>
-                    <CourierPrimeH4>Pseudonym</CourierPrimeH4>
+                    <span className="courier-font-sm">Pseudonym</span>
                   </SecondColumnContainer>
                   <ThirdColumnContainer>
-                    <CourierPrimeH4>Score</CourierPrimeH4>
+                    <span className="courier-font-sm">Score</span>
                   </ThirdColumnContainer>
-                </LeaderboardTitle>
+                </div>
                 {leaderboard.map((row, index) => {
                   const style = row.belongsToUser
                     ? {
@@ -305,19 +281,19 @@ export default function HomeScreen() {
                       isFinalEntry={index === leaderboard.length - 1}
                     >
                       <FirstColumnContainer>
-                        <CourierPrimeBase style={style}>
+                        <span className="courier-font-base" style={style}>
                           {row.rank}
-                        </CourierPrimeBase>
+                        </span>
                       </FirstColumnContainer>
                       <SecondColumnContainer>
-                        <CourierPrimeBase style={style}>
+                        <span className="courier-font-base" style={style}>
                           {row.pseudonym}
-                        </CourierPrimeBase>
+                        </span>
                       </SecondColumnContainer>
                       <ThirdColumnContainer>
-                        <CourierPrimeBase style={style}>
+                        <span className="courier-font-base" style={style}>
                           {row.score}
-                        </CourierPrimeBase>
+                        </span>
                       </ThirdColumnContainer>
                     </LeaderboardRow>
                   );
@@ -328,13 +304,9 @@ export default function HomeScreen() {
             <RevealContainer>
               <RevealTextContainer>
                 <RevealTitleContainer>
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                  <span className="courier-font-sm text-snow-flurry-200">
                     Score
-                  </CourierPrimeH4>
+                  </span>
                 </RevealTitleContainer>
                 <RevealScoreContainer>
                   <Image
@@ -343,13 +315,9 @@ export default function HomeScreen() {
                     height="16"
                     alt="eye"
                   />
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                  <span className="courier-font-sm text-snow-flurry-200">
                     {sigmojiArr.length}
-                  </CourierPrimeH4>
+                  </span>
                 </RevealScoreContainer>
               </RevealTextContainer>
               <Button
@@ -363,7 +331,7 @@ export default function HomeScreen() {
                     height="16"
                     alt="eye"
                   />
-                  <PrimaryFontBase1>REVEAL</PrimaryFontBase1>
+                  <span>REVEAL</span>
                 </div>
               </Button>
             </RevealContainer>
@@ -381,38 +349,29 @@ export default function HomeScreen() {
           noToggle={true}
         >
           {hasWalletBackup ? (
-            <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            <span className="primary-font-base">
               {`Update your existing backup!`}
-            </PrimaryFontBase>
+            </span>
           ) : (
-            <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            <span className="primary-font-base">
               {`Currently, your sigmojis live in your browser, where they will be 
             cleared with time. To keep your sigmojis forever, back them up to 
             a more permanent store! `}
-            </PrimaryFontBase>
+            </span>
           )}
           <div className="flex flex-col justify-center items-center gap-6 inline-flex w-full">
             <AppleWalletButton />
             <GoogleWalletButton />
-            {/* <PrimaryFontSmall
-            style={{
-              textAlign: "center",
-              color: "#888",
-            }}
-          >
-            Alternatively you can copy/paste the data directly to the encrypted
-            messaging app or password manager of your choice.
-          </PrimaryFontSmall> */}
-            <SecondaryLargeButton
+            <Button
+              variant="secondary"
+              className="w-[264px]"
               onClick={async () => {
                 const serializedSigmojis = await loadSigmojiWalletBackup();
                 navigator.clipboard.writeText(serializedSigmojis);
               }}
             >
-              <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-                Copy data store
-              </PrimaryFontBase1>
-            </SecondaryLargeButton>
+              Copy data store
+            </Button>
           </div>
         </Chevron>
       )}
@@ -423,6 +382,7 @@ export default function HomeScreen() {
     </div>
   );
 }
+
 
 const LeaderboardContainer = styled.div`
   display: flex;
@@ -510,6 +470,7 @@ const SecondColumnContainer = styled.div`
   gap: 8px;
   flex: 1 0 0;
 `;
+
 
 const ThirdColumnContainer = styled.div`
   display: flex;

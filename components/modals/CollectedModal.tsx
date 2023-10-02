@@ -1,9 +1,7 @@
 "use client";
 
 import Modal from "./Modal";
-import { PrimaryFontBase1, PrimaryFontH3, PrimaryFontH4 } from "../core";
 import Image from "next/image";
-import { SecondaryLargeButton } from "../shared/Buttons";
 import {
   HaLoNoncePCDArgs,
   HaLoNoncePCD,
@@ -17,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
 import { detectIncognito } from "detectincognitojs";
 import { attestationText } from "@/lib/attestationData";
+import { Button } from "../ui/button";
 
 export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
   const router = useRouter();
@@ -103,28 +102,28 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
         <div className="w-[264px] flex-col justify-start items-center gap-8 inline-flex text-center">
           {pcd && imageLink ? (
             <>
-              <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+              <h3 className="text-[23px] font-bold text-woodsmoke-100 leading-normal">
                 Yay, collected!
-              </PrimaryFontH3>
+              </h3>
               <Image
                 src={`/emoji-photo/${imageLink}`}
                 width="160"
                 height="160"
                 alt="emoji"
               />
-              <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
+              <span className="text-base font-medium leading-[140%] text-woodsmoke-100">
                 {attestationText(pcd) !== undefined
                   ? `You have collected a "${attestationText(
                       pcd
                     )}" attestation.`
                   : `You have edition ${pcd.claim.nonce} of this Sigmoji.`}
-              </PrimaryFontBase1>
+              </span>
             </>
           ) : alreadyCollected ? (
             <>
-              <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+              <h3 className="text-[23px] text-normal text-center font-bold text-woodsmoke-100 leading-tight">
                 {"You've already collected this sigmoji."}
-              </PrimaryFontH3>
+              </h3>
               <Image
                 src={`/emoji-photo/${imageLink}`}
                 width="160"
@@ -137,22 +136,24 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
               <LoadingSpinner />
             </div>
           )}
-          <SecondaryLargeButton
+          <Button
+            className="w-full"
+            variant="secondary"
             onClick={async () => {
               await alertIncognito();
               router.push("/home");
             }}
           >
-            <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-              Back to app
-            </PrimaryFontBase1>
-            <Image
-              src="/buttons/arrow-right-line.svg"
-              width="16"
-              height="16"
-              alt="arrow"
-            />
-          </SecondaryLargeButton>{" "}
+            <div className="flex gap-2 items-center">
+              <span>Back to app</span>
+                <Image
+                src="/buttons/arrow-right-line.svg"
+                width="16"
+                height="16"
+                alt="arrow"
+              />
+            </div>
+          </Button>
         </div>
       </div>
     </Modal>

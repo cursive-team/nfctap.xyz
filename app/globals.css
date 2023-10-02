@@ -17,3 +17,15 @@ body {
   color: rgb(var(--foreground-rgb));
   background: #1a1a1a;
 }
+
+.primary-font-base {
+  @apply font-helvetica text-base font-medium leading-[140%] text-woodsmoke-100;
+}
+
+.courier-font-sm {
+  @apply font-courier text-[19px] font-normal leading-none text-woodsmoke-100;
+}
+
+.courier-font-base {
+  @apply font-courier text-sm font-medium leading-[140%] text-woodsmoke-100;
+}

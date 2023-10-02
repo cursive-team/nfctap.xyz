@@ -1,4 +1,4 @@
-import { TextArea } from "@/components/shared/TextArea";
+import { TextArea } from "../ui/textarea";
 import { useState } from "react";
 import CardholderTapModal from "./CardholderTapModal";
 import Modal from "./Modal";
@@ -98,7 +98,7 @@ export default function CardholderModal() {
       }
     >
       <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
-        <TextArea header="Message" value={message} setValue={setMessage} />
+        <TextArea label="Message" value={message} onChange={(e: any) => setMessage(e?.target?.value)} />
         <Button className="w-full" onClick={onSubmit}>
           {getDisplayText()}
         </Button>
