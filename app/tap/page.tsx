@@ -28,7 +28,7 @@ export default function TapPage() {
       const urlParams = new URLSearchParams(location.hash.slice(1));
       const haloArgs = getHaLoArgs(urlParams);
       if (haloArgs === null) {
-        router.push("/home");
+        router.push("/");
       } else {
         setArgs(haloArgs);
       }

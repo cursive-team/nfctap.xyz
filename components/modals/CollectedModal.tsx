@@ -40,14 +40,14 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
       try {
         producedPCD = await HaLoNoncePCDPackage.prove(args);
       } catch (e) {
-        router.push("/home");
+        router.push("/");
         return;
       }
       if (
         producedPCD === undefined ||
         !(await HaLoNoncePCDPackage.verify(producedPCD))
       ) {
-        router.push("/home");
+        router.push("/");
         return;
       }
 
@@ -141,7 +141,7 @@ export default function CollectedModal({ args }: { args: HaLoNoncePCDArgs }) {
             variant="secondary"
             onClick={async () => {
               await alertIncognito();
-              router.push("/home");
+              router.push("/");
             }}
           >
             <div className="flex gap-2 items-center">

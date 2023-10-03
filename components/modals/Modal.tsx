@@ -17,7 +17,7 @@ const ModalHeader = () => {
 
   return (
     <div className="flex py-6 px-4 self-stretch items-center">
-      <div className="ml-auto" onClick={() => router.push("/home")}>
+      <div className="ml-auto" onClick={() => router.push("/")}>
         <Image src="/buttons/close.svg" width="24" height="24" alt="Close" />
       </div>
     </div>

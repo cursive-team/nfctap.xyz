@@ -27,7 +27,7 @@ export default function TapModal() {
         alert(
           "Please move to a non-incognito tab in order to save your Sigmojis!"
         );
-        router.push("/home");
+        router.push("/");
       }
     };
 

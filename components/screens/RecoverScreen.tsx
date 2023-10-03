@@ -38,7 +38,7 @@ export default function RecoverScreen() {
         await updateSigmojiList(sigmojis);
         setRecoverState(RecoverState.RECOVERED);
         alert(`Successfully recovered ${sigmojis.length} sigmojis!`);
-        router.push("/home");
+        router.push("/");
       } catch (err) {
         console.error(err);
         setRecoverState(RecoverState.ERROR);
