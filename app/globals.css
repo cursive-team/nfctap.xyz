@@ -19,7 +19,7 @@ body {
 }
 
 .primary-font-base {
-  @apply font-helvetica text-base font-medium leading-[140%] text-woodsmoke-100;
+  @apply font-helvetica text-base font-normal leading-[140%] text-woodsmoke-100;
 }
 
 .courier-font-sm {
@@ -27,5 +27,5 @@ body {
 }
 
 .courier-font-base {
-  @apply font-courier text-sm font-medium leading-[140%] text-woodsmoke-100;
+  @apply font-courier text-base font-medium leading-[140%] text-woodsmoke-100;
 }

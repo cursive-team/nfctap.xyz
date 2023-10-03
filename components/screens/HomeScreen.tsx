@@ -347,10 +347,10 @@ export default function HomeScreen() {
               </>
             )}
 
-            <div className="flex flex-col mt-10 p-6 items-start self-stretch gap-6 bg-woodsmoke-950 rounded-2xl">
+            <div className="flex flex-col mt-10 p-6 items-start self-stretch gap-8 bg-woodsmoke-950 rounded-2xl">
               <div className="flex items-center gap-[25px] self-stretch">
                 <div className="flex h-[18px] items-center w-full gap-2">
-                  <span className="courier-font-sm text-snow-flurry-200">
+                  <span className="courier-font-sm !text-snow-flurry-200">
                     Score
                   </span>
                 </div>
@@ -361,7 +361,7 @@ export default function HomeScreen() {
                     height="16"
                     alt="eye"
                   />
-                  <span className="courier-font-sm text-snow-flurry-200">
+                  <span className="courier-font-sm !text-snow-flurry-200">
                     {sigmojiArr.length}
                   </span>
                 </div>
