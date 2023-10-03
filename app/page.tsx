@@ -1,7 +1,7 @@
 "use client";
 
-import TapModal from "@/components/modals/TapModal";
+import HomeScreen from "@/components/screens/HomeScreen";
 
-export default function Page() {
-  return <TapModal />;
+export default function Home() {
+  return <HomeScreen />;
 }

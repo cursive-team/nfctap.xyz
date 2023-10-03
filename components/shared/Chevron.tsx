@@ -46,17 +46,20 @@ export default function Chevron({
             <></>
           ) : (
             <Image
-              src={isOpen ? "/buttons/chevron-up.svg" : "/buttons/chevron-down.svg"} 
+              src="/buttons/chevron-down.svg" 
               width="24"
               height="24"
               alt="Chevron"
+              className={cn('duration-150', {
+                'rotate-180': isOpen,
+              })}
               priority
             />
           )}
         </div>
         <div 
-          className={cn('flex w-full items-center self-stretch gap-4 flex-col', {
-           'hidden': !isOpen
+          className={cn('flex duration-200 w-full items-center self-stretch gap-4 flex-col overflow-hidden', {
+           'hidden h-0': !isOpen,
          })}
         >
           {children}

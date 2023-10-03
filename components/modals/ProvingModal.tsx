@@ -89,7 +89,7 @@ export default function ProvingModal() {
               provingTime
             )}.`
           );
-          router.push("/home");
+          router.push("/");
         } else {
           alert("The proof you submitted was invalid.");
         }
