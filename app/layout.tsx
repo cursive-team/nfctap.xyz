@@ -1,7 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Courier_Prime } from "next/font/google";
-import StyledComponentsRegistry from "@/lib/registry";
 import QueryClientWrapper from "@/components/shared/QueryClientWrapper";
 
 
@@ -26,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${courier_prime.variable}`}>
         <QueryClientWrapper>
-          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+          {children}
         </QueryClientWrapper>
       </body>
     </html>

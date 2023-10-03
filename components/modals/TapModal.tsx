@@ -1,7 +1,6 @@
 "use client";
 
 import Modal  from "./Modal";
-import { PrimaryFontH3 } from "../core";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
 import { useEffect, useState } from "react";
@@ -141,9 +140,9 @@ export default function TapModal() {
   return (
     <Modal 
       title={
-        <PrimaryFontH3 style={{ color: "var(--woodsmoke-100)" }}>
+        <span className="font-helvetica text-[23px] font-bold leading-none text-woodsmoke-100">
           Place the NFC card near your phone.
-        </PrimaryFontH3>
+        </span>
       }
     >
       <img src="/phone-tap.gif" />

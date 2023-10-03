@@ -1,7 +1,15 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { PrimaryFontH4 } from "../core";
+import React, {  useState } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+
+
+interface ChevronProps {
+  text: string;
+  initiallyOpen: boolean;
+  bottom: boolean;
+  children: React.ReactNode;
+  noToggle?: boolean;
+}
 
 export default function Chevron({
   text,
@@ -9,86 +17,51 @@ export default function Chevron({
   bottom,
   children,
   noToggle,
-}: {
-  text: string;
-  initiallyOpen: boolean;
-  bottom: boolean;
-  children: React.ReactNode;
-  noToggle?: boolean;
-}) {
+}: ChevronProps) {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
   return (
     <>
-      {isOpen ? (
-        <ChevronOpenContainer $noBorder={bottom}>
-          <ChevronTextArrowContainer
-            onClick={() => {
-              if (noToggle) return;
-              setIsOpen(!isOpen);
-            }}
-          >
-            <div style={{ width: "100%" }}>
-              <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
-                {text}
-              </PrimaryFontH4>
-            </div>
-            {noToggle ? (
-              <></>
-            ) : (
-              <Image
-                src="/buttons/chevron-up.svg"
-                width="24"
-                height="24"
-                alt="Chevron"
-                priority
-              />
-            )}
-          </ChevronTextArrowContainer>
-          {children}
-        </ChevronOpenContainer>
-      ) : (
-        <ChevronClosedContainer>
-          <ChevronTextArrowContainer onClick={() => setIsOpen(!isOpen)}>
-            <div style={{ width: "100%" }}>
-              <PrimaryFontH4 style={{ color: "var(--woodsmoke-100)" }}>
-                {text}
-              </PrimaryFontH4>
-            </div>
+      <div className={
+        cn('flex p-6 flex-col items-center self-stretch gap-4', {
+          'none': bottom,
+          'border-b border-b-woodsmoke-700': !bottom,
+          'pb-[64px]': bottom,
+          'pb-[24px]': !bottom,
+        })
+      }>
+        <div 
+          className="flex w-full items-center self-stretch gap-4"
+          onClick={() => {
+            if (noToggle) return;
+            setIsOpen(!isOpen);
+          }}
+        >
+          <div className="w-full">
+            <span className="w-full font-helvetica text-lg font-bold leading-normal text-woodsmoke-100">
+              {text}
+            </span>
+          </div>
+          {noToggle ? (
+            <></>
+          ) : (
             <Image
-              src="/buttons/chevron-down.svg"
+              src={isOpen ? "/buttons/chevron-up.svg" : "/buttons/chevron-down.svg"} 
               width="24"
               height="24"
               alt="Chevron"
               priority
             />
-          </ChevronTextArrowContainer>
-        </ChevronClosedContainer>
-      )}
+          )}
+        </div>
+        <div 
+          className={cn('flex w-full items-center self-stretch gap-4 flex-col', {
+           'hidden': !isOpen
+         })}
+        >
+          {children}
+        </div>
+      </div>
     </>
   );
 }
-
-const ChevronTextArrowContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  align-self: stretch;
-`;
-
-const ChevronClosedContainer = styled.div`
-  padding: 24px;
-  border-bottom: 1px solid var(--woodsmoke-700, #4f4f4f);
-`;
-
-const ChevronOpenContainer = styled.div<{ $noBorder?: boolean }>`
-  display: flex;
-  padding: 24px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  align-self: stretch;
-  border-bottom: ${(props) =>
-    props.$noBorder ? "none" : "1px solid var(--woodsmoke-700, #4f4f4f)"};
-  padding-bottom: ${(props) => (props.$noBorder ? "64px" : "24px")};
-`;

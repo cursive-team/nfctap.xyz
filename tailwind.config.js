@@ -7,7 +7,8 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      helvetica: ['"Helvetica Neue"', 'sans-serif']
+      helvetica: ['"Helvetica Neue"', 'sans-serif'],
+      courier: ['var(--font-courier-prime)', 'sans-serif'],
     },
     extend: {
       colors: {
@@ -22,6 +23,21 @@ module.exports = {
           900: 'var(--woodsmoke-900)',
           950: 'var(--woodsmoke-950)',
         }
+      },
+      keyframes: {
+        'lsd-facebook-animation': {
+          '0%': { 
+            top: '4px',
+            height: '32px',
+          },
+          '50%, 100%': { 
+            top: '12px',
+            height: '16px'
+          },
+        },
+      },
+      animation: {
+        'lsd-facebook-animation': 'lsd-facebook-animation 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite',
       }
     },
   },

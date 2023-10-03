@@ -1,12 +1,12 @@
-import { TextArea } from "@/components/shared/TextArea";
+import { TextArea } from "../ui/textarea";
 import { useEffect, useState } from "react";
 import { Sigmoji } from "@/lib/types";
 import { loadSigmojis } from "@/lib/localStorage";
-import { addZKPToSigmoji, setupTree } from "@/lib/zkProving";
-import { Input } from "../shared/Input";
+import { addZKPToSigmoji } from "@/lib/zkProving";
 import { useWasm } from "@/hooks/useWasm";
+import Modal from "../modals/Modal";
 import { Button } from "../ui/button";
-import Modal from "./Modal";
+import { Input } from "../ui/input";
 
 enum ChatDisplayState {
   LOADING,
@@ -129,8 +129,8 @@ export default function AnonChatModal() {
       }
     >
       <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
-        <Input header="Pseudonym" value={pseudonym} setValue={setPseudonym} />
-        <TextArea header="Message" value={message} setValue={setMessage} />
+        <Input label="Pseudonym" value={pseudonym} onChange={(e: any) => setPseudonym(e?.target?.value)} />
+        <TextArea label="Message" value={message} onChange={(e: any) => setMessage(e?.target?.value)} />
         <Button
           className="w-full"
           disabled={!wasm || disabled}

@@ -1,13 +1,11 @@
 "use client";
 
-import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sigmoji, deserializeSigmoji } from "@/lib/types";
 import { updateSigmojiList } from "@/lib/localStorage";
 import { MainHeader } from "@/components/shared/Headers";
 import Footer from "@/components/shared/Footer";
-import { CourierPrimeBase } from "@/components/core";
 
 enum RecoverState {
   RECOVERING,
@@ -63,9 +61,9 @@ export default function RecoverScreen() {
   return (
     <div className="flex flex-col min-h-screen">
       <MainHeader />
-      <RecoverContainer>
-        <CourierPrimeBase>{getRecoverText()}</CourierPrimeBase>
-      </RecoverContainer>
+      <div className="flex flex-col gap-4 p-4 text-center self-stretch items-center">
+        <span className="courier-font-base">{getRecoverText()}</span>
+      </div>
       <div style={{ marginTop: "auto" }}>
         <Footer />
       </div>
@@ -86,13 +84,3 @@ function getCollectionFromParams(params: URLSearchParams): Promise<Sigmoji[]> {
 
   return Promise.all(serializedSigmojis.map(deserializeSigmoji));
 }
-
-const RecoverContainer = styled.div`
-  display: flex;
-  gap: 16px;
-  padding: 16px;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-  align-self: stretch;
-`;

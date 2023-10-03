@@ -1,14 +1,7 @@
 import { MainHeader } from "@/components/shared/Headers";
 import Chevron from "../shared/Chevron";
-import { useState, useEffect, CSSProperties } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import Footer from "../shared/Footer";
-import {
-  PrimaryFontBase,
-  CourierPrimeH4,
-  CourierPrimeBase,
-  PrimaryFontBase1,
-  PrimaryFontSmall,
-} from "../core";
 import {
   loadLeaderboardEntries,
   loadSigmojis,
@@ -17,21 +10,70 @@ import {
 } from "@/lib/localStorage";
 import { Sigmoji } from "@/lib/types";
 import { LoadingSpinner } from "../shared/LoadingSpinner";
-import styled from "styled-components";
 import Image from "next/image";
 import { Leaderboard } from "@prisma/client";
-import { PrimaryLargeButton, SecondaryLargeButton } from "../shared/Buttons";
 import { useRouter } from "next/navigation";
 import { AppleWalletButton } from "../wallet/AppleWalletButton";
 import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
 import { Button } from "../ui/button";
 import { attestationText } from "@/lib/attestationData";
+import { cn } from "@/lib/utils";
 
 type LeaderboardRow = {
   pseudonym: string;
   score: number;
   rank: number;
   belongsToUser: boolean;
+};
+
+interface LeaderboardProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+const LeaderboardContainer = ({ children }: LeaderboardProps) => {
+  return (
+    <div className="flex flex-col items-start self-stretch px-2">
+      {children}
+    </div>
+  );
+};
+
+const ScoreContainer = ({ children }: LeaderboardProps) => {
+  return (
+    <div className="flex items-center gap-6 py-4 border-t border-t-woodsmoke-700 bg-woodsmoke-950 mt-2 w-full">
+      {children}
+    </div>
+  );
+};
+
+const LeaderboardTable = ({
+  children,
+  className,
+  ...props
+}: LeaderboardProps) => {
+  return (
+    <div
+      className={`grid grid-cols-[80px_1fr_72px] items-center self-stretch gap-6 w-full ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
+
+const LeaderboardRow = ({
+  children,
+  isFinalEntry,
+}: LeaderboardProps & { isFinalEntry: boolean }) => {
+  return (
+    <div
+      className={cn("flex py-1 items-center gap-6 self-stretch w-full", {
+        "border-b border-b-woodsmoke-700": !isFinalEntry,
+      })}
+    >
+      {children}
+    </div>
+  );
 };
 
 export default function HomeScreen() {
@@ -109,22 +151,18 @@ export default function HomeScreen() {
         {!sigmojiArr ? (
           <LoadingSpinner />
         ) : sigmojiArr.length - eventSigmojiTotal === 0 ? (
-          <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+          <span className="primary-font-base">
             Get tapping to start collecting!
-          </PrimaryFontBase>
+          </span>
         ) : (
           <LeaderboardContainer>
-            <LeaderboardTitle>
-              <FirstColumnContainer>
-                <CourierPrimeH4>Sigmoji</CourierPrimeH4>
-              </FirstColumnContainer>
-              <SecondColumnContainer>
-                <CourierPrimeH4>Edition</CourierPrimeH4>
-              </SecondColumnContainer>
-              <ThirdColumnContainer>
-                <CourierPrimeH4>Points</CourierPrimeH4>
-              </ThirdColumnContainer>
-            </LeaderboardTitle>
+            <LeaderboardTable className="py-2">
+              <span className="courier-font-sm">Sigmoji</span>
+              <span className="courier-font-sm">Edition</span>
+              <div className="flex gap-2 items-end w-[72px] justify-end">
+                <span className="courier-font-sm">Points</span>
+              </div>
+            </LeaderboardTable>
             {sigmojiArr
               .filter((sigmoji) => attestationText(sigmoji.PCD) === undefined)
               .map((sigmoji, index) => {
@@ -135,45 +173,37 @@ export default function HomeScreen() {
                       index === sigmojiArr.length - eventSigmojiTotal - 1
                     }
                   >
-                    <FirstColumnContainer>
+                    <div className="flex items-end gap-2 w-[80px]">
                       <Image
                         src={`/emoji-photo/${sigmoji.emojiImg}`}
                         width="16"
                         height="16"
                         alt="emoji"
                       />
-                    </FirstColumnContainer>
-                    <SecondColumnContainer>
-                      <CourierPrimeBase>
+                    </div>
+                    <div className="flex items-center gap-2 flex-1">
+                      <span className="courier-font-base">
                         {sigmoji.PCD.claim.nonce}
-                      </CourierPrimeBase>
-                    </SecondColumnContainer>
-                    <ThirdColumnContainer>
-                      <CourierPrimeBase>1</CourierPrimeBase>
-                    </ThirdColumnContainer>
+                      </span>
+                    </div>
+                    <div className="flex w-[72px] items-center justify-end gap-2">
+                      <span className="courier-font-base">1</span>
+                    </div>
                   </LeaderboardRow>
                 );
               })}
             <ScoreContainer>
-              <FirstColumnContainer>
-                <CourierPrimeH4
-                  style={{
-                    color: "var(--snow-flurry-200)",
-                  }}
-                >
+              <div className="flex items-end gap-2 w-[80px]">
+                <span className="courier-font-sm text-snow-flurry-200">
                   Total
-                </CourierPrimeH4>
-              </FirstColumnContainer>
-              <SecondColumnContainer></SecondColumnContainer>
-              <ThirdColumnContainer>
-                <CourierPrimeH4
-                  style={{
-                    color: "var(--snow-flurry-200)",
-                  }}
-                >
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-1"></div>
+              <div className="flex w-[72px] items-center justify-end gap-2">
+                <span className="courier-font-sm text-snow-flurry-200">
                   {sigmojiArr.length - eventSigmojiTotal}
-                </CourierPrimeH4>
-              </ThirdColumnContainer>
+                </span>
+              </div>
             </ScoreContainer>
           </LeaderboardContainer>
         )}
@@ -185,15 +215,15 @@ export default function HomeScreen() {
             <LoadingSpinner />
           ) : (
             <LeaderboardContainer>
-              <LeaderboardTitle>
-                <FirstColumnContainer>
-                  <CourierPrimeH4>Sigmoji</CourierPrimeH4>
-                </FirstColumnContainer>
-                <SecondColumnContainer></SecondColumnContainer>
-                <ThirdColumnContainer>
-                  <CourierPrimeH4>Meaning</CourierPrimeH4>
-                </ThirdColumnContainer>
-              </LeaderboardTitle>
+              <LeaderboardTable className="py-2">
+                <div className="flex items-end gap-2 w-[80px]">
+                  <span className="courier-font-sm">Sigmoji</span>
+                </div>
+                <div className="flex items-center gap-2 flex-1"></div>
+                <div className="flex w-[72px] items-center justify-end gap-2">
+                  <span className="courier-font-sm">Meaning</span>
+                </div>
+              </LeaderboardTable>
               {sigmojiArr
                 .filter((sigmoji) => attestationText(sigmoji.PCD) !== undefined)
                 .map((sigmoji, index) => {
@@ -202,43 +232,35 @@ export default function HomeScreen() {
                       key={index}
                       isFinalEntry={index === eventSigmojiTotal - 1}
                     >
-                      <FirstColumnContainer>
+                      <div className="flex items-end gap-2 w-[80px]">
                         <Image
                           src={`/emoji-photo/${sigmoji.emojiImg}`}
                           width="16"
                           height="16"
                           alt="emoji"
                         />
-                      </FirstColumnContainer>
-                      <SecondColumnContainer></SecondColumnContainer>
-                      <ThirdColumnContainer style={{ width: "100%" }}>
-                        <CourierPrimeBase>
+                      </div>
+                      <div className="flex items-center gap-2 flex-1"></div>
+                      <div className="flex w-full items-center justify-end gap-2">
+                        <span className="courier-font-base">
                           {attestationText(sigmoji.PCD)}
-                        </CourierPrimeBase>
-                      </ThirdColumnContainer>
+                        </span>
+                      </div>
                     </LeaderboardRow>
                   );
                 })}
               <ScoreContainer>
-                <FirstColumnContainer>
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                <div className="flex items-end gap-2 w-[80px]">
+                  <span className="courier-font-sm text-snow-flurry-200">
                     Total
-                  </CourierPrimeH4>
-                </FirstColumnContainer>
-                <SecondColumnContainer></SecondColumnContainer>
-                <ThirdColumnContainer>
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-1"></div>
+                <div className="flex w-[72px] items-center justify-end gap-2">
+                  <span className="courier-font-sm text-snow-flurry-200">
                     {eventSigmojiTotal}
-                  </CourierPrimeH4>
-                </ThirdColumnContainer>
+                  </span>
+                </div>
               </ScoreContainer>
             </LeaderboardContainer>
           )}
@@ -248,27 +270,27 @@ export default function HomeScreen() {
       )}
 
       <Chevron initiallyOpen={false} bottom={false} text={"TELEGRAM"}>
-        <PrimaryLargeButton
-          style={{ width: "100%" }}
+        <Button
+          className="w-full"
           onClick={() => router.push("/chat")}
+          icon="💬"
         >
-          <PrimaryFontBase1>💬</PrimaryFontBase1>
-          <PrimaryFontBase1>COLLECTOR CHAT</PrimaryFontBase1>
-        </PrimaryLargeButton>
-        <PrimaryLargeButton
-          style={{ width: "100%" }}
+          COLLECTOR CHAT
+        </Button>
+        <Button
+          className="w-full"
           onClick={() => router.push("/anon")}
+          icon="🕵️‍♂️"
         >
-          <PrimaryFontBase1>🕵️‍♂️</PrimaryFontBase1>
-          <PrimaryFontBase1>ANON COLLECTOR CHAT</PrimaryFontBase1>
-        </PrimaryLargeButton>
-        <PrimaryLargeButton
-          style={{ width: "100%" }}
+          ANON COLLECTOR CHAT
+        </Button>
+        <Button
+          className="w-full"
           onClick={() => router.push("/cardholder")}
+          icon="💳"
         >
-          <PrimaryFontBase1>💳</PrimaryFontBase1>
-          <PrimaryFontBase1>CARDHOLDER CHAT</PrimaryFontBase1>
-        </PrimaryLargeButton>
+          CARDHOLDER CHAT
+        </Button>
       </Chevron>
 
       <Chevron initiallyOpen={false} bottom={false} text={"LEADERBOARD"}>
@@ -277,22 +299,22 @@ export default function HomeScreen() {
         ) : (
           <LeaderboardContainer>
             {leaderboard.length === 0 ? (
-              <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+              <span className="primary-font-base">
                 Reveal your score with ZK!
-              </PrimaryFontBase>
+              </span>
             ) : (
               <>
-                <LeaderboardTitle>
-                  <FirstColumnContainer>
-                    <CourierPrimeH4>Rank</CourierPrimeH4>
-                  </FirstColumnContainer>
-                  <SecondColumnContainer>
-                    <CourierPrimeH4>Pseudonym</CourierPrimeH4>
-                  </SecondColumnContainer>
-                  <ThirdColumnContainer>
-                    <CourierPrimeH4>Score</CourierPrimeH4>
-                  </ThirdColumnContainer>
-                </LeaderboardTitle>
+                <div className="grid grid-cols-[80px_1fr_72px] items-center w-full gap-6">
+                  <div className="flex self-end gap-2">
+                    <span className="courier-font-sm">Rank</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-1">
+                    <span className="courier-font-sm">Pseudonym</span>
+                  </div>
+                  <div className="flex w-[72px] items-center justify-end gap-2">
+                    <span className="courier-font-sm">Score</span>
+                  </div>
+                </div>
                 {leaderboard.map((row, index) => {
                   const style = row.belongsToUser
                     ? {
@@ -304,56 +326,48 @@ export default function HomeScreen() {
                       key={index}
                       isFinalEntry={index === leaderboard.length - 1}
                     >
-                      <FirstColumnContainer>
-                        <CourierPrimeBase style={style}>
+                      <div className="flex items-end gap-2 w-[80px]">
+                        <span className="courier-font-base" style={style}>
                           {row.rank}
-                        </CourierPrimeBase>
-                      </FirstColumnContainer>
-                      <SecondColumnContainer>
-                        <CourierPrimeBase style={style}>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="courier-font-base" style={style}>
                           {row.pseudonym}
-                        </CourierPrimeBase>
-                      </SecondColumnContainer>
-                      <ThirdColumnContainer>
-                        <CourierPrimeBase style={style}>
+                        </span>
+                      </div>
+                      <div className="flex w-[72px] items-center justify-end gap-2">
+                        <span className="courier-font-base" style={style}>
                           {row.score}
-                        </CourierPrimeBase>
-                      </ThirdColumnContainer>
+                        </span>
+                      </div>
                     </LeaderboardRow>
                   );
                 })}
               </>
             )}
 
-            <RevealContainer>
-              <RevealTextContainer>
-                <RevealTitleContainer>
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+            <div className="flex flex-col mt-10 p-6 items-start self-stretch gap-8 bg-woodsmoke-950 rounded-2xl">
+              <div className="flex items-center gap-[25px] self-stretch">
+                <div className="flex h-[18px] items-center w-full gap-2">
+                  <span className="courier-font-sm !text-snow-flurry-200">
                     Score
-                  </CourierPrimeH4>
-                </RevealTitleContainer>
-                <RevealScoreContainer>
+                  </span>
+                </div>
+                <div className="flex h-[18px] justify-end items-center gap-2 w-full">
                   <Image
                     src="/buttons/eye-close-fill.svg"
                     width="16"
                     height="16"
                     alt="eye"
                   />
-                  <CourierPrimeH4
-                    style={{
-                      color: "var(--snow-flurry-200)",
-                    }}
-                  >
+                  <span className="courier-font-sm !text-snow-flurry-200">
                     {sigmojiArr.length}
-                  </CourierPrimeH4>
-                </RevealScoreContainer>
-              </RevealTextContainer>
+                  </span>
+                </div>
+              </div>
               <Button
-                style={{ width: "100%" }}
+                className="w-full"
                 onClick={() => router.push("/prove")}
               >
                 <div className="flex gap-1">
@@ -363,10 +377,10 @@ export default function HomeScreen() {
                     height="16"
                     alt="eye"
                   />
-                  <PrimaryFontBase1>REVEAL</PrimaryFontBase1>
+                  <span>REVEAL</span>
                 </div>
               </Button>
-            </RevealContainer>
+            </div>
           </LeaderboardContainer>
         )}
       </Chevron>
@@ -381,140 +395,36 @@ export default function HomeScreen() {
           noToggle={true}
         >
           {hasWalletBackup ? (
-            <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            <span className="primary-font-base">
               {`Update your existing backup!`}
-            </PrimaryFontBase>
+            </span>
           ) : (
-            <PrimaryFontBase style={{ color: "var(--woodsmoke-100)" }}>
+            <span className="primary-font-base">
               {`Currently, your sigmojis live in your browser, where they will be 
             cleared with time. To keep your sigmojis forever, back them up to 
             a more permanent store! `}
-            </PrimaryFontBase>
+            </span>
           )}
           <div className="flex flex-col justify-center items-center gap-6 inline-flex w-full">
             <AppleWalletButton />
             <GoogleWalletButton />
-            {/* <PrimaryFontSmall
-            style={{
-              textAlign: "center",
-              color: "#888",
-            }}
-          >
-            Alternatively you can copy/paste the data directly to the encrypted
-            messaging app or password manager of your choice.
-          </PrimaryFontSmall> */}
-            <SecondaryLargeButton
+            <Button
+              variant="secondary"
+              className="w-[264px]"
               onClick={async () => {
                 const serializedSigmojis = await loadSigmojiWalletBackup();
                 navigator.clipboard.writeText(serializedSigmojis);
               }}
             >
-              <PrimaryFontBase1 style={{ color: "var(--woodsmoke-100)" }}>
-                Copy data store
-              </PrimaryFontBase1>
-            </SecondaryLargeButton>
+              Copy data store
+            </Button>
           </div>
         </Chevron>
       )}
 
-      <div style={{ marginTop: "auto" }}>
+      <div className="mt-auto">
         <Footer />
       </div>
     </div>
   );
 }
-
-const LeaderboardContainer = styled.div`
-  display: flex;
-  padding: 0px 8px 0px 8px;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-`;
-
-const LeaderboardTitle = styled.div`
-  display: flex;
-  padding: 8px 0px;
-  align-items: center;
-  gap: 24px;
-  align-self: stretch;
-`;
-
-const LeaderboardRow = styled.div<{ isFinalEntry?: boolean }>`
-  display: flex;
-  padding: 4px 0px;
-  align-items: center;
-  gap: 24px;
-  align-self: stretch;
-  border-bottom: ${(props) =>
-    props.isFinalEntry ? "none" : "1px solid rgba(231, 231, 231, 0.1)"};
-`;
-
-const ScoreContainer = styled.div`
-  display: flex;
-  margin-top: 8px;
-  padding: 16px 0px;
-  align-items: center;
-  gap: 24px;
-  align-self: stretch;
-  border-top: 1px solid var(--woodsmoke-700);
-  background: var(--woodsmoke-950);
-`;
-
-const RevealContainer = styled.div`
-  display: flex;
-  margin-top: 40px;
-  padding: 24px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 32px;
-  align-self: stretch;
-  border-radius: 8px;
-  background: var(--woodsmoke-900);
-`;
-
-const RevealTextContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  align-self: stretch;
-`;
-
-const RevealTitleContainer = styled.div`
-  display: flex;
-  height: 18px;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-`;
-
-const RevealScoreContainer = styled.div`
-  display: flex;
-  height: 18px;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-`;
-
-const FirstColumnContainer = styled.div`
-  display: flex;
-  width: 80px;
-  align-items: flex-end;
-  gap: 8px;
-`;
-
-const SecondColumnContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1 0 0;
-`;
-
-const ThirdColumnContainer = styled.div`
-  display: flex;
-  width: 72px;
-  justify-content: flex-end;
-  align-items: flex-end;
-  gap: 8px;
-`;
