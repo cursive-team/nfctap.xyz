@@ -9,6 +9,7 @@ import Modal from "./Modal";
 import { Dropdown, DropdownProps } from "../ui/dropdown";
 import { sha256 } from "js-sha256";
 import { TextArea } from "../ui/textarea";
+import { useForm } from "react-hook-form";
 
 enum ChatDisplayState {
   LOADING,
@@ -17,26 +18,37 @@ enum ChatDisplayState {
   SUBMITTING,
 }
 
+interface FormProps {
+  message: string;
+  selectedSigmoji: string;
+}
+
 export default function ChatModal() {
   const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm();
   const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
   const [isDisabled, setDisabled] = useState(false);
 
-  const [selectedSigmoji, setSelectedSigmoji] = useState<string>();
-  const [message, setMessage] = useState("");
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
     ChatDisplayState.READY
   );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<FormProps>();
 
+  const selectedSigmoji = watch("selectedSigmoji", "");
   const isLoading = isLoadingWasm || isLoadingSigmojis;
 
   useEffect(() => {
     if (sigmojis?.length === 0) return;
-    setSelectedSigmoji(sigmojis[0].emojiImg);
+    setValue("selectedSigmoji", sigmojis[0].emojiImg);
   }, [sigmojis]);
 
   const onSelectSigmoji = (emojiImg: string) => {
-    setSelectedSigmoji(emojiImg);
+    setValue("selectedSigmoji", emojiImg);
   };
 
   const generateProofForSigmoji = async (
@@ -52,21 +64,14 @@ export default function ChatModal() {
     return addZKPToSigmoji(sigmoji, wasm, pubKeyTree);
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async ({ message }: FormProps) => {
     setDisabled(true);
-
-    if (!message) {
-      alert("Please enter a message.");
-      return;
-    }
 
     let sigmoji = sigmojis.find(
       (sigmoji) => sigmoji.emojiImg === selectedSigmoji
     );
-    if (!sigmoji) {
-      alert("Invalid Sigmoji selected.");
-      return;
-    }
+    
+    if (!sigmoji) return 
 
     // enable manifestation
     let postedMessage = message;
@@ -92,7 +97,7 @@ export default function ChatModal() {
         serializedZKP: sigmoji.ZKP,
       }),
     }).then(async (response) => {
-      setMessage("");
+      setValue("message", "");
       setDisplayState(ChatDisplayState.READY);
       if (response.status === 200) {
         alert("Successfully sent chat message!");
@@ -134,6 +139,8 @@ export default function ChatModal() {
       };
     }) ?? [];
 
+  const hasSimojis = sigmojis?.length > 0 && !isLoadingSigmojis;
+
   return (
     <Modal
       title="Collector Chat"
@@ -151,10 +158,24 @@ export default function ChatModal() {
         </>
       }
     >
-      <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col items-center self-stretch text-center gap-7 p-2 pb-0"
+      >
         {selectedSigmoji && (
           <div className="flex flex-col gap-2 items-center">
             <Dropdown
+              {...register("selectedSigmoji", {
+                validate: (value) => {
+                  console.log(
+                    "s",
+                    sigmojis.find((sigmoji) => sigmoji.emojiImg === value)
+                  );
+                  return sigmojis.find((sigmoji) => sigmoji.emojiImg === value)
+                    ? ""
+                    : "Invalid Sigmoji selected.";
+                },
+              })}
               label={
                 <>
                   <span>Select Sigmoji to chat as:</span>
@@ -177,24 +198,41 @@ export default function ChatModal() {
             />
           </div>
         )}
-        <TextArea 
+        <TextArea
           label={
             selectedSigmoji === "magic-wand.png"
               ? "Hash Manifestation"
               : "Message"
           }
-          value={message}
-          onChange={(e: any) => setMessage(e?.target?.value)} 
+          error={errors?.message?.message}
+          {...register("message", {
+            required: {
+              value: true,
+              message: "Please enter a message.",
+            },
+          })}
         />
-        <Button
-          className="w-full"
-          disabled={!wasm || isLoading || isDisabled}
-          loading={isLoading}
-          onClick={onSubmit}
-        >
-          {getDisplayText()}
-        </Button>
-      </div>
+        <div className="flex flex-col gap-2 w-full">
+          <Button
+            className="w-full"
+            disabled={!wasm || isLoading || isDisabled || !hasSimojis}
+            loading={isLoading}
+            type="submit"
+          >
+            {getDisplayText()}
+          </Button>
+          {errors?.selectedSigmoji?.message && (
+            <span className="text-red-500 text-xs text-left">
+              {errors?.selectedSigmoji?.message}
+            </span>
+          )}
+          {!hasSimojis && (
+            <span className="text-red-500 text-xs text-left">
+              No Sigmoji available to proceed.
+            </span>
+          )}
+        </div>
+      </form>
     </Modal>
   );
 }

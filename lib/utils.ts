@@ -1,3 +1,5 @@
+import { POST } from "@/app/api/chat/route";
+import { GET } from "@/app/api/generateApplePass/route";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 

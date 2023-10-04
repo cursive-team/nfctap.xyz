@@ -3,6 +3,7 @@ import { useState } from "react";
 import CardholderTapModal from "./CardholderTapModal";
 import Modal from "./Modal";
 import { Button } from "../ui/button";
+import { useForm } from "react-hook-form";
 
 export type SignMessageArgs = {
   digest: string;
@@ -20,11 +21,24 @@ enum CardholderDisplayState {
   SUBMITTING,
 }
 
+interface FormProps {
+  message: string;
+}
+
 export default function CardholderModal() {
-  const [message, setMessage] = useState("");
   const [displayState, setDisplayState] = useState<CardholderDisplayState>(
     CardholderDisplayState.CHAT
   );
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<FormProps>();
+
+  const message = watch("message", '');
 
   const onCardholderTap = async (args: SignMessageArgs): Promise<void> => {
     setDisplayState(CardholderDisplayState.SUBMITTING);
@@ -38,7 +52,7 @@ export default function CardholderModal() {
         signature: args.rawSignature,
       }),
     }).then(async (response) => {
-      setMessage("");
+      setValue("message", "");
       setDisplayState(CardholderDisplayState.CHAT);
       if (response.status === 200) {
         alert("Successfully sent chat message!");
@@ -53,11 +67,6 @@ export default function CardholderModal() {
   };
 
   const onSubmit = async () => {
-    if (!message) {
-      alert("Please enter a message.");
-      return;
-    }
-
     setDisplayState(CardholderDisplayState.TAP);
   };
 
@@ -97,12 +106,24 @@ export default function CardholderModal() {
         </>
       }
     >
-      <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
-        <TextArea label="Message" value={message} onChange={(e: any) => setMessage(e?.target?.value)} />
-        <Button className="w-full" onClick={onSubmit}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col items-center self-stretch text-center gap-8 p-2"
+      >
+        <TextArea
+          label="Message"
+          error={errors?.message?.message}
+          {...register("message", {
+            required: {
+              value: true,
+              message: "Please enter a message.",
+            },
+          })}
+        />
+        <Button className="w-full" type="submit">
           {getDisplayText()}
         </Button>
-      </div>
+      </form>
     </Modal>
   );
 }

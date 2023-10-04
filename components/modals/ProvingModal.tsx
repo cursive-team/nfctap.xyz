@@ -130,8 +130,12 @@ export default function ProvingModal() {
       }
       description="Create a pseudonym and make a zk proof to share it on the leaderboard."
     >
-      
-      <Input label="Pseudonym" disabled={isDisabled} value={pseudonym} onChange={(e: any) => setPseudonym(e?.target?.value)} />
+      <Input
+        label="Pseudonym"
+        disabled={isDisabled}
+        value={pseudonym}
+        onChange={(e: any) => setPseudonym(e?.target?.value)}
+      />
       <FieldWrapper
         description={showCounter ? `PROVING ${counterPercentage}%` : ""}
         className="w-full"
