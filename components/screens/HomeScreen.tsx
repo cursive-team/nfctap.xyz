@@ -18,6 +18,7 @@ import { GoogleWalletButton } from "../wallet/GoogleWalletButton";
 import { Button } from "../ui/button";
 import { attestationText } from "@/lib/attestationData";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type LeaderboardRow = {
   pseudonym: string;
@@ -270,27 +271,21 @@ export default function HomeScreen() {
       )}
 
       <Chevron initiallyOpen={false} bottom={false} text={"TELEGRAM"}>
-        <Button
-          className="w-full"
-          onClick={() => router.push("/chat")}
-          icon="💬"
-        >
-          COLLECTOR CHAT
-        </Button>
-        <Button
-          className="w-full"
-          onClick={() => router.push("/anon")}
-          icon="🕵️‍♂️"
-        >
-          ANON COLLECTOR CHAT
-        </Button>
-        <Button
-          className="w-full"
-          onClick={() => router.push("/cardholder")}
-          icon="💳"
-        >
-          CARDHOLDER CHAT
-        </Button>
+        <Link className="w-full" href="/chat">
+          <Button className="w-full" icon="💬">
+            COLLECTOR CHAT
+          </Button>
+        </Link>
+        <Link className="w-full" href="/anon">
+          <Button className="w-full" icon="🕵️‍♂️">
+            ANON COLLECTOR CHAT
+          </Button>
+        </Link>
+        <Link className="w-full" href="/cardholder">
+          <Button className="w-full" icon="💳">
+            CARDHOLDER CHAT
+          </Button>
+        </Link>
       </Chevron>
 
       <Chevron initiallyOpen={false} bottom={false} text={"LEADERBOARD"}>
@@ -366,20 +361,19 @@ export default function HomeScreen() {
                   </span>
                 </div>
               </div>
-              <Button
-                className="w-full"
-                onClick={() => router.push("/prove")}
-              >
-                <div className="flex gap-1">
-                  <Image
-                    src="/buttons/eye-2-line.svg"
-                    width="16"
-                    height="16"
-                    alt="eye"
-                  />
-                  <span>REVEAL</span>
-                </div>
-              </Button>
+              <Link className="w-full" href="/prove">
+                <Button className="w-full">
+                  <div className="flex gap-1">
+                    <Image
+                      src="/buttons/eye-2-line.svg"
+                      width="16"
+                      height="16"
+                      alt="eye"
+                    />
+                    <span>REVEAL</span>
+                  </div>
+                </Button>
+              </Link>
             </div>
           </LeaderboardContainer>
         )}
