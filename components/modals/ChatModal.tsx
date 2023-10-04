@@ -28,6 +28,7 @@ export default function ChatModal() {
   const { data: { wasm } = {}, isLoading: isLoadingWasm } = useWasm();
   const { data: sigmojis = [], isLoading: isLoadingSigmojis } = useSigmojis();
   const [isDisabled, setDisabled] = useState(false);
+  const [selectedSigmoji, setSelectedSigmoji] = useState<string>("");
 
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
     ChatDisplayState.READY
@@ -40,16 +41,15 @@ export default function ChatModal() {
     watch,
   } = useForm<FormProps>();
 
-  const selectedSigmoji = watch("selectedSigmoji", "");
   const isLoading = isLoadingWasm || isLoadingSigmojis;
 
   useEffect(() => {
     if (sigmojis?.length === 0) return;
-    setValue("selectedSigmoji", sigmojis[0].emojiImg);
+    setSelectedSigmoji(sigmojis[0].emojiImg);
   }, [sigmojis]);
 
   const onSelectSigmoji = (emojiImg: string) => {
-    setValue("selectedSigmoji", emojiImg);
+    setSelectedSigmoji(emojiImg);
   };
 
   const generateProofForSigmoji = async (
@@ -72,7 +72,10 @@ export default function ChatModal() {
       (sigmoji) => sigmoji.emojiImg === selectedSigmoji
     );
 
-    if (!sigmoji) return;
+    if (!sigmoji) {
+      toast.error("Invalid Sigmoji selected.");
+      return
+    }
 
     // enable manifestation
     let postedMessage = message;
@@ -166,17 +169,6 @@ export default function ChatModal() {
         {selectedSigmoji && (
           <div className="flex flex-col gap-2 items-center">
             <Dropdown
-              {...register("selectedSigmoji", {
-                validate: (value) => {
-                  console.log(
-                    "s",
-                    sigmojis.find((sigmoji) => sigmoji.emojiImg === value)
-                  );
-                  return sigmojis.find((sigmoji) => sigmoji.emojiImg === value)
-                    ? ""
-                    : "Invalid Sigmoji selected.";
-                },
-              })}
               label={
                 <>
                   <span>Select Sigmoji to chat as:</span>
