@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import Modal from "../modals/Modal";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import toast from 'react-hot-toast';
 
 enum ChatDisplayState {
   LOADING,
@@ -57,7 +58,7 @@ export default function AnonChatModal() {
   const onSubmit = async ({ pseudonym, message }: FormProps) => {
     const sigmojiArr = await loadSigmojis();
     if (sigmojiArr.length === 0) {
-      alert("You must have a Sigmoji to use this chat.");
+      toast.error("You must have a Sigmoji to use this chat.");
       return;
     }
 
@@ -85,13 +86,13 @@ export default function AnonChatModal() {
       setValue("message", "");
       setDisplayState(ChatDisplayState.READY);
       if (response.status === 200) {
-        alert("Successfully sent chat message!");
+        toast.success("Successfully sent chat message!");
       } else {
         const data = await response.json();
         if (data.error) {
           console.error(data.error);
         }
-        alert("Error sending chat message.");
+        toast.error("Error sending chat message.");
       }
     });
     setDisabled(false);

@@ -10,6 +10,7 @@ import { Dropdown, DropdownProps } from "../ui/dropdown";
 import { sha256 } from "js-sha256";
 import { TextArea } from "../ui/textarea";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 enum ChatDisplayState {
   LOADING,
@@ -70,8 +71,8 @@ export default function ChatModal() {
     let sigmoji = sigmojis.find(
       (sigmoji) => sigmoji.emojiImg === selectedSigmoji
     );
-    
-    if (!sigmoji) return 
+
+    if (!sigmoji) return;
 
     // enable manifestation
     let postedMessage = message;
@@ -100,13 +101,13 @@ export default function ChatModal() {
       setValue("message", "");
       setDisplayState(ChatDisplayState.READY);
       if (response.status === 200) {
-        alert("Successfully sent chat message!");
+        toast.success("Successfully sent chat message!");
       } else {
         const data = await response.json();
         if (data.error) {
           console.error(data.error);
         }
-        alert("Error sending chat message.");
+        toast.error("Error sending chat message.");
       }
     });
     setDisabled(false);
@@ -224,11 +225,6 @@ export default function ChatModal() {
           {errors?.selectedSigmoji?.message && (
             <span className="text-red-500 text-xs text-left">
               {errors?.selectedSigmoji?.message}
-            </span>
-          )}
-          {!hasSimojis && (
-            <span className="text-red-500 text-xs text-left">
-              No Sigmoji available to proceed.
             </span>
           )}
         </div>

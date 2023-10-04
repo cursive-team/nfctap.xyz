@@ -14,6 +14,7 @@ import { FieldWrapper } from "../ui/field";
 import { useWasm } from "@/hooks/useWasm";
 import { useSigmojis } from "@/hooks/useSigmojis";
 import { provingTimeString } from "@/lib/utils";
+import toast from 'react-hot-toast';
 
 export default function ProvingModal() {
   const router = useRouter();
@@ -84,20 +85,20 @@ export default function ProvingModal() {
       if (response.status === 200) {
         if (data.success) {
           saveLeaderboardEntry({ pseudonym, score });
-          alert(
+          toast.success(
             `Score successfully verified! Generated ${numUniqueProofs} new proof(s) in: ${provingTimeString(
               provingTime
             )}.`
           );
           router.push("/");
         } else {
-          alert("The proof you submitted was invalid.");
+          toast.error("The proof you submitted was invalid.");
         }
       } else {
         if (data.error) {
           console.error(data.error);
         }
-        alert("Error submitting proof to leaderboard.");
+        toast.error("Error submitting proof to leaderboard.");
       }
     });
   };

@@ -4,6 +4,7 @@ import CardholderTapModal from "./CardholderTapModal";
 import Modal from "./Modal";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
+import toast from 'react-hot-toast';
 
 export type SignMessageArgs = {
   digest: string;
@@ -55,13 +56,13 @@ export default function CardholderModal() {
       setValue("message", "");
       setDisplayState(CardholderDisplayState.CHAT);
       if (response.status === 200) {
-        alert("Successfully sent chat message!");
+        toast.success("Successfully sent chat message!");
       } else {
         const data = await response.json();
         if (data.error) {
           console.error(data.error);
         }
-        alert("Error sending chat message.");
+        toast.error("Error sending chat message.");
       }
     });
   };
