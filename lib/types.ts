@@ -10,7 +10,7 @@ export interface Sigmoji {
   PCD: HaLoNoncePCD;
 
   /**
-   * Serialized ZKP.
+   * Serialized ZKP, hides the signature but verifies validity
    */
   ZKP: string;
 }
