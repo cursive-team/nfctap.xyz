@@ -31,5 +31,12 @@ export function attestationText(pcd: HaLoNoncePCD): string | undefined {
     return "Curiosity jackpot!!";
   }
 
+  if (
+    pcd.claim.pubkeyHex.toLowerCase() ===
+    "040306bbf644e9df5e9c624d7d7b35d28dfbc489d4cdc158cf2c9d8ba9cb8771bc69e8c8c6d8b9a53d6ae1066d519fb0d7c66b72776bcfbde1034efebb9e923544"
+  ) {
+    return "Vivek's magicians";
+  }
+
   return undefined;
 }
