@@ -42,17 +42,18 @@ export default function ProvingModal() {
 
     // compute proofs in component to track progress for user
     let numExistingProofs = 0;
-    const wrappedSigmojis = sigmojis?.map(async (sigmoji) => {
+    const sigmojisWithZKP = [];
+    for (const sigmoji of sigmojis) {
       if (sigmoji.ZKP) {
         numExistingProofs++;
       }
-      return addZKPToSigmoji(sigmoji, wasm, pubKeyTree).then((result) => {
-        setCounter((prevCounter) => prevCounter + 1);
-        return result;
-      });
-    });
-    const sigmojisWithZKP = await Promise.all(wrappedSigmojis as any);
+      const result = await addZKPToSigmoji(sigmoji, wasm, pubKeyTree);
+      sigmojisWithZKP.push(result);
+      setCounter((prevCounter) => prevCounter + 1);
+    }
+
     await serializeSigmojisInLocalStorage(sigmojisWithZKP);
+
     return {
       serializedZKPArray: sigmojisWithZKP.map((s) => s.ZKP),
       numUniqueProofs: (sigmojis?.length ?? 0) - numExistingProofs,
@@ -130,8 +131,12 @@ export default function ProvingModal() {
       }
       description="Create a pseudonym and make a zk proof to share it on the leaderboard."
     >
-      
-      <Input label="Pseudonym" disabled={isDisabled} value={pseudonym} onChange={(e: any) => setPseudonym(e?.target?.value)} />
+      <Input
+        label="Pseudonym"
+        disabled={isDisabled}
+        value={pseudonym}
+        onChange={(e: any) => setPseudonym(e?.target?.value)}
+      />
       <FieldWrapper
         description={showCounter ? `PROVING ${counterPercentage}%` : ""}
         className="w-full"
