@@ -6,6 +6,7 @@ import { Sigmoji, deserializeSigmoji } from "@/lib/types";
 import { updateSigmojiList } from "@/lib/localStorage";
 import { MainHeader } from "@/components/shared/Headers";
 import Footer from "@/components/shared/Footer";
+import toast from 'react-hot-toast';
 
 enum RecoverState {
   RECOVERING,
@@ -37,7 +38,7 @@ export default function RecoverScreen() {
         const sigmojis = await getCollectionFromParams(urlParams);
         await updateSigmojiList(sigmojis);
         setRecoverState(RecoverState.RECOVERED);
-        alert(`Successfully recovered ${sigmojis.length} sigmojis!`);
+        toast.success(`Successfully recovered ${sigmojis.length} sigmojis!`);
         router.push("/");
       } catch (err) {
         console.error(err);

@@ -4,9 +4,11 @@ import { Sigmoji } from "@/lib/types";
 import { loadSigmojis } from "@/lib/localStorage";
 import { addZKPToSigmoji } from "@/lib/zkProving";
 import { useWasm } from "@/hooks/useWasm";
+import { useForm } from "react-hook-form";
 import Modal from "../modals/Modal";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import toast from 'react-hot-toast';
 
 enum ChatDisplayState {
   LOADING,
@@ -15,13 +17,22 @@ enum ChatDisplayState {
   SUBMITTING,
 }
 
+interface FormProps {
+  pseudonym: string;
+  message: string;
+}
+
 export default function AnonChatModal() {
-  const [pseudonym, setPseudonym] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
   const [displayState, setDisplayState] = useState<ChatDisplayState>(
     ChatDisplayState.LOADING
   );
   const [disabled, setDisabled] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<FormProps>();
 
   const { data: { wasm, pubKeyTree } = {}, isLoading: isLoadingWasm } =
     useWasm();
@@ -44,20 +55,10 @@ export default function AnonChatModal() {
     return addZKPToSigmoji(sigmoji, wasm, pubKeyTree);
   };
 
-  const onSubmit = async () => {
-    if (!pseudonym) {
-      alert("Please select a pseudonym.");
-      return;
-    }
-
-    if (!message) {
-      alert("Please enter a message.");
-      return;
-    }
-
+  const onSubmit = async ({ pseudonym, message }: FormProps) => {
     const sigmojiArr = await loadSigmojis();
     if (sigmojiArr.length === 0) {
-      alert("You must have a Sigmoji to use this chat.");
+      toast.error("You must have a Sigmoji to use this chat.");
       return;
     }
 
@@ -82,16 +83,16 @@ export default function AnonChatModal() {
         serializedZKP: sigmoji.ZKP,
       }),
     }).then(async (response) => {
-      setMessage("");
+      setValue("message", "");
       setDisplayState(ChatDisplayState.READY);
       if (response.status === 200) {
-        alert("Successfully sent chat message!");
+        toast.success("Successfully sent chat message!");
       } else {
         const data = await response.json();
         if (data.error) {
           console.error(data.error);
         }
-        alert("Error sending chat message.");
+        toast.error("Error sending chat message.");
       }
     });
     setDisabled(false);
@@ -128,18 +129,39 @@ export default function AnonChatModal() {
         </>
       }
     >
-      <div className="flex flex-col items-center self-stretch text-center gap-4 p-2">
-        <Input label="Pseudonym" value={pseudonym} onChange={(e: any) => setPseudonym(e?.target?.value)} />
-        <TextArea label="Message" value={message} onChange={(e: any) => setMessage(e?.target?.value)} />
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col items-center self-stretch text-center gap-4 p-2"
+      >
+        <Input
+          {...register("pseudonym", {
+            required: {
+              value: true,
+              message: "Please select a pseudonym.",
+            },
+          })}
+          label="Pseudonym"
+          error={errors?.pseudonym?.message}
+        />
+        <TextArea
+          {...register("message", {
+            required: {
+              value: true,
+              message: "Please enter a message.",
+            },
+          })}
+          label="Message"
+          error={errors?.message?.message}
+        />
         <Button
-          className="w-full"
+          className="w-full mt-4"
           disabled={!wasm || disabled}
           loading={isLoadingWasm}
-          onClick={onSubmit}
+          type="submit"
         >
           {getDisplayText()}
         </Button>
-      </div>
+      </form>
     </Modal>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import Modal  from "./Modal";
+import Modal from "./Modal";
 import { execHaloCmdWeb } from "@arx-research/libhalo/api/web.js";
 import { recoverPublicKey } from "@arx-research/libhalo/halo/utils.js";
 import { useEffect, useState } from "react";
@@ -12,6 +12,8 @@ import { cardPubKeys } from "@/lib/cardPubKeys";
 import { detectIncognito } from "detectincognitojs";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { useQuery } from "react-query";
+import Image from "next/image";
 
 export default function TapModal() {
   const router = useRouter();
@@ -20,19 +22,15 @@ export default function TapModal() {
   const [statusText, setStatusText] = useState("Waiting for NFC setup...");
   const [args, setArgs] = useState<HaLoNoncePCDArgs | undefined>(undefined);
 
-  useEffect(() => {
-    const alertIncognito = async () => {
-      const isIncognito = await detectIncognito();
-      if (isIncognito.isPrivate) {
-        alert(
-          "Please move to a non-incognito tab in order to save your Sigmojis!"
-        );
-        router.push("/");
-      }
-    };
+  const checkIsIncognito = async () => {
+    const isIncognito = await detectIncognito();
+    return isIncognito.isPrivate;
+  };
 
-    alertIncognito();
-  }, [router]);
+  const { isLoading, data: isIncognito } = useQuery(
+    "isIncognito",
+    async () => await checkIsIncognito()
+  );
 
   // run code as soon as modal is rendered
   useEffect(() => {
@@ -137,32 +135,59 @@ export default function TapModal() {
     return <CollectedModal args={args} />;
   }
 
+  if (isLoading) return null;
+
   return (
-    <Modal 
+    <Modal
       title={
         <span className="font-helvetica text-[23px] font-bold leading-none text-woodsmoke-100">
-          Place the NFC card near your phone.
+          {isIncognito
+            ? "Incognito mode detected!"
+            : "Tap your card to your phone"}
         </span>
       }
+      description="Please move to a non-incognito tab in order to save your Sigmojis!"
     >
-      <img src="/phone-tap.gif" />
-      <span className="text-base font-helvetica text-woodsmoke-100 font-normal leading-[140%]">
-        {isTapping ? statusText : ""}
-      </span>
-      <Button className="w-full" onClick={() => setIsTapping(true)}>
-        {isTapping ? "TAPPING..." : "READY TO TAP"}
-      </Button>
-      <span className="text-base font-helvetica text-woodsmoke-100 font-normal leading-[140%]">
-        {"If you still can't tap, check out the "}
-        <a
-          href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
-          target="_blank"
-          style={{ textDecoration: "underline" }}
-        >
-          troubleshooting guide
-        </a>
-        .
-      </span>
+      <>
+        {!isIncognito ? (
+          <>
+            <img src="/phone-tap.gif" />
+            <span className="text-base font-helvetica text-woodsmoke-100 font-normal leading-[140%]">
+              {isTapping ? statusText : ""}
+            </span>
+            <Button className="w-full" onClick={() => setIsTapping(true)}>
+              {isTapping ? "TAPPING..." : "READY TO TAP"}
+            </Button>
+            <span className="text-base font-helvetica text-woodsmoke-100 font-normal leading-[140%]">
+              {"If you still can't tap, check out the "}
+              <a
+                href="https://pse-team.notion.site/Card-tapping-instructions-ac5cae2f72e34155ba67d8a251b2857c?pvs=4"
+                target="_blank"
+                style={{ textDecoration: "underline" }}
+              >
+                troubleshooting guide
+              </a>
+              .
+            </span>
+          </>
+        ) : (
+          <Button
+            className="w-full"
+            variant="secondary"
+            onClick={() => router.push("/")}
+          >
+            <div className="flex gap-2 items-center">
+              <span>Back to app</span>
+              <Image
+                src="/buttons/arrow-right-line.svg"
+                width="16"
+                height="16"
+                alt="arrow"
+              />
+            </div>
+          </Button>
+        )}
+      </>
     </Modal>
   );
 }

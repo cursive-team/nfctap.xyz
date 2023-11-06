@@ -29,3 +29,7 @@ body {
 .courier-font-base {
   @apply font-courier text-base font-medium leading-[140%] text-woodsmoke-100;
 }
+
+.without-ring {
+  @apply ring-offset-1 ring-offset-red-300 ring-transparent focus:ring-0 focus-visible:right-0 focus-visible:ring-offset-0 focus:outline-none focus-visible:outline-none focus:ring-offset-snow-flurry-200;
+}

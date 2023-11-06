@@ -13,7 +13,7 @@ export interface DropdownProps {
   items: DropdownItem[];
 }
 
-const Dropdown = ({ label = "Options", items }: DropdownProps) => {
+const Dropdown = ({ label = "Options", items, ...props }: DropdownProps) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>

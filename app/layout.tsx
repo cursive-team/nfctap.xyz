@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Courier_Prime } from "next/font/google";
 import QueryClientWrapper from "@/components/shared/QueryClientWrapper";
-
+import { Toaster } from "react-hot-toast";
 
 const courier_prime = Courier_Prime({
   weight: "400",
@@ -24,9 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${courier_prime.variable}`}>
-        <QueryClientWrapper>
-          {children}
-        </QueryClientWrapper>
+        <QueryClientWrapper>{children}</QueryClientWrapper>
+        <Toaster
+          toastOptions={{
+            duration: 5000,
+          }}
+        />
       </body>
     </html>
   );
